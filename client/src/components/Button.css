@@ -1,0 +1,29 @@
+.botao {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.botao:hover {
+  opacity: 0.9;
+}
+
+.botao:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.botao--primario {
+  background: #22c55e;
+  color: #052e16;
+}
+
+.botao--secundario {
+  background: transparent;
+  border: 1px solid #334155;
+  color: #e2e8f0;
+}

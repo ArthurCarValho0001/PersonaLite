@@ -1,0 +1,89 @@
+.nova-medicao {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.nova-medicao__titulo {
+  font-size: 1.35rem;
+  color: #f1f5f9;
+  margin-bottom: 0.4rem;
+}
+
+.nova-medicao__subtitulo {
+  color: #94a3b8;
+  font-size: 0.875rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.5;
+}
+
+.nova-medicao__carregando {
+  text-align: center;
+  color: #94a3b8;
+  padding: 2rem;
+}
+
+.nova-medicao form > .card {
+  margin-bottom: 1.25rem;
+}
+
+/* Mobile-first: 1 coluna por padrão, 2 colunas só a partir de telas maiores */
+.nova-medicao__grade {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+@media (min-width: 480px) {
+  .nova-medicao__grade {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0 1rem;
+  }
+}
+
+.nova-medicao__secao {
+  margin-bottom: 1.5rem;
+}
+
+.nova-medicao__secao-titulo {
+  font-size: 0.95rem;
+  color: #94a3b8;
+  font-weight: 600;
+  margin: 0 0 0.75rem 0;
+  padding-top: 0.5rem;
+  border-top: 1px solid #1e293b;
+}
+
+.nova-medicao__secao .card {
+  margin-bottom: 1rem;
+}
+
+.nova-medicao__erro {
+  color: #f87171;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.nova-medicao__acoes {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.75rem;
+  padding-bottom: 2rem;
+}
+
+@media (min-width: 480px) {
+  .nova-medicao__acoes {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}
+
+.nova-medicao__acoes .botao {
+  width: 100%;
+}
+
+@media (min-width: 480px) {
+  .nova-medicao__acoes .botao {
+    width: auto;
+  }
+}

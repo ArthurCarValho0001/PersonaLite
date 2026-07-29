@@ -1,0 +1,76 @@
+.treinos {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1rem;
+  padding-bottom: 3rem;
+}
+
+.treinos__cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.treinos__titulo {
+  font-size: 1.35rem;
+  color: #f1f5f9;
+  margin: 0 0 0.15rem 0;
+}
+
+.treinos__subtitulo {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.treinos__mensagem {
+  color: #94a3b8;
+  padding: 1rem 0;
+}
+
+.treinos__mensagem--erro {
+  color: #f87171;
+}
+
+.treinos__descanso {
+  font-size: 1.05rem;
+  margin: 0 0 0.4rem 0;
+}
+
+.treinos__descanso-sub {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.treinos__dia-badge {
+  margin-bottom: 1rem;
+}
+
+.treinos__dia-badge-texto {
+  display: inline-block;
+  background: #052e16;
+  border: 1px solid #166534;
+  color: #4ade80;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+}
+
+.treinos__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.treinos__link-config {
+  display: block;
+  text-align: center;
+  color: #64748b;
+  font-size: 0.8rem;
+  margin-top: 2rem;
+  padding: 0.75rem;
+}

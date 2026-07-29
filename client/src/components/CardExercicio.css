@@ -1,0 +1,66 @@
+.card-exercicio__cabecalho {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  min-height: 48px;
+  gap: 0.75rem;
+}
+
+.card-exercicio__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.card-exercicio__nome {
+  margin: 0;
+  color: #e2e8f0;
+  font-size: 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card-exercicio__meta {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.card-exercicio__status {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.card-exercicio__badge {
+  background: #1e293b;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+}
+
+.card-exercicio__badge--completo {
+  background: #052e16;
+  color: #4ade80;
+}
+
+.card-exercicio__seta {
+  color: #64748b;
+  font-size: 0.7rem;
+}
+
+.card-exercicio__corpo {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #1e293b;
+}

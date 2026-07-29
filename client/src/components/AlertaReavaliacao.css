@@ -1,0 +1,15 @@
+.alerta-reavaliacao {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 0.9rem 1.1rem;
+  color: #94a3b8;
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+}
+
+.alerta-reavaliacao--pendente {
+  background: #422006;
+  border-color: #b45309;
+  color: #fcd34d;
+}

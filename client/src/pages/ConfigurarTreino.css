@@ -1,0 +1,139 @@
+.config-treino {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1rem;
+  padding-bottom: 3rem;
+}
+
+.config-treino__cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.config-treino__titulo {
+  font-size: 1.35rem;
+  color: #f1f5f9;
+  margin: 0;
+}
+
+.config-treino__mensagem {
+  color: #94a3b8;
+}
+
+.config-treino__acao-inicial {
+  margin-top: 1rem;
+}
+
+.config-treino__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.config-treino__dia-cabecalho {
+  margin-bottom: 0.6rem;
+}
+
+.config-treino__dia-nome {
+  margin: 0;
+  color: #e2e8f0;
+  font-size: 1.05rem;
+}
+
+.config-treino__dia-semana {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.config-treino__exercicios {
+  list-style: none;
+  margin: 0 0 0.5rem 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.config-treino__exercicios li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #cbd5e1;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #1e293b;
+}
+
+.config-treino__exercicio-meta {
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.config-treino__link {
+  background: none;
+  border: none;
+  color: #38bdf8;
+  font-size: 0.85rem;
+  padding: 0.5rem 0;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.config-treino__form-exercicio {
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #1e293b;
+}
+
+.config-treino__grade-numeros {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1rem;
+}
+
+.config-treino__acoes-form {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+@media (min-width: 480px) {
+  .config-treino__acoes-form {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}
+
+.config-treino__acoes-form .botao {
+  width: 100%;
+}
+
+@media (min-width: 480px) {
+  .config-treino__acoes-form .botao {
+    width: auto;
+  }
+}
+
+.config-treino__label-select {
+  display: block;
+  font-size: 0.875rem;
+  color: #94a3b8;
+  font-weight: 500;
+  margin-bottom: 0.35rem;
+}
+
+.config-treino__select {
+  width: 100%;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 0.7rem 0.75rem;
+  color: #e2e8f0;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  min-height: 48px;
+}
