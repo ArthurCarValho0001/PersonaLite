@@ -11,7 +11,7 @@ using PersonaLite.Infrastructure.Data;
 namespace PersonaLite.Infrastructure.Migrations
 {
     [DbContext(typeof(PersonaLiteDbContext))]
-    [Migration("20260729140956_InitialCreate")]
+    [Migration("20260729213957_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -23,7 +23,6 @@ namespace PersonaLite.Infrastructure.Migrations
             modelBuilder.Entity("PersonaLite.Domain.Entities.DiaDeTreino", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("DiaSemana")
@@ -46,7 +45,6 @@ namespace PersonaLite.Infrastructure.Migrations
             modelBuilder.Entity("PersonaLite.Domain.Entities.ExercicioPlanejado", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("DiaDeTreinoId")
@@ -79,7 +77,6 @@ namespace PersonaLite.Infrastructure.Migrations
             modelBuilder.Entity("PersonaLite.Domain.Entities.FotoProgresso", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Angulo")
@@ -100,7 +97,6 @@ namespace PersonaLite.Infrastructure.Migrations
             modelBuilder.Entity("PersonaLite.Domain.Entities.PlanoTreino", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<DateOnly?>("FimVigencia")
@@ -120,7 +116,6 @@ namespace PersonaLite.Infrastructure.Migrations
             modelBuilder.Entity("PersonaLite.Domain.Entities.RegistroMedidas", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<DateOnly>("Data")
@@ -146,7 +141,6 @@ namespace PersonaLite.Infrastructure.Migrations
             modelBuilder.Entity("PersonaLite.Domain.Entities.SessaoExercicio", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<DateOnly>("Data")
@@ -163,7 +157,6 @@ namespace PersonaLite.Infrastructure.Migrations
             modelBuilder.Entity("PersonaLite.Domain.Entities.Usuario", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<double>("AlturaCm")
