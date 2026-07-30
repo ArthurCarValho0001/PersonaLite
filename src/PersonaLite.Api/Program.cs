@@ -1,35 +1,48 @@
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 using PersonaLite.Api.Endpoints;
 using PersonaLite.Application.UseCases;
 using PersonaLite.Infrastructure;
+using PersonaLite.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 const string PoliticaCorsClient = "ClientPwa";
 
-// Faz o System.Text.Json aceitar/gerar enums como texto ("Masculino", "Feminino", "Frente", etc.)
-// em vez do número da posição no enum. Sem isso, o front (que manda "Masculino" como string)
-// dá erro de deserialização, porque o padrão do .NET é esperar um número (0, 1, 2...).
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
-// Passo 4.1 - CORS liberado pro localhost do Vite (cliente React/PWA)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(PoliticaCorsClient, policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins(
+                "http://localhost:5173",
+                "https://persona-lite.vercel.app"
+              )
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
 });
 
-// Passo 4.1 - Infrastructure (DbContext, repositórios, storage de fotos)
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddDbContext<PersonaLiteDbContext>(options =>
+{
+    if (builder.Environment.IsDevelopment())
+    {
+        options.UseSqlite(connectionString);
+    }
+    else
+    {
+        options.UseNpgsql(connectionString);
+    }
+});
+
 builder.Services.AddInfrastructure(builder.Configuration);
 
-// Passo 4.1 - Casos de uso da Application
 builder.Services.AddScoped<CriarUsuarioUseCase>();
 builder.Services.AddScoped<ObterUsuarioUseCase>();
 builder.Services.AddScoped<RegistrarMedidasUseCase>();
@@ -59,7 +72,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(PoliticaCorsClient);
 
-// Passo 4.2 - Endpoints ficam registrados nos arquivos Endpoints/*.cs (ver abaixo)
 app.MapUsuarioEndpoints();
 app.MapMedidasEndpoints();
 app.MapTreinoEndpoints();
