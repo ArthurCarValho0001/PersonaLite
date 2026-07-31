@@ -14,15 +14,11 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
-var allowedOrigins = builder.Configuration["AllowedOrigins"]?
-    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-    ?? new[] { "http://localhost:5173", "https://persona-lite.vercel.app" };
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(PoliticaCorsClient, policy =>
     {
-        policy.WithOrigins(allowedOrigins)
+        policy.WithOrigins("http://localhost:5173", "https://persona-lite.vercel.app")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
