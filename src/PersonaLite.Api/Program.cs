@@ -28,19 +28,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-builder.Services.AddDbContext<PersonaLiteDbContext>(options =>
-{
-    if (builder.Environment.IsDevelopment())
-    {
-        options.UseSqlite(connectionString);
-    }
-    else
-    {
-        options.UseNpgsql(connectionString);
-    }
-});
+builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddInfrastructure(builder.Configuration);
 

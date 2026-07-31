@@ -12,11 +12,13 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("PersonaLiteDb")
-            ?? "Data Source=personalite.db";
+        var connectionString = configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException(
+                "Connection string 'DefaultConnection' não configurada. " +
+                "Configure via User Secrets (local) ou variável de ambiente ConnectionStrings__DefaultConnection (produção).");
 
         services.AddDbContext<PersonaLiteDbContext>(options =>
-            options.UseSqlite(connectionString));
+            options.UseNpgsql(connectionString));
 
         services.AddScoped<IUsuarioRepository, UsuarioRepository>();
         services.AddScoped<IRegistroMedidasRepository, RegistroMedidasRepository>();
