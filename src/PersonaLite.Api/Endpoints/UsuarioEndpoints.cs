@@ -18,7 +18,7 @@ public static class UsuarioEndpoints
         grupo.MapGet("/", async (ObterUsuarioUseCase useCase) =>
         {
             var usuario = await useCase.ExecutarAsync();
-            return usuario is not null ? Results.Ok(usuario) : Results.NotFound();
+            return Results.Ok(usuario); 
         });
     }
 }
