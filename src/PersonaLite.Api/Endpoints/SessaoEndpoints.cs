@@ -7,18 +7,19 @@ public static class SessaoEndpoints
 {
     public static void MapSessaoEndpoints(this WebApplication app)
     {
-        // Registra UMA série (normal ou drop set, dependendo de quantos "Estagios" vierem no corpo)
-        app.MapPost("/api/series", async (RegistrarSerieDto dto, RegistrarSerieUseCase useCase) =>
+        app.MapPost("/api/series", async (HttpContext http, RegistrarSerieDto dto, RegistrarSerieUseCase useCase) =>
         {
-            await useCase.ExecutarAsync(dto);
+            var usuarioId = http.User.ObterUsuarioId();
+            await useCase.ExecutarAsync(usuarioId, dto);
             return Results.NoContent();
-        }).WithTags("Sessoes");
+        }).WithTags("Sessoes").RequireAuthorization();
 
         app.MapGet("/api/exercicios/{id:guid}/progressao", async (
-            Guid id, ObterProgressaoCargaUseCase useCase) =>
+            HttpContext http, Guid id, ObterProgressaoCargaUseCase useCase) =>
         {
-            var progressao = await useCase.ExecutarAsync(id);
+            var usuarioId = http.User.ObterUsuarioId();
+            var progressao = await useCase.ExecutarAsync(usuarioId, id);
             return Results.Ok(progressao);
-        }).WithTags("Sessoes");
+        }).WithTags("Sessoes").RequireAuthorization();
     }
 }

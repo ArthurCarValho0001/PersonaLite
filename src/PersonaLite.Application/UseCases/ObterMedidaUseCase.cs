@@ -12,10 +12,10 @@ public class ObterMedidaUseCase
         _medidasRepo = medidasRepo;
     }
 
-    public async Task<RegistroMedidasDetalhadoDto?> ExecutarAsync(Guid id)
+    public async Task<RegistroMedidasDetalhadoDto?> ExecutarAsync(Guid usuarioId, Guid id)
     {
         var r = await _medidasRepo.ObterAsync(id);
-        if (r is null) return null;
+        if (r is null || r.UsuarioId != usuarioId) return null;
 
         return new RegistroMedidasDetalhadoDto(
             r.Id, r.Data, r.PesoKg,

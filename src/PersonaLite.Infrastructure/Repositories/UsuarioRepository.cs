@@ -17,6 +17,9 @@ public class UsuarioRepository : IUsuarioRepository
     public Task<Usuario?> ObterAsync(Guid id) =>
         _context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
 
+    public Task<Usuario?> ObterPorNomeUsuarioAsync(string nomeUsuario) =>
+        _context.Usuarios.FirstOrDefaultAsync(u => u.NomeUsuario == nomeUsuario.Trim().ToLowerInvariant());
+
     public Task<Usuario?> ObterUnicoAsync() =>
         _context.Usuarios.FirstOrDefaultAsync();
 

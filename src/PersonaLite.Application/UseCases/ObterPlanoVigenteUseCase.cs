@@ -5,21 +5,16 @@ namespace PersonaLite.Application.UseCases;
 
 public class ObterPlanoVigenteUseCase
 {
-    private readonly IUsuarioRepository _usuarioRepo;
     private readonly IPlanoTreinoRepository _planoRepo;
 
-    public ObterPlanoVigenteUseCase(IUsuarioRepository usuarioRepo, IPlanoTreinoRepository planoRepo)
+    public ObterPlanoVigenteUseCase(IPlanoTreinoRepository planoRepo)
     {
-        _usuarioRepo = usuarioRepo;
         _planoRepo = planoRepo;
     }
 
-    public async Task<PlanoTreinoDto?> ExecutarAsync()
+    public async Task<PlanoTreinoDto?> ExecutarAsync(Guid usuarioId)
     {
-        var usuario = await _usuarioRepo.ObterUnicoAsync()
-            ?? throw new InvalidOperationException("Usuário não configurado.");
-
-        var plano = await _planoRepo.ObterVigenteAsync(usuario.Id);
+        var plano = await _planoRepo.ObterVigenteAsync(usuarioId);
         if (plano is null) return null;
 
         return new PlanoTreinoDto(

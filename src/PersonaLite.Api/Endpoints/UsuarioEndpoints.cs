@@ -1,4 +1,3 @@
-using PersonaLite.Application.DTOs;
 using PersonaLite.Application.UseCases;
 
 namespace PersonaLite.Api.Endpoints;
@@ -7,18 +6,13 @@ public static class UsuarioEndpoints
 {
     public static void MapUsuarioEndpoints(this WebApplication app)
     {
-        var grupo = app.MapGroup("/api/usuario").WithTags("Usuario");
+        var grupo = app.MapGroup("/api/usuario").WithTags("Usuario").RequireAuthorization();
 
-        grupo.MapPost("/", async (CriarUsuarioDto dto, CriarUsuarioUseCase useCase) =>
+        grupo.MapGet("/", async (HttpContext http, ObterUsuarioUseCase useCase) =>
         {
-            var id = await useCase.ExecutarAsync(dto);
-            return Results.Created($"/api/usuario/{id}", new { id });
-        });
-
-        grupo.MapGet("/", async (ObterUsuarioUseCase useCase) =>
-        {
-            var usuario = await useCase.ExecutarAsync();
-            return Results.Ok(usuario); 
+            var usuarioId = http.User.ObterUsuarioId();
+            var usuario = await useCase.ExecutarAsync(usuarioId);
+            return usuario is not null ? Results.Ok(usuario) : Results.NotFound();
         });
     }
 }

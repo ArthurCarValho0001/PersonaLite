@@ -12,9 +12,9 @@ public class ObterUsuarioUseCase
         _usuarioRepo = usuarioRepo;
     }
 
-    public async Task<UsuarioDto?> ExecutarAsync()
+    public async Task<UsuarioDto?> ExecutarAsync(Guid usuarioId)
     {
-        var usuario = await _usuarioRepo.ObterUnicoAsync();
+        var usuario = await _usuarioRepo.ObterAsync(usuarioId);
         if (usuario is null) return null;
 
         return new UsuarioDto(usuario.Id, usuario.Nome, usuario.Sexo, usuario.DataNascimento, usuario.AlturaCm);

@@ -12,10 +12,11 @@ public class AdicionarDiaDeTreinoUseCase
         _planoRepo = planoRepo;
     }
 
-    public async Task<Guid> ExecutarAsync(Guid planoTreinoId, AdicionarDiaDeTreinoDto dto)
+    public async Task<Guid> ExecutarAsync(Guid usuarioId, Guid planoTreinoId, AdicionarDiaDeTreinoDto dto)
     {
-        var plano = await _planoRepo.ObterAsync(planoTreinoId)
-            ?? throw new InvalidOperationException("Plano de treino não encontrado.");
+        var plano = await _planoRepo.ObterAsync(planoTreinoId);
+        if (plano is null || plano.UsuarioId != usuarioId)
+            throw new InvalidOperationException("Plano de treino não encontrado.");
 
         var dia = plano.AdicionarDia(dto.Nome, dto.DiaSemana);
         await _planoRepo.SalvarAlteracoesAsync();

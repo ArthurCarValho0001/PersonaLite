@@ -5,21 +5,16 @@ namespace PersonaLite.Application.UseCases;
 
 public class ObterEvolucaoUseCase
 {
-    private readonly IUsuarioRepository _usuarioRepo;
     private readonly IRegistroMedidasRepository _medidasRepo;
 
-    public ObterEvolucaoUseCase(IUsuarioRepository usuarioRepo, IRegistroMedidasRepository medidasRepo)
+    public ObterEvolucaoUseCase(IRegistroMedidasRepository medidasRepo)
     {
-        _usuarioRepo = usuarioRepo;
         _medidasRepo = medidasRepo;
     }
 
-    public async Task<List<RegistroMedidasDto>> ExecutarAsync()
+    public async Task<List<RegistroMedidasDto>> ExecutarAsync(Guid usuarioId)
     {
-        var usuario = await _usuarioRepo.ObterUnicoAsync()
-            ?? throw new InvalidOperationException("Usuário não configurado.");
-
-        var registros = await _medidasRepo.ListarPorUsuarioAsync(usuario.Id);
+        var registros = await _medidasRepo.ListarPorUsuarioAsync(usuarioId);
 
         return registros
             .OrderBy(r => r.Data)

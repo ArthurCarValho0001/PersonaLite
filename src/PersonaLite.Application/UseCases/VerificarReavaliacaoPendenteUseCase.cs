@@ -6,21 +6,16 @@ public class VerificarReavaliacaoPendenteUseCase
 {
     private const int MesesParaReavaliacao = 3;
 
-    private readonly IUsuarioRepository _usuarioRepo;
     private readonly IRegistroMedidasRepository _medidasRepo;
 
-    public VerificarReavaliacaoPendenteUseCase(IUsuarioRepository usuarioRepo, IRegistroMedidasRepository medidasRepo)
+    public VerificarReavaliacaoPendenteUseCase(IRegistroMedidasRepository medidasRepo)
     {
-        _usuarioRepo = usuarioRepo;
         _medidasRepo = medidasRepo;
     }
 
-    public async Task<ReavaliacaoStatusDto> ExecutarAsync()
+    public async Task<ReavaliacaoStatusDto> ExecutarAsync(Guid usuarioId)
     {
-        var usuario = await _usuarioRepo.ObterUnicoAsync()
-            ?? throw new InvalidOperationException("Usuário não configurado.");
-
-        var ultimoRegistro = await _medidasRepo.ObterMaisRecenteAsync(usuario.Id);
+        var ultimoRegistro = await _medidasRepo.ObterMaisRecenteAsync(usuarioId);
 
         if (ultimoRegistro is null)
             return new ReavaliacaoStatusDto(Pendente: false, ProximaData: null, UltimaMedicao: null);

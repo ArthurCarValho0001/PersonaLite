@@ -6,17 +6,20 @@ public class Usuario
 {
     public Guid Id { get; private set; }
     public string Nome { get; private set; } = string.Empty;
+    public string NomeUsuario { get; private set; } = string.Empty;
+    public string SenhaHash { get; private set; } = string.Empty;
     public Sexo Sexo { get; private set; }
     public DateOnly DataNascimento { get; private set; }
     public double AlturaCm { get; private set; }
 
-    // construtor privado pra forçar criação via factory method, EF Core usa reflection
     private Usuario() { }
 
-    public Usuario(string nome, Sexo sexo, DateOnly dataNascimento, double alturaCm)
+    public Usuario(string nome, string nomeUsuario, string senhaHash, Sexo sexo, DateOnly dataNascimento, double alturaCm)
     {
         Id = Guid.NewGuid();
         Nome = nome;
+        NomeUsuario = nomeUsuario.Trim().ToLowerInvariant();
+        SenhaHash = senhaHash;
         Sexo = sexo;
         DataNascimento = dataNascimento;
         AlturaCm = alturaCm;

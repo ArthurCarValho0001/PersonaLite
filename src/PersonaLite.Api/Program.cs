@@ -4,6 +4,9 @@ using PersonaLite.Api.Endpoints;
 using PersonaLite.Application.UseCases;
 using PersonaLite.Infrastructure;
 using PersonaLite.Infrastructure.Data;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,11 +27,28 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddInfrastructure(builder.Configuration);
+var jwtSecretKey = builder.Configuration["Jwt:SecretKey"]
+    ?? throw new InvalidOperationException("Jwt:SecretKey não configurada.");
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey)),
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
-builder.Services.AddScoped<CriarUsuarioUseCase>();
+builder.Services.AddScoped<RegistrarUsuarioUseCase>();
+builder.Services.AddScoped<LoginUseCase>();
 builder.Services.AddScoped<ObterUsuarioUseCase>();
 builder.Services.AddScoped<RegistrarMedidasUseCase>();
 builder.Services.AddScoped<ObterEvolucaoUseCase>();
@@ -62,10 +82,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors(PoliticaCorsClient);
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapUsuarioEndpoints();
 app.MapMedidasEndpoints();
 app.MapTreinoEndpoints();
 app.MapSessaoEndpoints();
+app.MapAuthEndpoints();
 
 app.Run();

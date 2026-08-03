@@ -5,6 +5,7 @@ using PersonaLite.Infrastructure.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PersonaLite.Infrastructure.Security;
 
 namespace PersonaLite.Infrastructure;
 
@@ -25,6 +26,8 @@ public static class DependencyInjection
         services.AddScoped<IPlanoTreinoRepository, PlanoTreinoRepository>();
         services.AddScoped<ISessaoExercicioRepository, SessaoExercicioRepository>();
         services.AddScoped<IFotoProgressoRepository, FotoProgressoRepository>();
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<ITokenService, TokenService>();
 
         var pastaFotos = configuration["Armazenamento:PastaFotos"] ?? "fotos-progresso";
         services.AddSingleton<IArmazenamentoFotosService>(new ArmazenamentoFotosService(pastaFotos));

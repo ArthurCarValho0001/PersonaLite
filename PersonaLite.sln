@@ -17,15 +17,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{08FBE7D2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersonaLite.Domain.Tests", "tests\PersonaLite.Domain.Tests\PersonaLite.Domain.Tests.csproj", "{C52ADC84-7E29-4549-BAF0-024B2F0FD991}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersonaLite.Application.Tests", "tests\PersonaLite.Application.Tests\PersonaLite.Application.Tests.csproj", "{867D5A0C-2C14-404E-A545-AB0072217928}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D58DC3A6-B723-4F6C-B885-E1D101B158A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -48,10 +43,9 @@ Global
 		{C52ADC84-7E29-4549-BAF0-024B2F0FD991}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C52ADC84-7E29-4549-BAF0-024B2F0FD991}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C52ADC84-7E29-4549-BAF0-024B2F0FD991}.Release|Any CPU.Build.0 = Release|Any CPU
-		{867D5A0C-2C14-404E-A545-AB0072217928}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{867D5A0C-2C14-404E-A545-AB0072217928}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{867D5A0C-2C14-404E-A545-AB0072217928}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{867D5A0C-2C14-404E-A545-AB0072217928}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D58DC3A6-B723-4F6C-B885-E1D101B158A4} = {6D2F4B8D-8C7E-4674-B573-95347CC3C652}
@@ -59,6 +53,5 @@ Global
 		{B11163A7-A385-4617-BB50-A1B0AA77A068} = {6D2F4B8D-8C7E-4674-B573-95347CC3C652}
 		{B36528E3-F525-4688-825F-CE45F16DDF2E} = {6D2F4B8D-8C7E-4674-B573-95347CC3C652}
 		{C52ADC84-7E29-4549-BAF0-024B2F0FD991} = {08FBE7D2-19C9-4635-9FB3-ADB8919BBCA7}
-		{867D5A0C-2C14-404E-A545-AB0072217928} = {08FBE7D2-19C9-4635-9FB3-ADB8919BBCA7}
 	EndGlobalSection
 EndGlobal

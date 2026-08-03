@@ -15,13 +15,14 @@ public class AtualizarMedidasUseCase
         _medidasRepo = medidasRepo;
     }
 
-    public async Task ExecutarAsync(Guid id, CriarRegistroMedidasDto dto)
+    public async Task ExecutarAsync(Guid usuarioId, Guid id, CriarRegistroMedidasDto dto)
     {
-        var usuario = await _usuarioRepo.ObterUnicoAsync()
-            ?? throw new InvalidOperationException("Usuário não configurado.");
+        var usuario = await _usuarioRepo.ObterAsync(usuarioId)
+            ?? throw new InvalidOperationException("Usuário não encontrado.");
 
-        var existente = await _medidasRepo.ObterAsync(id)
-            ?? throw new InvalidOperationException("Registro não encontrado.");
+        var existente = await _medidasRepo.ObterAsync(id);
+        if (existente is null || existente.UsuarioId != usuarioId)
+            throw new InvalidOperationException("Registro não encontrado.");
 
         var idade = usuario.IdadeEm(dto.Data);
 

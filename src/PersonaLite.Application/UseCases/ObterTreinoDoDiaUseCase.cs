@@ -6,26 +6,20 @@ namespace PersonaLite.Application.UseCases;
 
 public class ObterTreinoDoDiaUseCase
 {
-    private readonly IUsuarioRepository _usuarioRepo;
     private readonly IPlanoTreinoRepository _planoRepo;
     private readonly ISessaoExercicioRepository _sessaoRepo;
 
-    public ObterTreinoDoDiaUseCase(
-        IUsuarioRepository usuarioRepo, IPlanoTreinoRepository planoRepo, ISessaoExercicioRepository sessaoRepo)
+    public ObterTreinoDoDiaUseCase(IPlanoTreinoRepository planoRepo, ISessaoExercicioRepository sessaoRepo)
     {
-        _usuarioRepo = usuarioRepo;
         _planoRepo = planoRepo;
         _sessaoRepo = sessaoRepo;
     }
 
-    public async Task<TreinoDoDiaDto> ExecutarAsync(DateOnly? data = null)
+    public async Task<TreinoDoDiaDto> ExecutarAsync(Guid usuarioId, DateOnly? data = null)
     {
         var dataAlvo = data ?? DateOnly.FromDateTime(DateTime.Today);
 
-        var usuario = await _usuarioRepo.ObterUnicoAsync()
-            ?? throw new InvalidOperationException("Usuário não configurado.");
-
-        var plano = await _planoRepo.ObterVigenteAsync(usuario.Id);
+        var plano = await _planoRepo.ObterVigenteAsync(usuarioId);
         var diaDeHoje = plano?.Dias.FirstOrDefault(d => d.DiaSemana == dataAlvo.DayOfWeek);
 
         if (diaDeHoje is null)

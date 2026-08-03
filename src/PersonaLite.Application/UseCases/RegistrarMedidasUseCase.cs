@@ -16,10 +16,10 @@ public class RegistrarMedidasUseCase
         _medidasRepo = medidasRepo;
     }
 
-    public async Task<Guid> ExecutarAsync(CriarRegistroMedidasDto dto)
+    public async Task<Guid> ExecutarAsync(Guid usuarioId, CriarRegistroMedidasDto dto)
     {
-        var usuario = await _usuarioRepo.ObterUnicoAsync()
-            ?? throw new InvalidOperationException("Usuário não configurado.");
+        var usuario = await _usuarioRepo.ObterAsync(usuarioId)
+            ?? throw new InvalidOperationException("Usuário não encontrado.");
 
         var idade = usuario.IdadeEm(dto.Data);
 

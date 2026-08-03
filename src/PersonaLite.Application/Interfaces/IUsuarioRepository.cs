@@ -5,6 +5,6 @@ namespace PersonaLite.Application.Interfaces;
 public interface IUsuarioRepository
 {
     Task<Usuario?> ObterAsync(Guid id);
-    Task<Usuario?> ObterUnicoAsync(); // app é single-user
+    Task<Usuario?> ObterPorNomeUsuarioAsync(string nomeUsuario);
     Task SalvarAsync(Usuario usuario);
 }
