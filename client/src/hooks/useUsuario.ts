@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { obterUsuario } from '../api/usuarioApi'
+import { obterToken } from '../api/authToken'
 import type { UsuarioDto } from '../types'
 
 interface UseUsuarioResultado {
   usuario: UsuarioDto | null
   carregando: boolean
   erro: string | null
+  autenticado: boolean
   recarregar: () => void
 }
 
@@ -19,6 +21,14 @@ export function useUsuario(): UseUsuarioResultado {
     let cancelado = false
 
     async function carregar() {
+      if (!obterToken()) {
+        if (!cancelado) {
+          setUsuario(null)
+          setCarregando(false)
+        }
+        return
+      }
+
       setCarregando(true)
       setErro(null)
       try {
@@ -37,5 +47,11 @@ export function useUsuario(): UseUsuarioResultado {
     }
   }, [versao])
 
-  return { usuario, carregando, erro, recarregar: () => setVersao((v) => v + 1) }
+  return {
+    usuario,
+    carregando,
+    erro,
+    autenticado: obterToken() !== null,
+    recarregar: () => setVersao((v) => v + 1),
+  }
 }

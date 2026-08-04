@@ -171,6 +171,14 @@ namespace PersonaLite.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("NomeUsuario")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SenhaHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("Sexo")
                         .HasColumnType("integer");
 

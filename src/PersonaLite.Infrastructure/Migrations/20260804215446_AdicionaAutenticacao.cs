@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PersonaLite.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class AdicionaAutenticacao : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -95,6 +95,8 @@ namespace PersonaLite.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Nome = table.Column<string>(type: "text", nullable: false),
+                    NomeUsuario = table.Column<string>(type: "text", nullable: false),
+                    SenhaHash = table.Column<string>(type: "text", nullable: false),
                     Sexo = table.Column<int>(type: "integer", nullable: false),
                     DataNascimento = table.Column<DateOnly>(type: "date", nullable: false),
                     AlturaCm = table.Column<double>(type: "double precision", nullable: false)

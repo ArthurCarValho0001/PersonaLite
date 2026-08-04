@@ -12,8 +12,8 @@ using PersonaLite.Infrastructure.Data;
 namespace PersonaLite.Infrastructure.Migrations
 {
     [DbContext(typeof(PersonaLiteDbContext))]
-    [Migration("20260731022140_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260804215446_AdicionaAutenticacao")]
+    partial class AdicionaAutenticacao
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -171,6 +171,14 @@ namespace PersonaLite.Infrastructure.Migrations
                         .HasColumnType("date");
 
                     b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("NomeUsuario")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SenhaHash")
                         .IsRequired()
                         .HasColumnType("text");
 

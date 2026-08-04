@@ -1,25 +1,32 @@
 import { useState, type FormEvent } from 'react'
-import { criarUsuario } from '../api/usuarioApi'
+import { Link, useNavigate } from 'react-router-dom'
+import { registrar } from '../api/authApi'
+import { salvarToken } from '../api/authToken'
 import { Button } from '../components/Button'
 import { Card } from '../components/Card'
 import { FormField } from '../components/FormField'
 import { SeletorSexo } from '../components/SeletorSexo'
 import type { Sexo } from '../types'
-import './Onboarding.css'
+import './Registrar.css'
 
-interface OnboardingProps {
-  onConcluido: () => void
-}
-
-export function Onboarding({ onConcluido }: OnboardingProps) {
+export function Registrar() {
+  const navigate = useNavigate()
   const [nome, setNome] = useState('')
+  const [nomeUsuario, setNomeUsuario] = useState('')
+  const [senha, setSenha] = useState('')
   const [sexo, setSexo] = useState<Sexo | null>(null)
   const [dataNascimento, setDataNascimento] = useState('')
   const [alturaCm, setAlturaCm] = useState('')
   const [enviando, setEnviando] = useState(false)
   const [erro, setErro] = useState<string | null>(null)
 
-  const formularioValido = nome.trim().length > 0 && sexo !== null && dataNascimento !== '' && Number(alturaCm) > 0
+  const formularioValido =
+    nome.trim().length > 0 &&
+    nomeUsuario.trim().length >= 3 &&
+    senha.length >= 6 &&
+    sexo !== null &&
+    dataNascimento !== '' &&
+    Number(alturaCm) > 0
 
   async function lidarComEnvio(evento: FormEvent) {
     evento.preventDefault()
@@ -28,27 +35,34 @@ export function Onboarding({ onConcluido }: OnboardingProps) {
     setEnviando(true)
     setErro(null)
     try {
-      await criarUsuario({
+      const resultado = await registrar({
         nome: nome.trim(),
+        nomeUsuario: nomeUsuario.trim(),
+        senha,
         sexo,
         dataNascimento,
         alturaCm: Number(alturaCm),
       })
-      onConcluido()
-    } catch {
-      setErro('Não foi possível salvar. Confira se a API está rodando em localhost:5000.')
+      salvarToken(resultado.token)
+      navigate('/')
+      window.location.reload()
+    } catch (erro: any) {
+      if (erro?.response?.status === 409) {
+        setErro('Esse nome de usuário já está em uso.')
+      } else {
+        setErro('Não foi possível criar a conta. Confira se a API está rodando.')
+      }
     } finally {
       setEnviando(false)
     }
   }
 
   return (
-    <div className="onboarding">
-      <div className="onboarding__conteudo">
-        <h1 className="onboarding__titulo">Bem-vindo ao PersonaLite</h1>
-        <p className="onboarding__subtitulo">
-          Antes de começar, preciso de algumas informações básicas — elas são usadas nos cálculos
-          de composição corporal a cada nova medição.
+    <div className="registrar">
+      <div className="registrar__conteudo">
+        <h1 className="registrar__titulo">Criar conta no PersonaLite</h1>
+        <p className="registrar__subtitulo">
+          Suas medidas e treinos ficam vinculados só à sua conta.
         </p>
 
         <Card>
@@ -60,6 +74,25 @@ export function Onboarding({ onConcluido }: OnboardingProps) {
               value={nome}
               onChange={(e) => setNome(e.target.value)}
               placeholder="Como devo te chamar?"
+            />
+
+            <FormField
+              id="nomeUsuario"
+              label="Nome de usuário"
+              type="text"
+              value={nomeUsuario}
+              onChange={(e) => setNomeUsuario(e.target.value)}
+              placeholder="mínimo 3 caracteres"
+              autoCapitalize="off"
+            />
+
+            <FormField
+              id="senha"
+              label="Senha"
+              type="password"
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+              placeholder="mínimo 6 caracteres"
             />
 
             <SeletorSexo valor={sexo} onChange={setSexo} />
@@ -84,11 +117,15 @@ export function Onboarding({ onConcluido }: OnboardingProps) {
               placeholder="175"
             />
 
-            {erro && <p className="onboarding__erro">{erro}</p>}
+            {erro && <p className="registrar__erro">{erro}</p>}
 
             <Button type="submit" disabled={!formularioValido || enviando}>
-              {enviando ? 'Salvando...' : 'Começar'}
+              {enviando ? 'Criando conta...' : 'Criar conta'}
             </Button>
+
+            <p className="registrar__login-link">
+              Já tem conta? <Link to="/login">Entrar</Link>
+            </p>
           </form>
         </Card>
       </div>

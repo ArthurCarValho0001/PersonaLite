@@ -3,13 +3,23 @@ import { IndicadorSincronizacao } from './components/IndicadorSincronizacao'
 import { useUsuario } from './hooks/useUsuario'
 import { ConfigurarTreino } from './pages/ConfigurarTreino'
 import { Dashboard } from './pages/Dashboard'
+import { Login } from './pages/Login'
 import { NovaMedicao } from './pages/NovaMedicao'
-import { Onboarding } from './pages/Onboarding'
+import { Registrar } from './pages/Registrar'
 import { Treinos } from './pages/Treinos'
 import './App.css'
 
 function App() {
-  const { usuario, carregando, erro, recarregar } = useUsuario()
+  const { usuario, carregando, erro, autenticado, recarregar } = useUsuario()
+
+  if (!autenticado) {
+    return (
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="*" element={<Registrar />} />
+      </Routes>
+    )
+  }
 
   if (carregando) {
     return (
@@ -31,7 +41,12 @@ function App() {
   }
 
   if (!usuario) {
-    return <Onboarding onConcluido={recarregar} />
+    // Token existe mas o usuário não foi encontrado (ex: token de uma conta apagada)
+    return (
+      <Routes>
+        <Route path="*" element={<Login />} />
+      </Routes>
+    )
   }
 
   return (

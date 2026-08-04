@@ -6,6 +6,7 @@ import { GraficoEvolucao } from '../components/GraficoEvolucao'
 import { useEvolucao } from '../hooks/useEvolucao'
 import type { UsuarioDto } from '../types'
 import './Dashboard.css'
+import { limparToken } from '../api/authToken'
 
 interface DashboardProps {
   usuario: UsuarioDto
@@ -29,6 +30,16 @@ export function Dashboard({ usuario }: DashboardProps) {
           <Link to="/medidas/nova">
             <Button>Nova medição</Button>
           </Link>
+          <button
+            type="button"
+            className="dashboard__sair"
+            onClick={() => {
+              limparToken()
+              window.location.reload()
+            }}
+          >
+            Sair
+          </button>
         </div>
       </header>
 
