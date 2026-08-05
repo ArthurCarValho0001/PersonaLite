@@ -2,8 +2,21 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
-// https://vite.dev/config/
+// 1. Defina a versão semântica manual da sua aplicação (X.Y.Z)
+const APP_SEMVER = '1.0.0'
+
+// 2. Captura os 7 primeiros caracteres do commit SHA do Vercel
+const commitSha = process.env.VERCEL_GIT_COMMIT_SHA
+  ? process.env.VERCEL_GIT_COMMIT_SHA.substring(0, 7)
+  : 'dev'
+
+// 3. Monta no padrão SemVer com metadados de build: 1.0.0+a1b2c3d
+const appVersion = `v${APP_SEMVER}+${commitSha}`
+
 export default defineConfig({
+  define: {
+    __APP_VERSION__: JSON.stringify(appVersion)
+  },
   plugins: [
     react(),
     VitePWA({

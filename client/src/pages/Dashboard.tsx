@@ -16,6 +16,9 @@ export function Dashboard({ usuario }: DashboardProps) {
   const { evolucao, carregando, erro } = useEvolucao()
   const ultimoRegistro = evolucao.at(-1)
 
+  // Obtém a versão injetada pelo Vite durante o build
+  const versaoApp = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : 'v1.0.0-dev'
+
   return (
     <div className="dashboard">
       <header className="dashboard__cabecalho">
@@ -90,6 +93,11 @@ export function Dashboard({ usuario }: DashboardProps) {
           </ul>
         </Card>
       )}
+
+      {/* Rodapé discreto adicionado com a versão */}
+      <footer className="dashboard__rodape">
+        <span className="dashboard__versao">{versaoApp}</span>
+      </footer>
     </div>
   )
 }
