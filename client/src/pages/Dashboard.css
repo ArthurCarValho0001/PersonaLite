@@ -110,3 +110,15 @@
   cursor: pointer;
   min-height: 44px;
 }
+
+.dashboard__rodape {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.dashboard__versao {
+  font-size: 0.7rem;
+  color: #64748b;
+  opacity: 0.5;
+  letter-spacing: 0.05em;
+}
