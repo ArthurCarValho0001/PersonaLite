@@ -11,6 +11,8 @@ public record RegistrarSerieDto(
     DateOnly Data,
     List<EstagioSerieDto> Estagios);
 
+public record AtualizarSerieDto(List<EstagioSerieDto> Estagios);
+
 public record SerieRegistradaDto(int GrupoSerie, List<EstagioSerieDto> Estagios);
 
 public record ExercicioComRegistrosDto(
@@ -19,9 +21,11 @@ public record ExercicioComRegistrosDto(
     string GrupoMuscular,
     int SeriesAlvo,
     int RepeticoesAlvo,
+    Guid? SessaoExercicioId,
     List<SerieRegistradaDto> SeriesRegistradas);
 
 public record TreinoDoDiaDto(
+    Guid? DiaDeTreinoId,
     string? NomeDia,
     DayOfWeek DiaSemana,
     bool TemTreinoHoje,

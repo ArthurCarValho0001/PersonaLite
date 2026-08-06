@@ -29,3 +29,15 @@ public record PlanoTreinoDto(
     DateOnly InicioVigencia,
     DateOnly? FimVigencia,
     List<DiaDeTreinoDto> Dias);
+
+public record AtualizarDiaDeTreinoDto(
+    string Nome, 
+    DayOfWeek DiaSemana);
+
+public record AtualizarExercicioDto(
+    string Nome, 
+    string GrupoMuscular, 
+    int SeriesAlvo, 
+    int RepeticoesAlvo);
+
+public record ReordenarExerciciosDto(List<Guid> OrdemExercicios);

@@ -35,16 +35,27 @@ public class SessaoExercicio
 }
 
 /// <summary>
-/// Um estágio de uma série. GrupoSerie identifica a qual "série física" pertence
-/// (várias linhas com o mesmo GrupoSerie = um drop set). OrdemEstagio indica a ordem
-/// dentro do drop (0 = carga principal, 1+ = quedas de carga).
-/// </summary>
-public record SerieRealizada(
-    int GrupoSerie, 
-    int OrdemEstagio, 
-    double CargaKg, 
-    int Repeticoes, 
-    Guid Id = default)
-{
-    public Guid Id { get; init; } = Id == default ? Guid.NewGuid() : Id;
-}
+    /// Substitui os estágios de uma série já registrada (o "GrupoSerie" continua o mesmo,
+    /// só troca peso/repetições — inclusive virando ou deixando de ser drop set).
+    /// </summary>
+    public void AtualizarSerie(int grupoSerie, IEnumerable<(double CargaKg, int Repeticoes)> estagios)
+    {
+        if (!Series.Any(s => s.GrupoSerie == grupoSerie))
+            throw new InvalidOperationException("Série não encontrada nessa sessão.");
+
+        Series.RemoveAll(s => s.GrupoSerie == grupoSerie);
+
+        var ordem = 0;
+        foreach (var (cargaKg, repeticoes) in estagios)
+        {
+            Series.Add(new SerieRealizada(grupoSerie, ordem, cargaKg, repeticoes));
+            ordem++;
+        }
+    }
+
+    public void RemoverSerie(int grupoSerie)
+    {
+        var removidos = Series.RemoveAll(s => s.GrupoSerie == grupoSerie);
+        if (removidos == 0)
+            throw new InvalidOperationException("Série não encontrada nessa sessão.");
+    }

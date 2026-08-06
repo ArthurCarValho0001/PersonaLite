@@ -45,7 +45,32 @@ public class DiaDeTreino
         DiaSemana = diaSemana;
     }
 
-    public void AdicionarExercicio(ExercicioPlanejado exercicio) => Exercicios.Add(exercicio);
+    public void AdicionarExercicio(ExercicioPlanejado exercicio)
+    {
+        Exercicios.Add(exercicio);
+    }
+
+    public void Atualizar(string nome, DayOfWeek diaSemana)
+    {
+        Nome = nome;
+        DiaSemana = diaSemana;
+    }
+
+    public void ReordenarExercicios(List<Guid> ordemDesejada)
+    {
+        for (var i = 0; i < ordemDesejada.Count; i++)
+        {
+            var exercicio = Exercicios.FirstOrDefault(e => e.Id == ordemDesejada[i]);
+            exercicio?.DefinirOrdem(i);
+        }
+    }
+
+    public void RemoverExercicio(Guid exercicioId)
+    {
+        var exercicio = Exercicios.FirstOrDefault(e => e.Id == exercicioId);
+        if (exercicio is not null)
+            Exercicios.Remove(exercicio);
+    }
 }
 
 public class ExercicioPlanejado
@@ -60,7 +85,13 @@ public class ExercicioPlanejado
 
     private ExercicioPlanejado() { }
 
-    public ExercicioPlanejado(Guid diaDeTreinoId, string nome, string grupoMuscular, int seriesAlvo, int repeticoesAlvo, int ordem)
+    public ExercicioPlanejado(
+        Guid diaDeTreinoId,
+        string nome,
+        string grupoMuscular,
+        int seriesAlvo,
+        int repeticoesAlvo,
+        int ordem)
     {
         Id = Guid.NewGuid();
         DiaDeTreinoId = diaDeTreinoId;
@@ -68,6 +99,19 @@ public class ExercicioPlanejado
         GrupoMuscular = grupoMuscular;
         SeriesAlvo = seriesAlvo;
         RepeticoesAlvo = repeticoesAlvo;
+        Ordem = ordem;
+    }
+
+    public void Atualizar(string nome, string grupoMuscular, int seriesAlvo, int repeticoesAlvo)
+    {
+        Nome = nome;
+        GrupoMuscular = grupoMuscular;
+        SeriesAlvo = seriesAlvo;
+        RepeticoesAlvo = repeticoesAlvo;
+    }
+
+    public void DefinirOrdem(int ordem)
+    {
         Ordem = ordem;
     }
 }
