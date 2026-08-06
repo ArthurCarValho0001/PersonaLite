@@ -25,6 +25,11 @@ public class SessaoExercicioRepository : ISessaoExercicioRepository
         _context.SessoesExercicio
             .Include(s => s.Series)
             .FirstOrDefaultAsync(s => s.ExercicioPlanejadoId == exercicioPlanejadoId && s.Data == data);
+    
+    public Task<SessaoExercicio?> ObterPorIdAsync(Guid id) =>
+        _context.SessoesExercicio
+            .Include(s => s.Series)
+            .FirstOrDefaultAsync(s => s.Id == id);
 
     public Task<List<SessaoExercicio>> ListarPorExerciciosEDataAsync(IEnumerable<Guid> exercicioPlanejadoIds, DateOnly data) =>
         _context.SessoesExercicio

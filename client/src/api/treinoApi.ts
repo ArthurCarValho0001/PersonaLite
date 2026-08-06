@@ -2,8 +2,11 @@ import { httpClient } from './httpClient'
 import type {
   AdicionarDiaDeTreinoDto,
   AdicionarExercicioDto,
+  AtualizarDiaDeTreinoDto,
+  AtualizarExercicioDto,
   CriarPlanoTreinoDto,
   PlanoTreinoDto,
+  ReordenarExerciciosDto,
   TreinoDoDiaDto,
 } from '../types'
 
@@ -30,6 +33,10 @@ export async function adicionarDiaDeTreino(
   return data
 }
 
+export async function atualizarDiaDeTreino(diaId: string, dto: AtualizarDiaDeTreinoDto): Promise<void> {
+  await httpClient.put(`/api/dias-treino/${diaId}`, dto)
+}
+
 export async function adicionarExercicio(
   diaDeTreinoId: string,
   dto: AdicionarExercicioDto
@@ -38,8 +45,27 @@ export async function adicionarExercicio(
   return data
 }
 
+export async function atualizarExercicio(exercicioId: string, dto: AtualizarExercicioDto): Promise<void> {
+  await httpClient.put(`/api/exercicios/${exercicioId}`, dto)
+}
+
+export async function removerExercicio(exercicioId: string): Promise<void> {
+  await httpClient.delete(`/api/exercicios/${exercicioId}`)
+}
+
+export async function reordenarExercicios(diaId: string, dto: ReordenarExerciciosDto): Promise<void> {
+  await httpClient.put(`/api/dias-treino/${diaId}/exercicios/ordem`, dto)
+}
+
 export async function obterTreinoDoDia(data?: string): Promise<TreinoDoDiaDto> {
   const { data: resultado } = await httpClient.get<TreinoDoDiaDto>('/api/treino-do-dia', {
+    params: data ? { data } : undefined,
+  })
+  return resultado
+}
+
+export async function obterTreinoPorDia(diaId: string, data?: string): Promise<TreinoDoDiaDto> {
+  const { data: resultado } = await httpClient.get<TreinoDoDiaDto>(`/api/dias-treino/${diaId}/treino-do-dia`, {
     params: data ? { data } : undefined,
   })
   return resultado

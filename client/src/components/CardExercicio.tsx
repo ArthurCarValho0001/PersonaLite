@@ -40,6 +40,7 @@ export function CardExercicio({ exercicio, data, onAtualizar }: CardExercicioPro
         <div className="card-exercicio__corpo">
           <SerieRegistro
             exercicioPlanejadoId={exercicio.exercicioPlanejadoId}
+            sessaoExercicioId={exercicio.sessaoExercicioId}
             data={data}
             seriesRegistradas={exercicio.seriesRegistradas}
             seriesAlvo={exercicio.seriesAlvo}

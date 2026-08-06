@@ -29,11 +29,27 @@ export interface AdicionarDiaDeTreinoDto {
   diaSemana: DiaSemana
 }
 
+export interface AtualizarDiaDeTreinoDto {
+  nome: string
+  diaSemana: DiaSemana
+}
+
 export interface AdicionarExercicioDto {
   nome: string
   grupoMuscular: string
   seriesAlvo: number
   repeticoesAlvo: number
+}
+
+export interface AtualizarExercicioDto {
+  nome: string
+  grupoMuscular: string
+  seriesAlvo: number
+  repeticoesAlvo: number
+}
+
+export interface ReordenarExerciciosDto {
+  ordemExercicios: string[]
 }
 
 export interface ExercicioPlanejadoDto {
@@ -70,6 +86,10 @@ export interface RegistrarSerieDto {
   estagios: EstagioSerieDto[]
 }
 
+export interface AtualizarSerieDto {
+  estagios: EstagioSerieDto[]
+}
+
 export interface SerieRegistradaDto {
   grupoSerie: number
   estagios: EstagioSerieDto[]
@@ -81,10 +101,12 @@ export interface ExercicioComRegistrosDto {
   grupoMuscular: string
   seriesAlvo: number
   repeticoesAlvo: number
+  sessaoExercicioId: string | null
   seriesRegistradas: SerieRegistradaDto[]
 }
 
 export interface TreinoDoDiaDto {
+  diaDeTreinoId: string | null
   nomeDia: string | null
   diaSemana: DiaSemana
   temTreinoHoje: boolean

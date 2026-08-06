@@ -9,4 +9,5 @@ public interface ISessaoExercicioRepository
     Task<List<SessaoExercicio>> ListarPorExerciciosEDataAsync(IEnumerable<Guid> exercicioPlanejadoIds, DateOnly data);
     Task SalvarAsync(SessaoExercicio sessao);
     Task AtualizarAsync(SessaoExercicio sessao);
+    Task<SessaoExercicio?> ObterPorIdAsync(Guid id);
 }

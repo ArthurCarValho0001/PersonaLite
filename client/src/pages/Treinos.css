@@ -74,3 +74,25 @@
   margin-top: 2rem;
   padding: 0.75rem;
 }
+
+.treinos__seletor {
+  margin-bottom: 1rem;
+}
+
+.treinos__seletor-label {
+  display: block;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-bottom: 0.35rem;
+}
+
+.treinos__seletor-select {
+  width: 100%;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 0.7rem 0.75rem;
+  color: #e2e8f0;
+  font-size: 1rem;
+  min-height: 48px;
+}

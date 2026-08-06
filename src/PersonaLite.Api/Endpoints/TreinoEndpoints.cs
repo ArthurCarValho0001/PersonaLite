@@ -31,13 +31,57 @@ public static class TreinoEndpoints
             return Results.Created($"/api/dias-treino/{diaId}", new { id = diaId });
         });
 
-        app.MapPost("/api/dias-treino/{id:guid}/exercicios", async (
+        var dias = app.MapGroup("/api/dias-treino").WithTags("PlanoTreino").RequireAuthorization();
+
+        dias.MapPut("/{id:guid}", async (
+            HttpContext http, Guid id, AtualizarDiaDeTreinoDto dto, AtualizarDiaDeTreinoUseCase useCase) =>
+        {
+            var usuarioId = http.User.ObterUsuarioId();
+            await useCase.ExecutarAsync(usuarioId, id, dto);
+            return Results.NoContent();
+        });
+
+        dias.MapPost("/{id:guid}/exercicios", async (
             HttpContext http, Guid id, AdicionarExercicioDto dto, AdicionarExercicioUseCase useCase) =>
         {
             var usuarioId = http.User.ObterUsuarioId();
             var exercicioId = await useCase.ExecutarAsync(usuarioId, id, dto);
             return Results.Created($"/api/exercicios/{exercicioId}", new { id = exercicioId });
-        }).WithTags("PlanoTreino").RequireAuthorization();
+        });
+
+        dias.MapPut("/{id:guid}/exercicios/ordem", async (
+            HttpContext http, Guid id, ReordenarExerciciosDto dto, ReordenarExerciciosUseCase useCase) =>
+        {
+            var usuarioId = http.User.ObterUsuarioId();
+            await useCase.ExecutarAsync(usuarioId, id, dto);
+            return Results.NoContent();
+        });
+
+        dias.MapGet("/{id:guid}/treino-do-dia", async (
+            HttpContext http, Guid id, DateOnly? data, ObterTreinoPorDiaUseCase useCase) =>
+        {
+            var usuarioId = http.User.ObterUsuarioId();
+            var treino = await useCase.ExecutarAsync(usuarioId, id, data);
+            return Results.Ok(treino);
+        });
+
+        var exercicios = app.MapGroup("/api/exercicios").WithTags("PlanoTreino").RequireAuthorization();
+
+        exercicios.MapPut("/{id:guid}", async (
+            HttpContext http, Guid id, AtualizarExercicioDto dto, AtualizarExercicioUseCase useCase) =>
+        {
+            var usuarioId = http.User.ObterUsuarioId();
+            await useCase.ExecutarAsync(usuarioId, id, dto);
+            return Results.NoContent();
+        });
+
+        exercicios.MapDelete("/{id:guid}", async (
+            HttpContext http, Guid id, RemoverExercicioUseCase useCase) =>
+        {
+            var usuarioId = http.User.ObterUsuarioId();
+            await useCase.ExecutarAsync(usuarioId, id);
+            return Results.NoContent();
+        });
 
         app.MapGet("/api/treino-do-dia", async (HttpContext http, DateOnly? data, ObterTreinoDoDiaUseCase useCase) =>
         {
