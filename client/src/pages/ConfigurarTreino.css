@@ -137,3 +137,65 @@
   margin-bottom: 1rem;
   min-height: 48px;
 }
+
+.config-treino__dia-edicao {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #1e293b;
+}
+
+.config-treino__icone-botao {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #94a3b8;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.config-treino__icone-botao--excluir {
+  color: #f87171;
+}
+
+.config-treino__exercicios li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.config-treino__exercicio-nome {
+  flex: 1;
+  min-width: 100px;
+}
+
+.config-treino__exercicio-acoes {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.config-treino__seta-botao {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #94a3b8;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.config-treino__seta-botao:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.config-treino__exercicio-edicao-item {
+  display: block;
+  padding: 0.5rem 0;
+}

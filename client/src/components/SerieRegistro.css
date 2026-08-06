@@ -95,3 +95,61 @@
 .serie-registro__botao-salvar {
   width: 100%;
 }
+
+.serie-registro__lista-editavel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.serie-registro__chip-linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.serie-registro__chip-acoes {
+  display: flex;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
+
+.serie-registro__icone-botao {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #94a3b8;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.serie-registro__icone-botao--excluir {
+  color: #f87171;
+}
+
+.serie-registro__edicao {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.serie-registro__edicao-botoes {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.serie-registro__edicao-botoes .botao {
+  padding: 0.5rem 0.9rem;
+  min-height: 40px;
+  font-size: 0.85rem;
+}

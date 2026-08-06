@@ -1,11 +1,19 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { adicionarDiaDeTreino, adicionarExercicio, criarPlanoTreino } from '../api/treinoApi'
+import {
+  adicionarDiaDeTreino,
+  adicionarExercicio,
+  atualizarDiaDeTreino,
+  atualizarExercicio,
+  criarPlanoTreino,
+  removerExercicio,
+  reordenarExercicios,
+} from '../api/treinoApi'
 import { Button } from '../components/Button'
 import { Card } from '../components/Card'
 import { FormField } from '../components/FormField'
 import { usePlanoAtual } from '../hooks/usePlanoAtual'
-import { DIAS_SEMANA, LABEL_DIA_SEMANA, type DiaSemana } from '../types'
+import { DIAS_SEMANA, LABEL_DIA_SEMANA, type DiaSemana, type ExercicioPlanejadoDto } from '../types'
 import './ConfigurarTreino.css'
 
 export function ConfigurarTreino() {
@@ -48,12 +56,22 @@ export function ConfigurarTreino() {
         <>
           <div className="config-treino__lista">
             {plano.dias.map((dia) => (
-              <DiaCard key={dia.id} diaId={dia.id} nome={dia.nome} diaSemana={dia.diaSemana}
-                exercicios={dia.exercicios} onAtualizar={recarregar} />
+              <DiaCard
+                key={dia.id}
+                diaId={dia.id}
+                nome={dia.nome}
+                diaSemana={dia.diaSemana}
+                exercicios={dia.exercicios}
+                onAtualizar={recarregar}
+              />
             ))}
           </div>
 
-          <NovoDiaForm planoTreinoId={plano.id} diasJaUsados={plano.dias.map((d) => d.diaSemana)} onAdicionado={recarregar} />
+          <NovoDiaForm
+            planoTreinoId={plano.id}
+            diasJaUsados={plano.dias.map((d) => d.diaSemana)}
+            onAdicionado={recarregar}
+          />
         </>
       )}
     </div>
@@ -64,12 +82,245 @@ interface DiaCardProps {
   diaId: string
   nome: string
   diaSemana: DiaSemana
-  exercicios: { id: string; nome: string; grupoMuscular: string; seriesAlvo: number; repeticoesAlvo: number }[]
+  exercicios: ExercicioPlanejadoDto[]
   onAtualizar: () => void
 }
 
 function DiaCard({ diaId, nome, diaSemana, exercicios, onAtualizar }: DiaCardProps) {
+  const [editandoDia, setEditandoDia] = useState(false)
+  const [nomeDia, setNomeDia] = useState(nome)
+  const [diaSemanaEdicao, setDiaSemanaEdicao] = useState<DiaSemana>(diaSemana)
+  const [salvandoDia, setSalvandoDia] = useState(false)
+
   const [mostrarForm, setMostrarForm] = useState(false)
+  const [exercicioEditandoId, setExercicioEditandoId] = useState<string | null>(null)
+
+  async function salvarDia() {
+    if (!nomeDia.trim()) return
+    setSalvandoDia(true)
+    try {
+      await atualizarDiaDeTreino(diaId, { nome: nomeDia.trim(), diaSemana: diaSemanaEdicao })
+      setEditandoDia(false)
+      onAtualizar()
+    } finally {
+      setSalvandoDia(false)
+    }
+  }
+
+  async function mover(exercicioId: string, direcao: -1 | 1) {
+    const ordenados = [...exercicios].sort((a, b) => a.ordem - b.ordem)
+    const indice = ordenados.findIndex((e) => e.id === exercicioId)
+    const novoIndice = indice + direcao
+    if (novoIndice < 0 || novoIndice >= ordenados.length) return
+
+    const copia = [...ordenados]
+    ;[copia[indice], copia[novoIndice]] = [copia[novoIndice], copia[indice]]
+
+    await reordenarExercicios(diaId, { ordemExercicios: copia.map((e) => e.id) })
+    onAtualizar()
+  }
+
+  async function excluirExercicio(exercicioId: string) {
+    if (!confirm('Remover esse exercício do treino?')) return
+    await removerExercicio(exercicioId)
+    onAtualizar()
+  }
+
+  const exerciciosOrdenados = [...exercicios].sort((a, b) => a.ordem - b.ordem)
+
+  return (
+    <Card>
+      {!editandoDia ? (
+        <div className="config-treino__dia-cabecalho">
+          <div>
+            <h3 className="config-treino__dia-nome">{nome}</h3>
+            <span className="config-treino__dia-semana">{LABEL_DIA_SEMANA[diaSemana]}</span>
+          </div>
+          <button type="button" className="config-treino__icone-botao" onClick={() => setEditandoDia(true)}>
+            ✎
+          </button>
+        </div>
+      ) : (
+        <div className="config-treino__dia-edicao">
+          <FormField id={`nome-dia-${diaId}`} label="Nome" value={nomeDia} onChange={(e) => setNomeDia(e.target.value)} />
+          <label className="config-treino__label-select" htmlFor={`dia-semana-${diaId}`}>
+            Dia da semana
+          </label>
+          <select
+            id={`dia-semana-${diaId}`}
+            className="config-treino__select"
+            value={diaSemanaEdicao}
+            onChange={(e) => setDiaSemanaEdicao(e.target.value as DiaSemana)}
+          >
+            {DIAS_SEMANA.map((d) => (
+              <option key={d} value={d}>
+                {LABEL_DIA_SEMANA[d]}
+              </option>
+            ))}
+          </select>
+          <div className="config-treino__acoes-form">
+            <Button type="button" variante="secundario" onClick={() => setEditandoDia(false)}>
+              Cancelar
+            </Button>
+            <Button type="button" onClick={salvarDia} disabled={!nomeDia.trim() || salvandoDia}>
+              {salvandoDia ? 'Salvando...' : 'Salvar'}
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {exerciciosOrdenados.length > 0 && (
+        <ul className="config-treino__exercicios">
+          {exerciciosOrdenados.map((ex, indice) =>
+            exercicioEditandoId === ex.id ? (
+              <li key={ex.id} className="config-treino__exercicio-edicao-item">
+                <ExercicioEditForm
+                  exercicio={ex}
+                  onCancelar={() => setExercicioEditandoId(null)}
+                  onSalvo={() => {
+                    setExercicioEditandoId(null)
+                    onAtualizar()
+                  }}
+                />
+              </li>
+            ) : (
+              <li key={ex.id}>
+                <span className="config-treino__exercicio-nome">{ex.nome}</span>
+                <span className="config-treino__exercicio-meta">
+                  {ex.seriesAlvo}×{ex.repeticoesAlvo}
+                </span>
+                <div className="config-treino__exercicio-acoes">
+                  <button
+                    type="button"
+                    className="config-treino__seta-botao"
+                    onClick={() => mover(ex.id, -1)}
+                    disabled={indice === 0}
+                    aria-label="Mover pra cima"
+                  >
+                    ↑
+                  </button>
+                  <button
+                    type="button"
+                    className="config-treino__seta-botao"
+                    onClick={() => mover(ex.id, 1)}
+                    disabled={indice === exerciciosOrdenados.length - 1}
+                    aria-label="Mover pra baixo"
+                  >
+                    ↓
+                  </button>
+                  <button
+                    type="button"
+                    className="config-treino__icone-botao"
+                    onClick={() => setExercicioEditandoId(ex.id)}
+                    aria-label="Editar exercício"
+                  >
+                    ✎
+                  </button>
+                  <button
+                    type="button"
+                    className="config-treino__icone-botao config-treino__icone-botao--excluir"
+                    onClick={() => excluirExercicio(ex.id)}
+                    aria-label="Excluir exercício"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </li>
+            )
+          )}
+        </ul>
+      )}
+
+      {!mostrarForm && (
+        <button type="button" className="config-treino__link" onClick={() => setMostrarForm(true)}>
+          + adicionar exercício
+        </button>
+      )}
+
+      {mostrarForm && (
+        <NovoExercicioForm diaId={diaId} onCancelar={() => setMostrarForm(false)} onAdicionado={() => { setMostrarForm(false); onAtualizar() }} />
+      )}
+    </Card>
+  )
+}
+
+interface ExercicioEditFormProps {
+  exercicio: ExercicioPlanejadoDto
+  onCancelar: () => void
+  onSalvo: () => void
+}
+
+function ExercicioEditForm({ exercicio, onCancelar, onSalvo }: ExercicioEditFormProps) {
+  const [nome, setNome] = useState(exercicio.nome)
+  const [grupoMuscular, setGrupoMuscular] = useState(exercicio.grupoMuscular)
+  const [seriesAlvo, setSeriesAlvo] = useState(String(exercicio.seriesAlvo))
+  const [repeticoesAlvo, setRepeticoesAlvo] = useState(String(exercicio.repeticoesAlvo))
+  const [salvando, setSalvando] = useState(false)
+
+  async function salvar(evento: FormEvent) {
+    evento.preventDefault()
+    if (!nome.trim() || !grupoMuscular.trim()) return
+
+    setSalvando(true)
+    try {
+      await atualizarExercicio(exercicio.id, {
+        nome: nome.trim(),
+        grupoMuscular: grupoMuscular.trim(),
+        seriesAlvo: Number(seriesAlvo),
+        repeticoesAlvo: Number(repeticoesAlvo),
+      })
+      onSalvo()
+    } finally {
+      setSalvando(false)
+    }
+  }
+
+  return (
+    <form onSubmit={salvar} className="config-treino__form-exercicio">
+      <FormField id={`edit-nome-${exercicio.id}`} label="Exercício" value={nome} onChange={(e) => setNome(e.target.value)} />
+      <FormField
+        id={`edit-grupo-${exercicio.id}`}
+        label="Grupo muscular"
+        value={grupoMuscular}
+        onChange={(e) => setGrupoMuscular(e.target.value)}
+      />
+      <div className="config-treino__grade-numeros">
+        <FormField
+          id={`edit-series-${exercicio.id}`}
+          label="Séries"
+          type="number"
+          min="1"
+          value={seriesAlvo}
+          onChange={(e) => setSeriesAlvo(e.target.value)}
+        />
+        <FormField
+          id={`edit-reps-${exercicio.id}`}
+          label="Repetições"
+          type="number"
+          min="1"
+          value={repeticoesAlvo}
+          onChange={(e) => setRepeticoesAlvo(e.target.value)}
+        />
+      </div>
+      <div className="config-treino__acoes-form">
+        <Button type="button" variante="secundario" onClick={onCancelar}>
+          Cancelar
+        </Button>
+        <Button type="submit" disabled={salvando}>
+          {salvando ? 'Salvando...' : 'Salvar'}
+        </Button>
+      </div>
+    </form>
+  )
+}
+
+interface NovoExercicioFormProps {
+  diaId: string
+  onCancelar: () => void
+  onAdicionado: () => void
+}
+
+function NovoExercicioForm({ diaId, onCancelar, onAdicionado }: NovoExercicioFormProps) {
   const [nomeExercicio, setNomeExercicio] = useState('')
   const [grupoMuscular, setGrupoMuscular] = useState('')
   const [seriesAlvo, setSeriesAlvo] = useState('4')
@@ -88,88 +339,29 @@ function DiaCard({ diaId, nome, diaSemana, exercicios, onAtualizar }: DiaCardPro
         seriesAlvo: Number(seriesAlvo),
         repeticoesAlvo: Number(repeticoesAlvo),
       })
-      setNomeExercicio('')
-      setGrupoMuscular('')
-      setMostrarForm(false)
-      onAtualizar()
+      onAdicionado()
     } finally {
       setSalvando(false)
     }
   }
 
   return (
-    <Card>
-      <div className="config-treino__dia-cabecalho">
-        <div>
-          <h3 className="config-treino__dia-nome">{nome}</h3>
-          <span className="config-treino__dia-semana">{LABEL_DIA_SEMANA[diaSemana]}</span>
-        </div>
+    <form onSubmit={lidarComAdicionar} className="config-treino__form-exercicio">
+      <FormField id={`nome-${diaId}`} label="Exercício" value={nomeExercicio} onChange={(e) => setNomeExercicio(e.target.value)} placeholder="Supino reto" />
+      <FormField id={`grupo-${diaId}`} label="Grupo muscular" value={grupoMuscular} onChange={(e) => setGrupoMuscular(e.target.value)} placeholder="Peito" />
+      <div className="config-treino__grade-numeros">
+        <FormField id={`series-${diaId}`} label="Séries" type="number" min="1" value={seriesAlvo} onChange={(e) => setSeriesAlvo(e.target.value)} />
+        <FormField id={`reps-${diaId}`} label="Repetições" type="number" min="1" value={repeticoesAlvo} onChange={(e) => setRepeticoesAlvo(e.target.value)} />
       </div>
-
-      {exercicios.length > 0 && (
-        <ul className="config-treino__exercicios">
-          {exercicios.map((ex) => (
-            <li key={ex.id}>
-              <span>{ex.nome}</span>
-              <span className="config-treino__exercicio-meta">
-                {ex.seriesAlvo}×{ex.repeticoesAlvo}
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {!mostrarForm && (
-        <button type="button" className="config-treino__link" onClick={() => setMostrarForm(true)}>
-          + adicionar exercício
-        </button>
-      )}
-
-      {mostrarForm && (
-        <form onSubmit={lidarComAdicionar} className="config-treino__form-exercicio">
-          <FormField
-            id={`nome-${diaId}`}
-            label="Exercício"
-            value={nomeExercicio}
-            onChange={(e) => setNomeExercicio(e.target.value)}
-            placeholder="Supino reto"
-          />
-          <FormField
-            id={`grupo-${diaId}`}
-            label="Grupo muscular"
-            value={grupoMuscular}
-            onChange={(e) => setGrupoMuscular(e.target.value)}
-            placeholder="Peito"
-          />
-          <div className="config-treino__grade-numeros">
-            <FormField
-              id={`series-${diaId}`}
-              label="Séries"
-              type="number"
-              min="1"
-              value={seriesAlvo}
-              onChange={(e) => setSeriesAlvo(e.target.value)}
-            />
-            <FormField
-              id={`reps-${diaId}`}
-              label="Repetições"
-              type="number"
-              min="1"
-              value={repeticoesAlvo}
-              onChange={(e) => setRepeticoesAlvo(e.target.value)}
-            />
-          </div>
-          <div className="config-treino__acoes-form">
-            <Button type="button" variante="secundario" onClick={() => setMostrarForm(false)}>
-              Cancelar
-            </Button>
-            <Button type="submit" disabled={salvando}>
-              {salvando ? 'Salvando...' : 'Adicionar'}
-            </Button>
-          </div>
-        </form>
-      )}
-    </Card>
+      <div className="config-treino__acoes-form">
+        <Button type="button" variante="secundario" onClick={onCancelar}>
+          Cancelar
+        </Button>
+        <Button type="submit" disabled={salvando}>
+          {salvando ? 'Salvando...' : 'Adicionar'}
+        </Button>
+      </div>
+    </form>
   )
 }
 
@@ -211,23 +403,12 @@ function NovoDiaForm({ planoTreinoId, diasJaUsados, onAdicionado }: NovoDiaFormP
   return (
     <Card titulo="Novo dia de treino">
       <form onSubmit={lidarComEnvio}>
-        <FormField
-          id="nomeDia"
-          label="Nome (ex: Peito, Costas, Perna)"
-          value={nome}
-          onChange={(e) => setNome(e.target.value)}
-          placeholder="Peito"
-        />
+        <FormField id="nomeDia" label="Nome (ex: Peito, Costas, Perna)" value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Peito" />
 
         <label className="config-treino__label-select" htmlFor="diaSemanaSelect">
           Dia da semana
         </label>
-        <select
-          id="diaSemanaSelect"
-          className="config-treino__select"
-          value={diaSemana}
-          onChange={(e) => setDiaSemana(e.target.value as DiaSemana)}
-        >
+        <select id="diaSemanaSelect" className="config-treino__select" value={diaSemana} onChange={(e) => setDiaSemana(e.target.value as DiaSemana)}>
           {DIAS_SEMANA.map((dia) => (
             <option key={dia} value={dia}>
               {LABEL_DIA_SEMANA[dia]}

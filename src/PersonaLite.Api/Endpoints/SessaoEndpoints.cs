@@ -14,6 +14,22 @@ public static class SessaoEndpoints
             return Results.NoContent();
         }).WithTags("Sessoes").RequireAuthorization();
 
+        app.MapPut("/api/sessoes/{sessaoId:guid}/series/{grupoSerie:int}", async (
+            HttpContext http, Guid sessaoId, int grupoSerie, AtualizarSerieDto dto, AtualizarSerieUseCase useCase) =>
+        {
+            var usuarioId = http.User.ObterUsuarioId();
+            await useCase.ExecutarAsync(usuarioId, sessaoId, grupoSerie, dto);
+            return Results.NoContent();
+        }).WithTags("Sessoes").RequireAuthorization();
+
+        app.MapDelete("/api/sessoes/{sessaoId:guid}/series/{grupoSerie:int}", async (
+            HttpContext http, Guid sessaoId, int grupoSerie, RemoverSerieUseCase useCase) =>
+        {
+            var usuarioId = http.User.ObterUsuarioId();
+            await useCase.ExecutarAsync(usuarioId, sessaoId, grupoSerie);
+            return Results.NoContent();
+        }).WithTags("Sessoes").RequireAuthorization();
+
         app.MapGet("/api/exercicios/{id:guid}/progressao", async (
             HttpContext http, Guid id, ObterProgressaoCargaUseCase useCase) =>
         {

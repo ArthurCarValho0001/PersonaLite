@@ -31,10 +31,7 @@ public class SessaoExercicio
         }
     }
 
-    public double CargaMaxima() => Series.Count == 0 ? 0 : Series.Max(s => s.CargaKg);
-}
-
-/// <summary>
+    /// <summary>
     /// Substitui os estágios de uma série já registrada (o "GrupoSerie" continua o mesmo,
     /// só troca peso/repetições — inclusive virando ou deixando de ser drop set).
     /// </summary>
@@ -59,3 +56,31 @@ public class SessaoExercicio
         if (removidos == 0)
             throw new InvalidOperationException("Série não encontrada nessa sessão.");
     }
+
+    public double CargaMaxima() => Series.Count == 0 ? 0 : Series.Max(s => s.CargaKg);
+}
+
+/// <summary>
+/// Um estágio de uma série. GrupoSerie identifica a qual "série física" pertence
+/// (várias linhas com o mesmo GrupoSerie = um drop set). OrdemEstagio indica a ordem
+/// dentro do drop (0 = carga principal, 1+ = quedas de carga).
+/// </summary>
+public class SerieRealizada
+{
+    public Guid Id { get; private set; }
+    public int GrupoSerie { get; private set; }
+    public int OrdemEstagio { get; private set; }
+    public double CargaKg { get; private set; }
+    public int Repeticoes { get; private set; }
+
+    private SerieRealizada() { }
+
+    public SerieRealizada(int grupoSerie, int ordemEstagio, double cargaKg, int repeticoes)
+    {
+        Id = Guid.NewGuid();
+        GrupoSerie = grupoSerie;
+        OrdemEstagio = ordemEstagio;
+        CargaKg = cargaKg;
+        Repeticoes = repeticoes;
+    }
+}
