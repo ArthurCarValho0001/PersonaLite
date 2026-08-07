@@ -15,12 +15,6 @@ public record AtualizarSerieDto(List<EstagioSerieDto> Estagios);
 
 public record SerieRegistradaDto(int GrupoSerie, List<EstagioSerieDto> Estagios);
 
-/// <summary>
-/// O desempenho na última vez que esse exercício (pelo nome) foi feito antes de hoje,
-/// independente de em qual plano/trimestre foi registrado.
-/// </summary>
-public record UltimoDesempenhoDto(DateOnly Data, List<SerieRegistradaDto> Series);
-
 public record ExercicioComRegistrosDto(
     Guid ExercicioPlanejadoId,
     string Nome,
@@ -30,7 +24,7 @@ public record ExercicioComRegistrosDto(
     Guid? SessaoExercicioId,
     bool Concluida,
     List<SerieRegistradaDto> SeriesRegistradas,
-    UltimoDesempenhoDto? UltimoDesempenho);
+    UltimoTreinoExercicioDto? UltimoTreino);
 
 public record TreinoDoDiaDto(
     Guid? DiaDeTreinoId,
