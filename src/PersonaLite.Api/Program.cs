@@ -70,7 +70,11 @@ builder.Services.AddScoped<ReordenarExerciciosUseCase>();
 builder.Services.AddScoped<RegistrarSerieUseCase>();
 builder.Services.AddScoped<ObterProgressaoCargaUseCase>();
 builder.Services.AddScoped<AdicionarFotoProgressoUseCase>();
-
+builder.Services.AddScoped<CriarTrimestreUseCase>();
+builder.Services.AddScoped<ObterTrimestreAtualUseCase>();
+builder.Services.AddScoped<ObterRetrospectivaUseCase>();
+builder.Services.AddScoped<ObterSugestaoTrocaTreinoUseCase>();
+builder.Services.AddScoped<ConcluirSessaoUseCase>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -97,5 +101,6 @@ app.MapMedidasEndpoints();
 app.MapTreinoEndpoints();
 app.MapSessaoEndpoints();
 app.MapAuthEndpoints();
+app.MapTrimestreEndpoints();
 
 app.Run();

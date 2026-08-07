@@ -102,7 +102,9 @@ export interface ExercicioComRegistrosDto {
   seriesAlvo: number
   repeticoesAlvo: number
   sessaoExercicioId: string | null
+  concluida: boolean
   seriesRegistradas: SerieRegistradaDto[]
+  ultimoDesempenho: UltimoDesempenhoDto | null
 }
 
 export interface TreinoDoDiaDto {
@@ -116,4 +118,9 @@ export interface TreinoDoDiaDto {
 export interface PontoProgressaoCargaDto {
   data: string
   cargaMaximaKg: number
+}
+
+export interface UltimoDesempenhoDto {
+  data: string
+  series: SerieRegistradaDto[]
 }

@@ -7,6 +7,11 @@ import { useEvolucao } from '../hooks/useEvolucao'
 import type { UsuarioDto } from '../types'
 import './Dashboard.css'
 import { limparToken } from '../api/authToken'
+import { RetrospectivaCard } from '../components/RetrospectivaCard'
+import { SugestaoTrocaBanner } from '../components/SugestaoTrocaBanner'
+import { useRetrospectiva } from '../hooks/useRetrospectiva'
+import { useSugestaoTroca } from '../hooks/useSugestaoTroca'
+import { useTrimestre } from '../hooks/useTrimestre'
 
 interface DashboardProps {
   usuario: UsuarioDto
@@ -14,6 +19,14 @@ interface DashboardProps {
 
 export function Dashboard({ usuario }: DashboardProps) {
   const { evolucao, carregando, erro } = useEvolucao()
+  const { trimestre, recarregar: recarregarTrimestre } = useTrimestre()
+  const { retrospectiva, recarregar: recarregarRetrospectiva } = useRetrospectiva()
+  const sugestao = useSugestaoTroca()
+
+  function lidarComNovoTrimestre() {
+    recarregarTrimestre()
+    recarregarRetrospectiva()
+  }
   const ultimoRegistro = evolucao.at(-1)
 
   // Obtém a versão injetada pelo Vite durante o build
@@ -24,6 +37,7 @@ export function Dashboard({ usuario }: DashboardProps) {
       <header className="dashboard__cabecalho">
         <div>
           <h1 className="dashboard__titulo">Olá, {usuario.nome}</h1>
+          {trimestre && <span className="dashboard__trimestre-badge">Trimestre {trimestre.numero}</span>}
           <p className="dashboard__subtitulo">Seu histórico de evolução física</p>
         </div>
         <div className="dashboard__acoes">
@@ -47,7 +61,7 @@ export function Dashboard({ usuario }: DashboardProps) {
       </header>
 
       <AlertaReavaliacao />
-
+      {sugestao && <SugestaoTrocaBanner sugestao={sugestao} onNovoTrimestreIniciado={lidarComNovoTrimestre} />}
       {carregando && <p className="dashboard__mensagem">Carregando...</p>}
       {erro && <p className="dashboard__mensagem dashboard__mensagem--erro">{erro}</p>}
 
@@ -73,6 +87,8 @@ export function Dashboard({ usuario }: DashboardProps) {
           </Card>
         </div>
       )}
+      <br />
+      {retrospectiva && <RetrospectivaCard retrospectiva={retrospectiva} />}
 
       {evolucao.length > 1 && (
         <Card titulo="Evolução">

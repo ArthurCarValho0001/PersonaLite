@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '../components/Button'
 import { Card } from '../components/Card'
 import { CardExercicio } from '../components/CardExercicio'
+import { CronometroDescanso } from '../components/CronometroDescanso'
 import { usePlanoAtual } from '../hooks/usePlanoAtual'
 import { useTreinoSelecionavel } from '../hooks/useTreinoSelecionavel'
 import { DIAS_SEMANA, LABEL_DIA_SEMANA } from '../types'
@@ -12,6 +14,7 @@ const hojeIso = new Date().toISOString().slice(0, 10)
 export function Treinos() {
   const { treino, carregando, erro, diaSelecionadoId, selecionarDia, recarregar } = useTreinoSelecionavel()
   const { plano } = usePlanoAtual()
+  const [contadorSeries, setContadorSeries] = useState(0)
 
   return (
     <div className="treinos">
@@ -77,6 +80,7 @@ export function Treinos() {
                 exercicio={exercicio}
                 data={hojeIso}
                 onAtualizar={recarregar}
+                onNovaSerie={() => setContadorSeries((c) => c + 1)}
               />
             ))}
           </div>
@@ -86,6 +90,8 @@ export function Treinos() {
       <Link to="/treinos/configurar" className="treinos__link-config">
         Configurar treinos da semana
       </Link>
+
+      <CronometroDescanso trigger={contadorSeries} />
     </div>
   )
 }

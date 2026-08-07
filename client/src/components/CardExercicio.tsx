@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { concluirSessao } from '../api/sessaoApi'
 import type { ExercicioComRegistrosDto } from '../types'
 import { Card } from './Card'
 import { SerieRegistro } from './SerieRegistro'
@@ -8,12 +9,25 @@ interface CardExercicioProps {
   exercicio: ExercicioComRegistrosDto
   data: string
   onAtualizar: () => void
+  onNovaSerie: () => void
 }
 
-export function CardExercicio({ exercicio, data, onAtualizar }: CardExercicioProps) {
+export function CardExercicio({ exercicio, data, onAtualizar, onNovaSerie }: CardExercicioProps) {
   const [expandido, setExpandido] = useState(false)
+  const [concluindo, setConcluindo] = useState(false)
   const seriesFeitas = exercicio.seriesRegistradas.length
   const completo = seriesFeitas >= exercicio.seriesAlvo
+
+  async function concluirTreino() {
+    if (!exercicio.sessaoExercicioId) return
+    setConcluindo(true)
+    try {
+      await concluirSessao(exercicio.sessaoExercicioId)
+      onAtualizar()
+    } finally {
+      setConcluindo(false)
+    }
+  }
 
   return (
     <Card>
@@ -29,9 +43,13 @@ export function CardExercicio({ exercicio, data, onAtualizar }: CardExercicioPro
           </span>
         </div>
         <div className="card-exercicio__status">
-          <span className={`card-exercicio__badge ${completo ? 'card-exercicio__badge--completo' : ''}`}>
-            {seriesFeitas}/{exercicio.seriesAlvo}
-          </span>
+          {exercicio.concluida ? (
+            <span className="card-exercicio__badge card-exercicio__badge--concluido">✓ Concluído</span>
+          ) : (
+            <span className={`card-exercicio__badge ${completo ? 'card-exercicio__badge--completo' : ''}`}>
+              {seriesFeitas}/{exercicio.seriesAlvo}
+            </span>
+          )}
           <span className="card-exercicio__seta">{expandido ? '▲' : '▼'}</span>
         </div>
       </button>
@@ -45,8 +63,16 @@ export function CardExercicio({ exercicio, data, onAtualizar }: CardExercicioPro
             seriesRegistradas={exercicio.seriesRegistradas}
             seriesAlvo={exercicio.seriesAlvo}
             repeticoesAlvo={exercicio.repeticoesAlvo}
+            ultimoDesempenho={exercicio.ultimoDesempenho}
             onSerieRegistrada={onAtualizar}
+            onNovaSerie={onNovaSerie}
           />
+
+          {!exercicio.concluida && exercicio.sessaoExercicioId && seriesFeitas > 0 && (
+            <button type="button" className="card-exercicio__concluir" onClick={concluirTreino} disabled={concluindo}>
+              {concluindo ? 'Concluindo...' : '✓ Concluir esse exercício'}
+            </button>
+          )}
         </div>
       )}
     </Card>

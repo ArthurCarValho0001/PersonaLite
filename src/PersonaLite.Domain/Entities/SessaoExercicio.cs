@@ -5,6 +5,7 @@ public class SessaoExercicio
     public Guid Id { get; private set; }
     public Guid ExercicioPlanejadoId { get; private set; }
     public DateOnly Data { get; private set; }
+    public bool Concluida { get; private set; }
     public List<SerieRealizada> Series { get; private set; } = new();
 
     private SessaoExercicio() { }
@@ -31,10 +32,6 @@ public class SessaoExercicio
         }
     }
 
-    /// <summary>
-    /// Substitui os estágios de uma série já registrada (o "GrupoSerie" continua o mesmo,
-    /// só troca peso/repetições — inclusive virando ou deixando de ser drop set).
-    /// </summary>
     public void AtualizarSerie(int grupoSerie, IEnumerable<(double CargaKg, int Repeticoes)> estagios)
     {
         if (!Series.Any(s => s.GrupoSerie == grupoSerie))
@@ -56,6 +53,14 @@ public class SessaoExercicio
         if (removidos == 0)
             throw new InvalidOperationException("Série não encontrada nessa sessão.");
     }
+
+    /// <summary>
+    /// Marca a sessão do dia como concluída. Só séries de sessões concluídas contam
+    /// pro histórico "última vez" e pra retrospectiva mensal/trimestral — assim um treino
+    /// abandonado no meio (ex: planejou 4 séries, fez só 3 e não voltou mais naquele dia)
+    /// não polui as estatísticas até a pessoa confirmar que aquilo foi o treino de verdade.
+    /// </summary>
+    public void Concluir() => Concluida = true;
 
     public double CargaMaxima() => Series.Count == 0 ? 0 : Series.Max(s => s.CargaKg);
 }

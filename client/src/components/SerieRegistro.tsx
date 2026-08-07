@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { atualizarSerie, registrarSerie, removerSerie } from '../api/sessaoApi'
-import type { EstagioSerieDto, SerieRegistradaDto } from '../types'
+import type { EstagioSerieDto, SerieRegistradaDto, UltimoDesempenhoDto } from '../types'
 import { Button } from './Button'
 import './SerieRegistro.css'
 
@@ -16,7 +16,9 @@ interface SerieRegistroProps {
   seriesRegistradas: SerieRegistradaDto[]
   seriesAlvo: number
   repeticoesAlvo: number
+  ultimoDesempenho: UltimoDesempenhoDto | null
   onSerieRegistrada: () => void
+  onNovaSerie: () => void
 }
 
 const estagioVazio: EstagioForm = { cargaKg: '', repeticoes: '' }
@@ -32,7 +34,9 @@ export function SerieRegistro({
   seriesRegistradas,
   seriesAlvo,
   repeticoesAlvo,
+  ultimoDesempenho,
   onSerieRegistrada,
+  onNovaSerie,
 }: SerieRegistroProps) {
   const [estagios, setEstagios] = useState<EstagioForm[]>([{ ...estagioVazio }])
   const [salvando, setSalvando] = useState(false)
@@ -71,6 +75,7 @@ export function SerieRegistro({
       }
       setEstagios([{ ...estagioVazio }])
       onSerieRegistrada()
+      onNovaSerie()
     } finally {
       setSalvando(false)
     }
@@ -216,6 +221,25 @@ export function SerieRegistro({
       )}
 
       <div className="serie-registro__form">
+        {ultimoDesempenho && (
+        <div className="serie-registro__ultima-vez">
+          <span className="serie-registro__ultima-vez-label">
+            Última vez ({new Date(ultimoDesempenho.data + 'T00:00:00').toLocaleDateString('pt-BR')}):
+          </span>
+          <div className="serie-registro__chips">
+            {ultimoDesempenho.series.map((serie) => (
+              <span key={serie.grupoSerie} className="serie-registro__chip serie-registro__chip--historico">
+                {serie.estagios.map((e, i) => (
+                  <span key={i}>
+                    {i > 0 && ' → '}
+                    {e.cargaKg}kg×{e.repeticoes}
+                  </span>
+                ))}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
         <span className="serie-registro__meta">alvo: {seriesAlvo}×{repeticoesAlvo}</span>
 
         {estagios.map((estagio, indice) => (

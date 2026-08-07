@@ -28,6 +28,7 @@ public static class DependencyInjection
         services.AddScoped<IFotoProgressoRepository, FotoProgressoRepository>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<ITrimestreRepository, TrimestreRepository>();
 
         var pastaFotos = configuration["Armazenamento:PastaFotos"] ?? "fotos-progresso";
         services.AddSingleton<IArmazenamentoFotosService>(new ArmazenamentoFotosService(pastaFotos));

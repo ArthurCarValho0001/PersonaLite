@@ -122,3 +122,15 @@
   opacity: 0.5;
   letter-spacing: 0.05em;
 }
+
+.dashboard__trimestre-badge {
+  display: inline-block;
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #94a3b8;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  margin-top: 0.3rem;
+}
