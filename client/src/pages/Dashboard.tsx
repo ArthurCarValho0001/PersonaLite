@@ -7,6 +7,9 @@ import { useEvolucao } from '../hooks/useEvolucao'
 import type { UsuarioDto } from '../types'
 import './Dashboard.css'
 import { limparToken } from '../api/authToken'
+import { SugestaoTrocaBanner } from '../components/SugestaoTrocaBanner'
+import { useSugestaoTroca } from '../hooks/useSugestaoTroca'
+import { useTrimestre } from '../hooks/useTrimestre'
 
 interface DashboardProps {
   usuario: UsuarioDto
@@ -14,6 +17,12 @@ interface DashboardProps {
 
 export function Dashboard({ usuario }: DashboardProps) {
   const { evolucao, carregando, erro } = useEvolucao()
+  const { trimestre, recarregar: recarregarTrimestre } = useTrimestre()
+  const sugestao = useSugestaoTroca()
+
+  function lidarComNovoTrimestre() {
+    recarregarTrimestre()
+  }
   const ultimoRegistro = evolucao.at(-1)
 
   // Obtém a versão injetada pelo Vite durante o build
@@ -24,6 +33,7 @@ export function Dashboard({ usuario }: DashboardProps) {
       <header className="dashboard__cabecalho">
         <div>
           <h1 className="dashboard__titulo">Olá, {usuario.nome}</h1>
+          {trimestre && <span className="dashboard__trimestre-badge">Trimestre {trimestre.numero}</span>}
           <p className="dashboard__subtitulo">Seu histórico de evolução física</p>
         </div>
         <div className="dashboard__acoes">
@@ -32,6 +42,9 @@ export function Dashboard({ usuario }: DashboardProps) {
           </Link>
           <Link to="/medidas/nova">
             <Button>Nova medição</Button>
+          </Link>
+          <Link to="/retrospectiva">
+            <Button variante="secundario">Evolução</Button>
           </Link>
           <button
             type="button"
@@ -47,7 +60,7 @@ export function Dashboard({ usuario }: DashboardProps) {
       </header>
 
       <AlertaReavaliacao />
-
+      {sugestao && <SugestaoTrocaBanner sugestao={sugestao} onNovoTrimestreIniciado={lidarComNovoTrimestre} />}
       {carregando && <p className="dashboard__mensagem">Carregando...</p>}
       {erro && <p className="dashboard__mensagem dashboard__mensagem--erro">{erro}</p>}
 
@@ -73,6 +86,7 @@ export function Dashboard({ usuario }: DashboardProps) {
           </Card>
         </div>
       )}
+      <br />
 
       {evolucao.length > 1 && (
         <Card titulo="Evolução">

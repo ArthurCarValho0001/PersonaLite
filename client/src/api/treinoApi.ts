@@ -70,3 +70,8 @@ export async function obterTreinoPorDia(diaId: string, data?: string): Promise<T
   })
   return resultado
 }
+export async function concluirTreinoDoDia(diaId: string, data?: string): Promise<void> {
+  await httpClient.post(`/api/dias-treino/${diaId}/concluir`, null, {
+    params: data ? { data } : undefined,
+  })
+}

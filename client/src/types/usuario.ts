@@ -13,4 +13,5 @@ export interface UsuarioDto {
   sexo: Sexo
   dataNascimento: string
   alturaCm: number
+  tempoDescansoSegundos: number
 }

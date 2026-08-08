@@ -7,4 +7,5 @@ public interface IUsuarioRepository
     Task<Usuario?> ObterAsync(Guid id);
     Task<Usuario?> ObterPorNomeUsuarioAsync(string nomeUsuario);
     Task SalvarAsync(Usuario usuario);
+    Task AtualizarAsync(Usuario usuario);
 }

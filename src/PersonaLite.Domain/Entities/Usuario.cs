@@ -11,6 +11,7 @@ public class Usuario
     public Sexo Sexo { get; private set; }
     public DateOnly DataNascimento { get; private set; }
     public double AlturaCm { get; private set; }
+    public int TempoDescansoSegundos { get; private set; } = 90;
 
     private Usuario() { }
 
@@ -23,6 +24,7 @@ public class Usuario
         Sexo = sexo;
         DataNascimento = dataNascimento;
         AlturaCm = alturaCm;
+        TempoDescansoSegundos = 90;
     }
 
     public int IdadeEm(DateOnly data)
@@ -30,5 +32,12 @@ public class Usuario
         var idade = data.Year - DataNascimento.Year;
         if (data < DataNascimento.AddYears(idade)) idade--;
         return idade;
+    }
+
+    public void DefinirTempoDescanso(int segundos)
+    {
+        if (segundos < 5 || segundos > 900)
+            throw new InvalidOperationException("O tempo de descanso deve estar entre 5 e 900 segundos.");
+        TempoDescansoSegundos = segundos;
     }
 }

@@ -22,3 +22,7 @@ export async function obterProgressaoCarga(
   )
   return data
 }
+
+export async function concluirSessao(sessaoId: string): Promise<void> {
+  await httpClient.post(`/api/sessoes/${sessaoId}/concluir`, {})
+}

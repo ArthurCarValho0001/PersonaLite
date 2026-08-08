@@ -30,6 +30,14 @@ public static class SessaoEndpoints
             return Results.NoContent();
         }).WithTags("Sessoes").RequireAuthorization();
 
+        app.MapPost("/api/sessoes/{sessaoId:guid}/concluir", async (
+            HttpContext http, Guid sessaoId, ConcluirSessaoUseCase useCase) =>
+        {
+            var usuarioId = http.User.ObterUsuarioId();
+            await useCase.ExecutarAsync(usuarioId, sessaoId);
+            return Results.NoContent();
+        }).WithTags("Sessoes").RequireAuthorization();
+
         app.MapGet("/api/exercicios/{id:guid}/progressao", async (
             HttpContext http, Guid id, ObterProgressaoCargaUseCase useCase) =>
         {

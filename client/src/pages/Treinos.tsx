@@ -1,17 +1,37 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '../components/Button'
 import { Card } from '../components/Card'
 import { CardExercicio } from '../components/CardExercicio'
+import { CronometroDescanso } from '../components/CronometroDescanso'
 import { usePlanoAtual } from '../hooks/usePlanoAtual'
 import { useTreinoSelecionavel } from '../hooks/useTreinoSelecionavel'
 import { DIAS_SEMANA, LABEL_DIA_SEMANA } from '../types'
 import './Treinos.css'
+import { concluirTreinoDoDia } from '../api/treinoApi'
+import { useUsuario } from '../hooks/useUsuario'
 
 const hojeIso = new Date().toISOString().slice(0, 10)
 
 export function Treinos() {
   const { treino, carregando, erro, diaSelecionadoId, selecionarDia, recarregar } = useTreinoSelecionavel()
   const { plano } = usePlanoAtual()
+  const [contadorSeries, setContadorSeries] = useState(0)
+  const { usuario } = useUsuario()
+  const [concluindoTreino, setConcluindoTreino] = useState(false)
+
+  async function concluirTreinoInteiro() {
+    if (!treino?.diaDeTreinoId) return
+    if (!confirm('Concluir o treino de hoje? Todas as séries já registradas serão consideradas válidas.')) return
+
+    setConcluindoTreino(true)
+    try {
+      await concluirTreinoDoDia(treino.diaDeTreinoId)
+      recarregar()
+    } finally {
+      setConcluindoTreino(false)
+    }
+  }
 
   return (
     <div className="treinos">
@@ -77,15 +97,26 @@ export function Treinos() {
                 exercicio={exercicio}
                 data={hojeIso}
                 onAtualizar={recarregar}
+                onNovaSerie={() => setContadorSeries((c) => c + 1)}
               />
             ))}
           </div>
+          <button
+            type="button"
+            className="treinos__concluir-treino"
+            onClick={concluirTreinoInteiro}
+            disabled={concluindoTreino}
+          >
+            {concluindoTreino ? 'Concluindo...' : '✓ Concluir treino de hoje'}
+          </button>
         </>
       )}
 
       <Link to="/treinos/configurar" className="treinos__link-config">
         Configurar treinos da semana
       </Link>
+
+      <CronometroDescanso trigger={contadorSeries} duracaoPadrao={usuario?.tempoDescansoSegundos ?? 90} />
     </div>
   )
 }

@@ -65,6 +65,14 @@ public static class TreinoEndpoints
             return Results.Ok(treino);
         });
 
+        dias.MapPost("/{id:guid}/concluir", async (
+            HttpContext http, Guid id, DateOnly? data, ConcluirTreinoDoDiaUseCase useCase) =>
+        {
+            var usuarioId = http.User.ObterUsuarioId();
+            await useCase.ExecutarAsync(usuarioId, id, data);
+            return Results.NoContent();
+        });
+
         var exercicios = app.MapGroup("/api/exercicios").WithTags("PlanoTreino").RequireAuthorization();
 
         exercicios.MapPut("/{id:guid}", async (

@@ -145,6 +145,9 @@ namespace PersonaLite.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("Concluida")
+                        .HasColumnType("boolean");
+
                     b.Property<DateOnly>("Data")
                         .HasColumnType("date");
 
@@ -154,6 +157,28 @@ namespace PersonaLite.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SessoesExercicio");
+                });
+
+            modelBuilder.Entity("PersonaLite.Domain.Entities.Trimestre", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateOnly?>("DataFim")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly>("DataInicio")
+                        .HasColumnType("date");
+
+                    b.Property<int>("Numero")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("UsuarioId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Trimestres");
                 });
 
             modelBuilder.Entity("PersonaLite.Domain.Entities.Usuario", b =>
@@ -180,6 +205,9 @@ namespace PersonaLite.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<int>("Sexo")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TempoDescansoSegundos")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");

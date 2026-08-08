@@ -7,4 +7,5 @@ public record UsuarioDto(
     string Nome,
     Sexo Sexo,
     DateOnly DataNascimento,
-    double AlturaCm);
+    double AlturaCm,
+    int TempoDescansoSegundos);

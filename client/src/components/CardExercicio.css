@@ -64,3 +64,26 @@
   padding-top: 1rem;
   border-top: 1px solid #1e293b;
 }
+.card-exercicio__badge--concluido {
+  background: #052e16;
+  color: #4ade80;
+}
+
+.card-exercicio__concluir {
+  width: 100%;
+  margin-top: 0.75rem;
+  background: #166534;
+  border: 1px solid #22c55e;
+  color: #dcfce7;
+  border-radius: 10px;
+  padding: 0.65rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.card-exercicio__concluir:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

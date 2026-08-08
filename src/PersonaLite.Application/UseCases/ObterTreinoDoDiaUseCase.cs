@@ -30,10 +30,13 @@ public class ObterTreinoDoDiaUseCase
         var sessoesDeHoje = await _sessaoRepo.ListarPorExerciciosEDataAsync(idsExercicios, dataAlvo);
         var sessoesPorExercicio = sessoesDeHoje.ToDictionary(s => s.ExercicioPlanejadoId);
 
-        var exercicios = diaDeHoje.Exercicios
-            .OrderBy(e => e.Ordem)
-            .Select(e => MapeadorTreinoDoDia.MapearExercicio(e, sessoesPorExercicio.GetValueOrDefault(e.Id)))
-            .ToList();
+        var exercicios = new List<ExercicioComRegistrosDto>();
+        foreach (var e in diaDeHoje.Exercicios.OrderBy(e => e.Ordem))
+        {
+            var dto = await MapeadorTreinoDoDia.MapearExercicioAsync(
+                usuarioId, e, sessoesPorExercicio.GetValueOrDefault(e.Id), dataAlvo, _sessaoRepo);
+            exercicios.Add(dto);
+        }
 
         return new TreinoDoDiaDto(diaDeHoje.Id, diaDeHoje.Nome, diaDeHoje.DiaSemana, TemTreinoHoje: true, Exercicios: exercicios);
     }

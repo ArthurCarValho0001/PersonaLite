@@ -22,7 +22,9 @@ public record ExercicioComRegistrosDto(
     int SeriesAlvo,
     int RepeticoesAlvo,
     Guid? SessaoExercicioId,
-    List<SerieRegistradaDto> SeriesRegistradas);
+    bool Concluida,
+    List<SerieRegistradaDto> SeriesRegistradas,
+    UltimoTreinoExercicioDto? UltimoTreino);
 
 public record TreinoDoDiaDto(
     Guid? DiaDeTreinoId,
