@@ -1,20 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import './CronometroDescanso.css'
-
-const CHAVE_DURACAO = 'personalite_descanso_segundos'
 
 interface CronometroDescansoProps {
   trigger: number
+  duracaoPadrao: number
 }
 
-export function CronometroDescanso({ trigger }: CronometroDescansoProps) {
-  const [duracaoPadrao, setDuracaoPadrao] = useState(() => {
-    const salvo = localStorage.getItem(CHAVE_DURACAO)
-    return salvo ? Number(salvo) : 90
-  })
+export function CronometroDescanso({ trigger, duracaoPadrao }: CronometroDescansoProps) {
   const [restante, setRestante] = useState(0)
   const [rodando, setRodando] = useState(false)
-  const [editandoDuracao, setEditandoDuracao] = useState(false)
   const primeiraRenderizacao = useRef(true)
 
   useEffect(() => {
@@ -38,38 +33,15 @@ export function CronometroDescanso({ trigger }: CronometroDescansoProps) {
     return () => clearTimeout(id)
   }, [rodando, restante])
 
-  function salvarDuracao(valor: number) {
-    setDuracaoPadrao(valor)
-    localStorage.setItem(CHAVE_DURACAO, String(valor))
-  }
-
   const minutos = Math.floor(restante / 60)
   const segundos = restante % 60
   const tempoFormatado = `${minutos}:${String(segundos).padStart(2, '0')}`
 
-  if (editandoDuracao) {
-    return (
-      <div className="cronometro cronometro--edicao">
-        <input
-          type="number"
-          inputMode="numeric"
-          value={duracaoPadrao}
-          onChange={(e) => salvarDuracao(Number(e.target.value) || 0)}
-          className="cronometro__input"
-        />
-        <span>segundos de descanso</span>
-        <button type="button" className="cronometro__fechar" onClick={() => setEditandoDuracao(false)}>
-          ✓
-        </button>
-      </div>
-    )
-  }
-
   if (!rodando && restante === 0) {
     return (
-      <button type="button" className="cronometro cronometro--config" onClick={() => setEditandoDuracao(true)}>
+      <Link to="/treinos/configurar" className="cronometro cronometro--config">
         ⏱ Descanso: {duracaoPadrao}s
-      </button>
+      </Link>
     )
   }
 

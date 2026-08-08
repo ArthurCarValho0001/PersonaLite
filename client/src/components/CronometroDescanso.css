@@ -52,28 +52,3 @@
   cursor: pointer;
   padding: 0.2rem 0.4rem;
 }
-
-.cronometro--edicao {
-  gap: 0.4rem;
-}
-
-.cronometro__input {
-  width: 55px;
-  background: #0f172a;
-  border: 1px solid #334155;
-  border-radius: 6px;
-  padding: 0.3rem;
-  color: #e2e8f0;
-  text-align: center;
-}
-
-.cronometro__fechar {
-  background: #22c55e;
-  border: none;
-  color: #052e16;
-  border-radius: 6px;
-  width: 28px;
-  height: 28px;
-  min-height: 28px;
-  cursor: pointer;
-}

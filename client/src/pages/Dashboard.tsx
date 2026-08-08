@@ -7,9 +7,7 @@ import { useEvolucao } from '../hooks/useEvolucao'
 import type { UsuarioDto } from '../types'
 import './Dashboard.css'
 import { limparToken } from '../api/authToken'
-import { RetrospectivaCard } from '../components/RetrospectivaCard'
 import { SugestaoTrocaBanner } from '../components/SugestaoTrocaBanner'
-import { useRetrospectiva } from '../hooks/useRetrospectiva'
 import { useSugestaoTroca } from '../hooks/useSugestaoTroca'
 import { useTrimestre } from '../hooks/useTrimestre'
 
@@ -20,12 +18,10 @@ interface DashboardProps {
 export function Dashboard({ usuario }: DashboardProps) {
   const { evolucao, carregando, erro } = useEvolucao()
   const { trimestre, recarregar: recarregarTrimestre } = useTrimestre()
-  const { retrospectiva, recarregar: recarregarRetrospectiva } = useRetrospectiva()
   const sugestao = useSugestaoTroca()
 
   function lidarComNovoTrimestre() {
     recarregarTrimestre()
-    recarregarRetrospectiva()
   }
   const ultimoRegistro = evolucao.at(-1)
 
@@ -46,6 +42,9 @@ export function Dashboard({ usuario }: DashboardProps) {
           </Link>
           <Link to="/medidas/nova">
             <Button>Nova medição</Button>
+          </Link>
+          <Link to="/retrospectiva">
+            <Button variante="secundario">Evolução</Button>
           </Link>
           <button
             type="button"
@@ -88,7 +87,6 @@ export function Dashboard({ usuario }: DashboardProps) {
         </div>
       )}
       <br />
-      {retrospectiva && <RetrospectivaCard retrospectiva={retrospectiva} />}
 
       {evolucao.length > 1 && (
         <Card titulo="Evolução">

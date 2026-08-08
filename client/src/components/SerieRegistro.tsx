@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { atualizarSerie, registrarSerie, removerSerie } from '../api/sessaoApi'
-import type { EstagioSerieDto, SerieRegistradaDto, UltimoDesempenhoDto } from '../types'
+import type { EstagioSerieDto, SerieRegistradaDto, UltimoTreinoExercicioDto } from '../types'
 import { Button } from './Button'
 import './SerieRegistro.css'
 
@@ -16,7 +16,7 @@ interface SerieRegistroProps {
   seriesRegistradas: SerieRegistradaDto[]
   seriesAlvo: number
   repeticoesAlvo: number
-  ultimoDesempenho: UltimoDesempenhoDto | null
+  ultimoTreino: UltimoTreinoExercicioDto | null
   onSerieRegistrada: () => void
   onNovaSerie: () => void
 }
@@ -34,12 +34,14 @@ export function SerieRegistro({
   seriesRegistradas,
   seriesAlvo,
   repeticoesAlvo,
-  ultimoDesempenho,
+  ultimoTreino,
   onSerieRegistrada,
   onNovaSerie,
 }: SerieRegistroProps) {
   const [estagios, setEstagios] = useState<EstagioForm[]>([{ ...estagioVazio }])
   const [salvando, setSalvando] = useState(false)
+  const [painelAberto, setPainelAberto] = useState(true)
+  const [feedback, setFeedback] = useState<string | null>(null)
 
   const [grupoEditando, setGrupoEditando] = useState<number | null>(null)
   const [estagiosEdicao, setEstagiosEdicao] = useState<EstagioForm[]>([])
@@ -60,6 +62,19 @@ export function SerieRegistro({
     setEstagios((atual) => (atual.length > 1 ? atual.slice(0, -1) : atual))
   }
 
+  function calcularFeedback(cargaKg: number, repeticoes: number): string {
+    if (!ultimoTreino) return '✅ Série registrada. Continue firme nas próximas séries!'
+
+    const { melhorSerie } = ultimoTreino
+    if (cargaKg > melhorSerie.cargaKg) return '🔥 Nova melhor carga!'
+    if (cargaKg === melhorSerie.cargaKg && repeticoes > melhorSerie.repeticoes)
+      return '🏆 Novo recorde de repetições!'
+    if (cargaKg >= melhorSerie.cargaKg && repeticoes >= melhorSerie.repeticoes)
+      return '💪 Você superou sua melhor série do último treino!'
+
+    return '✅ Série registrada. Continue firme nas próximas séries!'
+  }
+
   async function salvarSerie() {
     const estagiosValidos: EstagioSerieDto[] = estagios
       .filter((e) => Number(e.cargaKg) > 0 && Number(e.repeticoes) > 0)
@@ -72,6 +87,9 @@ export function SerieRegistro({
       const resultado = await registrarSerie({ exercicioPlanejadoId, data, estagios: estagiosValidos })
       if (!resultado.sincronizado) {
         alert('Sem conexão — série salva localmente, será sincronizada depois.')
+      } else {
+        setFeedback(calcularFeedback(estagiosValidos[0].cargaKg, estagiosValidos.reduce((s, e) => s + e.repeticoes, 0)))
+        setTimeout(() => setFeedback(null), 4000)
       }
       setEstagios([{ ...estagioVazio }])
       onSerieRegistrada()
@@ -132,6 +150,50 @@ export function SerieRegistro({
 
   return (
     <div className="serie-registro">
+      {feedback && <div className="serie-registro__feedback">{feedback}</div>}
+
+      <div className="serie-registro__ultimo-treino">
+        <button
+          type="button"
+          className="serie-registro__ultimo-treino-cabecalho"
+          onClick={() => setPainelAberto((v) => !v)}
+        >
+          <span>📈 Último treino</span>
+          <span className="serie-registro__ultimo-treino-seta">{painelAberto ? '▲' : '▼'}</span>
+        </button>
+
+        {painelAberto && (
+          <div className="serie-registro__ultimo-treino-corpo">
+            {!ultimoTreino ? (
+              <p className="serie-registro__primeira-vez">
+                Este é o seu primeiro registro neste exercício. Realize sua melhor série hoje
+                para criar uma base de comparação para os próximos treinos.
+              </p>
+            ) : (
+              <>
+                <div className="serie-registro__destaque">
+                  <span className="serie-registro__destaque-label">🏆 Melhor série</span>
+                  <span className="serie-registro__destaque-valor">
+                    {ultimoTreino.melhorSerie.cargaKg}kg × {ultimoTreino.melhorSerie.repeticoes} reps
+                  </span>
+                </div>
+                <div className="serie-registro__destaque">
+                  <span className="serie-registro__destaque-label">↺ Última série</span>
+                  <span className="serie-registro__destaque-valor">
+                    {ultimoTreino.ultimaSerie.cargaKg}kg × {ultimoTreino.ultimaSerie.repeticoes} reps
+                  </span>
+                </div>
+                <div className="serie-registro__sugestao">
+                  <span className="serie-registro__sugestao-label">🎯 Sugestão</span>
+                  <p>• {ultimoTreino.sugestao.aumentar}</p>
+                  <p>• {ultimoTreino.sugestao.manter}</p>
+                </div>
+              </>
+            )}
+          </div>
+        )}
+      </div>
+
       {seriesRegistradas.length > 0 && (
         <div className="serie-registro__historico">
           <span className="serie-registro__historico-label">
@@ -221,25 +283,6 @@ export function SerieRegistro({
       )}
 
       <div className="serie-registro__form">
-        {ultimoDesempenho && (
-        <div className="serie-registro__ultima-vez">
-          <span className="serie-registro__ultima-vez-label">
-            Última vez ({new Date(ultimoDesempenho.data + 'T00:00:00').toLocaleDateString('pt-BR')}):
-          </span>
-          <div className="serie-registro__chips">
-            {ultimoDesempenho.series.map((serie) => (
-              <span key={serie.grupoSerie} className="serie-registro__chip serie-registro__chip--historico">
-                {serie.estagios.map((e, i) => (
-                  <span key={i}>
-                    {i > 0 && ' → '}
-                    {e.cargaKg}kg×{e.repeticoes}
-                  </span>
-                ))}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
         <span className="serie-registro__meta">alvo: {seriesAlvo}×{repeticoesAlvo}</span>
 
         {estagios.map((estagio, indice) => (

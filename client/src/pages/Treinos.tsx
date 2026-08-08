@@ -8,6 +8,8 @@ import { usePlanoAtual } from '../hooks/usePlanoAtual'
 import { useTreinoSelecionavel } from '../hooks/useTreinoSelecionavel'
 import { DIAS_SEMANA, LABEL_DIA_SEMANA } from '../types'
 import './Treinos.css'
+import { concluirTreinoDoDia } from '../api/treinoApi'
+import { useUsuario } from '../hooks/useUsuario'
 
 const hojeIso = new Date().toISOString().slice(0, 10)
 
@@ -15,6 +17,21 @@ export function Treinos() {
   const { treino, carregando, erro, diaSelecionadoId, selecionarDia, recarregar } = useTreinoSelecionavel()
   const { plano } = usePlanoAtual()
   const [contadorSeries, setContadorSeries] = useState(0)
+  const { usuario } = useUsuario()
+  const [concluindoTreino, setConcluindoTreino] = useState(false)
+
+  async function concluirTreinoInteiro() {
+    if (!treino?.diaDeTreinoId) return
+    if (!confirm('Concluir o treino de hoje? Todas as séries já registradas serão consideradas válidas.')) return
+
+    setConcluindoTreino(true)
+    try {
+      await concluirTreinoDoDia(treino.diaDeTreinoId)
+      recarregar()
+    } finally {
+      setConcluindoTreino(false)
+    }
+  }
 
   return (
     <div className="treinos">
@@ -84,6 +101,14 @@ export function Treinos() {
               />
             ))}
           </div>
+          <button
+            type="button"
+            className="treinos__concluir-treino"
+            onClick={concluirTreinoInteiro}
+            disabled={concluindoTreino}
+          >
+            {concluindoTreino ? 'Concluindo...' : '✓ Concluir treino de hoje'}
+          </button>
         </>
       )}
 
@@ -91,7 +116,7 @@ export function Treinos() {
         Configurar treinos da semana
       </Link>
 
-      <CronometroDescanso trigger={contadorSeries} />
+      <CronometroDescanso trigger={contadorSeries} duracaoPadrao={usuario?.tempoDescansoSegundos ?? 90} />
     </div>
   )
 }

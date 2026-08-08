@@ -10,3 +10,6 @@ export async function obterUsuario(): Promise<UsuarioDto | null> {
     throw erro
   }
 }
+export async function atualizarTempoDescanso(segundos: number): Promise<void> {
+  await httpClient.put('/api/usuario/tempo-descanso', { segundos })
+}

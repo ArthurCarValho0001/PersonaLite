@@ -8,6 +8,7 @@ import { NovaMedicao } from './pages/NovaMedicao'
 import { Registrar } from './pages/Registrar'
 import { Treinos } from './pages/Treinos'
 import './App.css'
+import { Retrospectiva } from './pages/Retrospectiva'
 
 function App() {
   const { usuario, carregando, erro, autenticado, recarregar } = useUsuario()
@@ -17,6 +18,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="*" element={<Registrar />} />
+        <Route path="/retrospectiva" element={<Retrospectiva />} />
       </Routes>
     )
   }
