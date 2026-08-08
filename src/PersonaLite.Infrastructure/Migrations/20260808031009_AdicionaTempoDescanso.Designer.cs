@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PersonaLite.Infrastructure.Data;
@@ -11,9 +12,11 @@ using PersonaLite.Infrastructure.Data;
 namespace PersonaLite.Infrastructure.Migrations
 {
     [DbContext(typeof(PersonaLiteDbContext))]
-    partial class PersonaLiteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260808031009_AdicionaTempoDescanso")]
+    partial class AdicionaTempoDescanso
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

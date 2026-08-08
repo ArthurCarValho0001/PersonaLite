@@ -74,6 +74,25 @@ public class SessaoExercicioRepository : ISessaoExercicioRepository
             .ToList();
     }
 
+    public async Task<List<SessaoExercicio>> ListarConcluidasPorNomeNoPeriodoAsync(
+        Guid usuarioId, string nomeExercicioNormalizado, DateOnly inicio, DateOnly fim)
+    {
+        var idsExercicios = await (
+            from ex in _context.ExerciciosPlanejados
+            join d in _context.DiasDeTreino on ex.DiaDeTreinoId equals d.Id
+            join p in _context.PlanosTreino on d.PlanoTreinoId equals p.Id
+            where p.UsuarioId == usuarioId && ex.Nome.ToLower() == nomeExercicioNormalizado
+            select ex.Id
+        ).ToListAsync();
+
+        if (idsExercicios.Count == 0) return new List<SessaoExercicio>();
+
+        return await _context.SessoesExercicio
+            .Include(s => s.Series)
+            .Where(s => s.Concluida && s.Data >= inicio && s.Data <= fim && idsExercicios.Contains(s.ExercicioPlanejadoId))
+            .ToListAsync();
+    }
+
     public async Task SalvarAsync(SessaoExercicio sessao)
     {
         _context.SessoesExercicio.Add(sessao);
