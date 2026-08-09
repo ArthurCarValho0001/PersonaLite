@@ -36,6 +36,15 @@ public class RegistrarSerieUseCase
 
         sessao.RegistrarSerie(dto.Estagios.Select(e => (e.CargaKg, e.Repeticoes)));
 
+        // Conclusão automática: ao atingir (ou passar) a meta de séries, a sessão vira concluída
+        // sozinha. Não existe caminho de volta — remover uma série depois não desfaz a conclusão —
+        // e o botão manual de "concluir treino" continua funcionando independente da contagem.
+        var seriesFeitas = sessao.Series.Select(s => s.GrupoSerie).Distinct().Count();
+        if (!sessao.Concluida && seriesFeitas >= exercicio.SeriesAlvo)
+        {
+            sessao.Concluir();
+        }
+
         if (novaSessao)
             await _sessaoRepo.SalvarAsync(sessao);
         else

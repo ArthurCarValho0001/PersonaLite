@@ -3,6 +3,7 @@ using PersonaLite.Domain.Entities;
 namespace PersonaLite.Application.Interfaces;
 
 public record SessaoConcluidaProjecao(DateOnly Data, string NomeExercicio, List<SerieRealizada> Series);
+public record SessaoConcluidaComDiaProjecao(DateOnly Data, Guid DiaDeTreinoId, string NomeExercicio, List<SerieRealizada> Series);
 
 public interface ISessaoExercicioRepository
 {
@@ -13,6 +14,9 @@ public interface ISessaoExercicioRepository
     Task<SessaoExercicio?> ObterUltimaSessaoPorNomeExercicioAsync(Guid usuarioId, string nomeExercicioNormalizado, DateOnly antesDe);
     Task<List<SessaoConcluidaProjecao>> ListarConcluidasNoPeriodoAsync(Guid usuarioId, DateOnly inicio, DateOnly fim);
     Task<List<SessaoExercicio>> ListarConcluidasPorNomeNoPeriodoAsync(Guid usuarioId, string nomeExercicioNormalizado, DateOnly inicio, DateOnly fim);
+    Task<List<SessaoConcluidaComDiaProjecao>> ListarConcluidasComDiaNoPeriodoAsync(Guid usuarioId, DateOnly inicio, DateOnly fim);
+    Task<(double CargaKg, int Repeticoes)?> ObterRecordeAnteriorAsync(Guid usuarioId, string nomeExercicioNormalizado, DateOnly antesDe);
+    Task<int> ContarTreinosConcluidosTotalAsync(Guid usuarioId);
     Task SalvarAsync(SessaoExercicio sessao);
     Task AtualizarAsync(SessaoExercicio sessao);
 }

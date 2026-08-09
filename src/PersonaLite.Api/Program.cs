@@ -79,6 +79,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<AtualizarTempoDescansoUseCase>();
 builder.Services.AddScoped<ConcluirTreinoDoDiaUseCase>();
 builder.Services.AddScoped<ObterRetrospectivaDetalhadaUseCase>();
+builder.Services.AddScoped<AtualizarTelefoneUseCase>();
+builder.Services.AddScoped<ObterResumoProgressoUseCase>();
 
 var app = builder.Build();
 
@@ -105,5 +107,6 @@ app.MapSessaoEndpoints();
 app.MapAuthEndpoints();
 app.MapTrimestreEndpoints();
 app.MapRetrospectivaEndpoints();
+app.MapProgressoEndpoints();
 
 app.Run();

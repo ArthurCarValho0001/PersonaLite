@@ -8,7 +8,8 @@ public record RegistrarUsuarioDto(
     string Senha,
     Sexo Sexo,
     DateOnly DataNascimento,
-    double AlturaCm);
+    double AlturaCm,
+    string? Email);
 
 public record LoginDto(string NomeUsuario, string Senha);
 

@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { Eye, EyeOff } from 'lucide-react'
 import { login } from '../api/authApi'
 import { salvarToken } from '../api/authToken'
 import { Button } from '../components/Button'
@@ -13,6 +14,11 @@ export function Login() {
   const [senha, setSenha] = useState('')
   const [enviando, setEnviando] = useState(false)
   const [erro, setErro] = useState<string | null>(null)
+  const [mostrarSenha, setMostrarSenha] = useState(false)
+
+  function alternarVisualizacaoSenha() {
+    setMostrarSenha(prevState => !prevState)
+  }
 
   async function lidarComEnvio(evento: FormEvent) {
     evento.preventDefault()
@@ -48,13 +54,24 @@ export function Login() {
               autoCapitalize="off"
             />
 
-            <FormField
-              id="senha"
-              label="Senha"
-              type="password"
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
-            />
+            <div className="registrar__campo-com-olho">
+              <FormField
+                id="senha"
+                label="Senha"
+                type={mostrarSenha ? 'text' : 'password'}
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+              />
+              
+              <button
+                type="button"
+                className="registrar__olho"
+                onClick={alternarVisualizacaoSenha}
+                aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
+              >
+                {mostrarSenha ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
 
             {erro && <p className="registrar__erro">{erro}</p>}
 

@@ -8,4 +8,6 @@ public record UsuarioDto(
     Sexo Sexo,
     DateOnly DataNascimento,
     double AlturaCm,
-    int TempoDescansoSegundos);
+    int TempoDescansoSegundos,
+    string? Email,
+    string? Telefone);

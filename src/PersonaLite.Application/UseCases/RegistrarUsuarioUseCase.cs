@@ -26,7 +26,7 @@ public class RegistrarUsuarioUseCase
             throw new InvalidOperationException("Esse nome de usuário já está em uso.");
 
         var senhaHash = _hasher.Hash(dto.Senha);
-        var usuario = new Usuario(dto.Nome, nomeUsuarioNormalizado, senhaHash, dto.Sexo, dto.DataNascimento, dto.AlturaCm);
+        var usuario = new Usuario(dto.Nome, nomeUsuarioNormalizado, senhaHash, dto.Sexo, dto.DataNascimento, dto.AlturaCm, dto.Email);
         await _usuarioRepo.SalvarAsync(usuario);
 
         var token = _tokenService.GerarToken(usuario.Id, usuario.NomeUsuario);

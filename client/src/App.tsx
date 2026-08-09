@@ -6,9 +6,9 @@ import { Dashboard } from './pages/Dashboard'
 import { Login } from './pages/Login'
 import { NovaMedicao } from './pages/NovaMedicao'
 import { Registrar } from './pages/Registrar'
+import { Retrospectiva } from './pages/Retrospectiva'
 import { Treinos } from './pages/Treinos'
 import './App.css'
-import { Retrospectiva } from './pages/Retrospectiva'
 
 function App() {
   const { usuario, carregando, erro, autenticado, recarregar } = useUsuario()
@@ -18,7 +18,6 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="*" element={<Registrar />} />
-        <Route path="/retrospectiva" element={<Retrospectiva />} />
       </Routes>
     )
   }
@@ -43,7 +42,6 @@ function App() {
   }
 
   if (!usuario) {
-    // Token existe mas o usuário não foi encontrado (ex: token de uma conta apagada)
     return (
       <Routes>
         <Route path="*" element={<Login />} />
@@ -59,6 +57,7 @@ function App() {
         <Route path="/medidas/:id/editar" element={<NovaMedicao />} />
         <Route path="/treinos" element={<Treinos />} />
         <Route path="/treinos/configurar" element={<ConfigurarTreino />} />
+        <Route path="/retrospectiva" element={<Retrospectiva />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <IndicadorSincronizacao />
