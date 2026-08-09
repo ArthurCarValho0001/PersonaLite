@@ -8,22 +8,29 @@ import { FormField } from '../components/FormField'
 import { SeletorSexo } from '../components/SeletorSexo'
 import type { Sexo } from '../types'
 import './Registrar.css'
+import { Eye, EyeOff } from 'lucide-react';
 
 export function Registrar() {
   const navigate = useNavigate()
   const [nome, setNome] = useState('')
   const [nomeUsuario, setNomeUsuario] = useState('')
+  const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
+  const [confirmarSenha, setConfirmarSenha] = useState('')
+  const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false)
   const [sexo, setSexo] = useState<Sexo | null>(null)
   const [dataNascimento, setDataNascimento] = useState('')
   const [alturaCm, setAlturaCm] = useState('')
   const [enviando, setEnviando] = useState(false)
   const [erro, setErro] = useState<string | null>(null)
 
+  const senhasConferem = senha.length > 0 && senha === confirmarSenha
+
   const formularioValido =
     nome.trim().length > 0 &&
     nomeUsuario.trim().length >= 3 &&
     senha.length >= 6 &&
+    senhasConferem &&
     sexo !== null &&
     dataNascimento !== '' &&
     Number(alturaCm) > 0
@@ -42,6 +49,7 @@ export function Registrar() {
         sexo,
         dataNascimento,
         alturaCm: Number(alturaCm),
+        email: email.trim() || null,
       })
       salvarToken(resultado.token)
       navigate('/')
@@ -87,6 +95,16 @@ export function Registrar() {
             />
 
             <FormField
+              id="email"
+              label="E-mail"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="seu@email.com"
+              autoCapitalize="off"
+            />
+
+            <FormField
               id="senha"
               label="Senha"
               type="password"
@@ -94,6 +112,28 @@ export function Registrar() {
               onChange={(e) => setSenha(e.target.value)}
               placeholder="mínimo 6 caracteres"
             />
+
+            <div className="registrar__campo-com-olho">
+              <FormField
+                id="confirmarSenha"
+                label="Confirmar senha"
+                type={mostrarConfirmacao ? 'text' : 'password'}
+                value={confirmarSenha}
+                onChange={(e) => setConfirmarSenha(e.target.value)}
+                placeholder="repita a senha"
+              />
+              <button
+                type="button"
+                className="registrar__olho"
+                onClick={() => setMostrarConfirmacao((v) => !v)}
+                aria-label={mostrarConfirmacao ? 'Ocultar senha' : 'Mostrar senha'}
+              >
+                {mostrarConfirmacao ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
+            {confirmarSenha.length > 0 && !senhasConferem && (
+              <p className="registrar__erro">As senhas não conferem.</p>
+            )}
 
             <SeletorSexo valor={sexo} onChange={setSexo} />
 

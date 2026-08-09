@@ -17,6 +17,8 @@ public class ObterUsuarioUseCase
         var usuario = await _usuarioRepo.ObterAsync(usuarioId);
         if (usuario is null) return null;
 
-        return new UsuarioDto(usuario.Id, usuario.Nome, usuario.Sexo, usuario.DataNascimento, usuario.AlturaCm, usuario.TempoDescansoSegundos);
+        return new UsuarioDto(
+            usuario.Id, usuario.Nome, usuario.Sexo, usuario.DataNascimento, usuario.AlturaCm,
+            usuario.TempoDescansoSegundos, usuario.Email, usuario.Telefone);
     }
 }

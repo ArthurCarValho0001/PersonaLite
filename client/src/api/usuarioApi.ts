@@ -13,3 +13,6 @@ export async function obterUsuario(): Promise<UsuarioDto | null> {
 export async function atualizarTempoDescanso(segundos: number): Promise<void> {
   await httpClient.put('/api/usuario/tempo-descanso', { segundos })
 }
+export async function atualizarTelefone(telefone: string | null): Promise<void> {
+  await httpClient.put('/api/usuario/telefone', { telefone })
+}

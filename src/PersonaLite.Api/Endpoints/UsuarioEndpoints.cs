@@ -23,5 +23,13 @@ public static class UsuarioEndpoints
             await useCase.ExecutarAsync(usuarioId, dto);
             return Results.NoContent();
         });
+
+        grupo.MapPut("/telefone", async (
+            HttpContext http, AtualizarTelefoneDto dto, AtualizarTelefoneUseCase useCase) =>
+        {
+            var usuarioId = http.User.ObterUsuarioId();
+            await useCase.ExecutarAsync(usuarioId, dto);
+            return Results.NoContent();
+        });
     }
 }

@@ -7,6 +7,7 @@ export interface RegistrarUsuarioDto {
   sexo: Sexo
   dataNascimento: string
   alturaCm: number
+  email: string | null
 }
 
 export interface LoginDto {

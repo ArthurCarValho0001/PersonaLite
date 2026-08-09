@@ -8,6 +8,8 @@ public class Usuario
     public string Nome { get; private set; } = string.Empty;
     public string NomeUsuario { get; private set; } = string.Empty;
     public string SenhaHash { get; private set; } = string.Empty;
+    public string? Email { get; private set; }
+    public string? Telefone { get; private set; }
     public Sexo Sexo { get; private set; }
     public DateOnly DataNascimento { get; private set; }
     public double AlturaCm { get; private set; }
@@ -15,7 +17,7 @@ public class Usuario
 
     private Usuario() { }
 
-    public Usuario(string nome, string nomeUsuario, string senhaHash, Sexo sexo, DateOnly dataNascimento, double alturaCm)
+    public Usuario(string nome, string nomeUsuario, string senhaHash, Sexo sexo, DateOnly dataNascimento, double alturaCm, string? email = null)
     {
         Id = Guid.NewGuid();
         Nome = nome;
@@ -25,6 +27,7 @@ public class Usuario
         DataNascimento = dataNascimento;
         AlturaCm = alturaCm;
         TempoDescansoSegundos = 90;
+        Email = string.IsNullOrWhiteSpace(email) ? null : email.Trim().ToLowerInvariant();
     }
 
     public int IdadeEm(DateOnly data)
@@ -39,5 +42,10 @@ public class Usuario
         if (segundos < 5 || segundos > 900)
             throw new InvalidOperationException("O tempo de descanso deve estar entre 5 e 900 segundos.");
         TempoDescansoSegundos = segundos;
+    }
+
+    public void DefinirTelefone(string? telefone)
+    {
+        Telefone = string.IsNullOrWhiteSpace(telefone) ? null : telefone.Trim();
     }
 }

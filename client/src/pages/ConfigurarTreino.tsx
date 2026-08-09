@@ -22,6 +22,7 @@ import {
   type ExercicioPlanejadoDto,
 } from '../types'
 import './ConfigurarTreino.css'
+import { atualizarTelefone } from '../api/usuarioApi'
 
 export function ConfigurarTreino() {
   const { plano, carregando, recarregar } = usePlanoAtual()
@@ -56,6 +57,7 @@ export function ConfigurarTreino() {
           onSalvo={recarregarUsuario}
         />
       )}
+      {usuario && <ConfiguracaoPerfil telefoneAtual={usuario.telefone} onSalvo={recarregarUsuario} />}
 
       {carregando && (
         <p className="config-treino__mensagem">
@@ -819,6 +821,45 @@ function ConfiguracaoDescanso({
               : 'Salvar'}
         </Button>
       </div>
+    </Card>
+  )
+}
+
+interface ConfiguracaoPerfilProps {
+  telefoneAtual: string | null
+  onSalvo: () => void
+}
+
+function ConfiguracaoPerfil({ telefoneAtual, onSalvo }: ConfiguracaoPerfilProps) {
+  const [telefone, setTelefone] = useState(telefoneAtual ?? '')
+  const [salvando, setSalvando] = useState(false)
+  const [salvo, setSalvo] = useState(false)
+
+  async function salvar() {
+    setSalvando(true)
+    try {
+      await atualizarTelefone(telefone.trim() || null)
+      onSalvo()
+      setSalvo(true)
+      setTimeout(() => setSalvo(false), 2000)
+    } finally {
+      setSalvando(false)
+    }
+  }
+
+  return (
+    <Card titulo="Seu perfil">
+      <FormField
+        id="telefone"
+        label="Telefone (opcional)"
+        type="tel"
+        value={telefone}
+        onChange={(e) => setTelefone(e.target.value)}
+        placeholder="(11) 99999-9999"
+      />
+      <Button type="button" onClick={salvar} disabled={salvando}>
+        {salvo ? '✓ Salvo' : salvando ? 'Salvando...' : 'Salvar telefone'}
+      </Button>
     </Card>
   )
 }

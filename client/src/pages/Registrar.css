@@ -41,3 +41,33 @@
   color: #22c55e;
   font-weight: 600;
 }
+.registrar__campo-com-olho {
+  position: relative;
+}
+
+.registrar__campo-com-olho .form-field {
+  margin-bottom: 0.25rem;
+}
+
+.registrar__campo-com-olho input {
+  padding-right: 2.5rem;
+}
+
+.registrar__olho {
+  position: absolute;
+  right: 0.75rem;
+  top: 2.15rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  transition: color 0.2s;
+}
+
+.registrar__olho:hover {
+  color: #1f2937;
+}

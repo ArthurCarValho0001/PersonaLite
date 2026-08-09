@@ -3,13 +3,15 @@ import { AlertaReavaliacao } from '../components/AlertaReavaliacao'
 import { Button } from '../components/Button'
 import { Card } from '../components/Card'
 import { GraficoEvolucao } from '../components/GraficoEvolucao'
-import { useEvolucao } from '../hooks/useEvolucao'
-import type { UsuarioDto } from '../types'
-import './Dashboard.css'
-import { limparToken } from '../api/authToken'
+import { ProgressoCard } from '../components/ProgressoCard'
 import { SugestaoTrocaBanner } from '../components/SugestaoTrocaBanner'
+import { limparToken } from '../api/authToken'
+import { useEvolucao } from '../hooks/useEvolucao'
+import { useResumoProgresso } from '../hooks/useResumoProgresso'
 import { useSugestaoTroca } from '../hooks/useSugestaoTroca'
 import { useTrimestre } from '../hooks/useTrimestre'
+import type { UsuarioDto } from '../types'
+import './Dashboard.css'
 
 interface DashboardProps {
   usuario: UsuarioDto
@@ -17,16 +19,15 @@ interface DashboardProps {
 
 export function Dashboard({ usuario }: DashboardProps) {
   const { evolucao, carregando, erro } = useEvolucao()
+  const ultimoRegistro = evolucao.at(-1)
+
   const { trimestre, recarregar: recarregarTrimestre } = useTrimestre()
+  const { resumo } = useResumoProgresso()
   const sugestao = useSugestaoTroca()
 
   function lidarComNovoTrimestre() {
     recarregarTrimestre()
   }
-  const ultimoRegistro = evolucao.at(-1)
-
-  // Obtém a versão injetada pelo Vite durante o build
-  const versaoApp = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : 'v1.0.0-dev'
 
   return (
     <div className="dashboard">
@@ -34,7 +35,6 @@ export function Dashboard({ usuario }: DashboardProps) {
         <div>
           <h1 className="dashboard__titulo">Olá, {usuario.nome}</h1>
           {trimestre && <span className="dashboard__trimestre-badge">Trimestre {trimestre.numero}</span>}
-          <p className="dashboard__subtitulo">Seu histórico de evolução física</p>
         </div>
         <div className="dashboard__acoes">
           <Link to="/treinos">
@@ -42,9 +42,6 @@ export function Dashboard({ usuario }: DashboardProps) {
           </Link>
           <Link to="/medidas/nova">
             <Button>Nova medição</Button>
-          </Link>
-          <Link to="/retrospectiva">
-            <Button variante="secundario">Evolução</Button>
           </Link>
           <button
             type="button"
@@ -60,7 +57,11 @@ export function Dashboard({ usuario }: DashboardProps) {
       </header>
 
       <AlertaReavaliacao />
+
       {sugestao && <SugestaoTrocaBanner sugestao={sugestao} onNovoTrimestreIniciado={lidarComNovoTrimestre} />}
+
+      {resumo && <ProgressoCard resumo={resumo} />}
+
       {carregando && <p className="dashboard__mensagem">Carregando...</p>}
       {erro && <p className="dashboard__mensagem dashboard__mensagem--erro">{erro}</p>}
 
@@ -86,7 +87,6 @@ export function Dashboard({ usuario }: DashboardProps) {
           </Card>
         </div>
       )}
-      <br />
 
       {evolucao.length > 1 && (
         <Card titulo="Evolução">
@@ -107,11 +107,6 @@ export function Dashboard({ usuario }: DashboardProps) {
           </ul>
         </Card>
       )}
-
-      {/* Rodapé discreto adicionado com a versão */}
-      <footer className="dashboard__rodape">
-        <span className="dashboard__versao">{versaoApp}</span>
-      </footer>
     </div>
   )
 }
