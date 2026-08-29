@@ -2,6 +2,7 @@ using PersonaLite.Application.Interfaces;
 using PersonaLite.Infrastructure.Data;
 using PersonaLite.Infrastructure.Repositories;
 using PersonaLite.Infrastructure.Storage;
+using PersonaLite.Infrastructure.Email;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +29,8 @@ public static class DependencyInjection
         services.AddScoped<IFotoProgressoRepository, FotoProgressoRepository>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<ICodigoVerificacaoRepository, CodigoVerificacaoRepository>();
+        services.AddHttpClient<IEmailService, PersonaLite.Infrastructure.Email.ResendEmailService>();
         services.AddScoped<ITrimestreRepository, TrimestreRepository>();
 
         var pastaFotos = configuration["Armazenamento:PastaFotos"] ?? "fotos-progresso";

@@ -16,10 +16,11 @@ internal static class MapeadorTreinoDoDia
         var ultimaSessao = await sessaoRepo.ObterUltimaSessaoPorNomeExercicioAsync(usuarioId, nomeNormalizado, dataAlvo);
 
         var ultimoTreino = MontarUltimoTreino(ultimaSessao);
+        var evoluiuCarga = CalcularSeEvoluiu(seriesRegistradas, ultimoTreino);
 
         return new ExercicioComRegistrosDto(
             exercicio.Id, exercicio.Nome, exercicio.GrupoMuscular, exercicio.SeriesAlvo, exercicio.RepeticoesAlvo,
-            sessao?.Id, sessao?.Concluida ?? false, seriesRegistradas, ultimoTreino);
+            sessao?.Id, sessao?.Concluida ?? false, evoluiuCarga, seriesRegistradas, ultimoTreino);
     }
 
     private static List<SerieRegistradaDto> MapearSeries(SessaoExercicio? sessao) =>
@@ -57,6 +58,24 @@ internal static class MapeadorTreinoDoDia
             Manter: $"Mantenha {FormatarPeso(melhor.CargaPrincipal)}kg e tente realizar entre {melhor.RepsPrincipal + 1} e {melhor.RepsPrincipal + 3} repetições.");
 
         return new UltimoTreinoExercicioDto(ultimaSessao.Data, melhorSerie, ultimaSerie, sugestao);
+    }
+
+    /// <summary>
+    /// "Evoluiu" = alguma série registrada hoje tem volume (carga × reps do estágio principal)
+    /// maior que a melhor série do último treino desse exercício. Mesma régua usada no
+    /// destaque "Novo recorde!" do resumo de progresso do Dashboard, pra ficar consistente.
+    /// </summary>
+    private static bool CalcularSeEvoluiu(List<SerieRegistradaDto> seriesHoje, UltimoTreinoExercicioDto? ultimoTreino)
+    {
+        if (ultimoTreino is null || seriesHoje.Count == 0) return false;
+
+        var volumeRecordeAnterior = ultimoTreino.MelhorSerie.CargaKg * ultimoTreino.MelhorSerie.Repeticoes;
+
+        return seriesHoje.Any(serie =>
+        {
+            var volumeSerie = serie.Estagios.Sum(e => e.CargaKg * e.Repeticoes);
+            return volumeSerie > volumeRecordeAnterior;
+        });
     }
 
     private static string FormatarPeso(double peso) => peso % 1 == 0 ? peso.ToString("0") : peso.ToString("0.#");

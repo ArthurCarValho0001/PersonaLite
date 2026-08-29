@@ -6,6 +6,7 @@ public interface IUsuarioRepository
 {
     Task<Usuario?> ObterAsync(Guid id);
     Task<Usuario?> ObterPorNomeUsuarioAsync(string nomeUsuario);
+    Task<Usuario?> ObterPorEmailAsync(string email);
     Task SalvarAsync(Usuario usuario);
     Task AtualizarAsync(Usuario usuario);
 }

@@ -10,19 +10,13 @@ export interface CriarUsuarioDto {
 export interface UsuarioDto {
   id: string
   nome: string
-  sexo: Sexo
-  dataNascimento: string
-  alturaCm: number
-  tempoDescansoSegundos: number
-}
-
-export interface UsuarioDto {
-  id: string
-  nome: string
+  nomeUsuario: string
   sexo: Sexo
   dataNascimento: string
   alturaCm: number
   tempoDescansoSegundos: number
   email: string | null
-  telefone: string | null
+  emailVerificado: boolean
+  avatarUrl: string | null
+  metas: string | null
 }

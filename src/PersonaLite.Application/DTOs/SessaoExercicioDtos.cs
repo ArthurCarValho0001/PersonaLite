@@ -23,6 +23,7 @@ public record ExercicioComRegistrosDto(
     int RepeticoesAlvo,
     Guid? SessaoExercicioId,
     bool Concluida,
+    bool EvoluiuCarga,
     List<SerieRegistradaDto> SeriesRegistradas,
     UltimoTreinoExercicioDto? UltimoTreino);
 

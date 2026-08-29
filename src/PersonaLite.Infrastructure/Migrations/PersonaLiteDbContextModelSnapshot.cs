@@ -22,6 +22,35 @@ namespace PersonaLite.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("PersonaLite.Domain.Entities.CodigoVerificacao", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CriadoEmUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ExpiraEmUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Proposito")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("Usado")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("UsuarioId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CodigosVerificacao");
+                });
+
             modelBuilder.Entity("PersonaLite.Domain.Entities.DiaDeTreino", b =>
                 {
                     b.Property<Guid>("Id")
@@ -189,10 +218,19 @@ namespace PersonaLite.Infrastructure.Migrations
                     b.Property<double>("AlturaCm")
                         .HasColumnType("double precision");
 
+                    b.Property<string>("AvatarUrl")
+                        .HasColumnType("text");
+
                     b.Property<DateOnly>("DataNascimento")
                         .HasColumnType("date");
 
                     b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("EmailVerificado")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Metas")
                         .HasColumnType("text");
 
                     b.Property<string>("Nome")
@@ -209,9 +247,6 @@ namespace PersonaLite.Infrastructure.Migrations
 
                     b.Property<int>("Sexo")
                         .HasColumnType("integer");
-
-                    b.Property<string>("Telefone")
-                        .HasColumnType("text");
 
                     b.Property<int>("TempoDescansoSegundos")
                         .HasColumnType("integer");

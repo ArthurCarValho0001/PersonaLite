@@ -79,8 +79,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<AtualizarTempoDescansoUseCase>();
 builder.Services.AddScoped<ConcluirTreinoDoDiaUseCase>();
 builder.Services.AddScoped<ObterRetrospectivaDetalhadaUseCase>();
-builder.Services.AddScoped<AtualizarTelefoneUseCase>();
 builder.Services.AddScoped<ObterResumoProgressoUseCase>();
+builder.Services.AddScoped<AtualizarInformacoesPessoaisUseCase>();
+builder.Services.AddScoped<AtualizarAvatarUseCase>();
+builder.Services.AddScoped<AlterarNomeUsuarioUseCase>();
+builder.Services.AddScoped<AlterarEmailUseCase>();
+builder.Services.AddScoped<SolicitarVerificacaoEmailUseCase>();
+builder.Services.AddScoped<ConfirmarVerificacaoEmailUseCase>();
+builder.Services.AddScoped<SolicitarRedefinicaoSenhaUseCase>();
+builder.Services.AddScoped<RedefinirSenhaUseCase>();
 
 var app = builder.Build();
 
@@ -108,5 +115,6 @@ app.MapAuthEndpoints();
 app.MapTrimestreEndpoints();
 app.MapRetrospectivaEndpoints();
 app.MapProgressoEndpoints();
+app.MapSaudeEndpoints();
 
 app.Run();

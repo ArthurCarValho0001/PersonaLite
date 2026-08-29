@@ -20,3 +20,13 @@ export interface TokenDto {
   usuarioId: string
   nome: string
 }
+
+export interface SolicitarRedefinicaoSenhaDto {
+  email: string
+}
+
+export interface RedefinirSenhaDto {
+  email: string
+  codigo: string
+  novaSenha: string
+}

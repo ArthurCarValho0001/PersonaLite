@@ -9,7 +9,9 @@ public class Usuario
     public string NomeUsuario { get; private set; } = string.Empty;
     public string SenhaHash { get; private set; } = string.Empty;
     public string? Email { get; private set; }
-    public string? Telefone { get; private set; }
+    public bool EmailVerificado { get; private set; }
+    public string? AvatarUrl { get; private set; }
+    public string? Metas { get; private set; }
     public Sexo Sexo { get; private set; }
     public DateOnly DataNascimento { get; private set; }
     public double AlturaCm { get; private set; }
@@ -28,6 +30,7 @@ public class Usuario
         AlturaCm = alturaCm;
         TempoDescansoSegundos = 90;
         Email = string.IsNullOrWhiteSpace(email) ? null : email.Trim().ToLowerInvariant();
+        EmailVerificado = false;
     }
 
     public int IdadeEm(DateOnly data)
@@ -44,8 +47,41 @@ public class Usuario
         TempoDescansoSegundos = segundos;
     }
 
-    public void DefinirTelefone(string? telefone)
+    public void AtualizarInformacoesPessoais(string nome, DateOnly dataNascimento, Sexo sexo, string? metas)
     {
-        Telefone = string.IsNullOrWhiteSpace(telefone) ? null : telefone.Trim();
+        Nome = nome;
+        DataNascimento = dataNascimento;
+        Sexo = sexo;
+        Metas = string.IsNullOrWhiteSpace(metas) ? null : metas.Trim();
+    }
+
+    public void DefinirAvatar(string avatarUrl)
+    {
+        AvatarUrl = avatarUrl;
+    }
+
+    public void AlterarNomeUsuario(string novoNomeUsuario)
+    {
+        NomeUsuario = novoNomeUsuario.Trim().ToLowerInvariant();
+    }
+
+    public void AlterarSenha(string novoHash)
+    {
+        SenhaHash = novoHash;
+    }
+
+    /// <summary>
+    /// Alterar o e-mail sempre exige nova verificação — o e-mail antigo pode ter sido
+    /// verificado, mas isso não prova posse do e-mail novo.
+    /// </summary>
+    public void AlterarEmail(string novoEmail)
+    {
+        Email = novoEmail.Trim().ToLowerInvariant();
+        EmailVerificado = false;
+    }
+
+    public void MarcarEmailComoVerificado()
+    {
+        EmailVerificado = true;
     }
 }

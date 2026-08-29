@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom'
 import { AlertaReavaliacao } from '../components/AlertaReavaliacao'
+import { Avatar } from '../components/Avatar'
 import { Button } from '../components/Button'
 import { Card } from '../components/Card'
 import { GraficoEvolucao } from '../components/GraficoEvolucao'
 import { ProgressoCard } from '../components/ProgressoCard'
 import { SugestaoTrocaBanner } from '../components/SugestaoTrocaBanner'
-import { limparToken } from '../api/authToken'
 import { useEvolucao } from '../hooks/useEvolucao'
 import { useResumoProgresso } from '../hooks/useResumoProgresso'
 import { useSugestaoTroca } from '../hooks/useSugestaoTroca'
@@ -32,10 +32,13 @@ export function Dashboard({ usuario }: DashboardProps) {
   return (
     <div className="dashboard">
       <header className="dashboard__cabecalho">
-        <div>
-          <h1 className="dashboard__titulo">Olá, {usuario.nome}</h1>
-          {trimestre && <span className="dashboard__trimestre-badge">Trimestre {trimestre.numero}</span>}
-        </div>
+        <Link to="/perfil" className="dashboard__usuario-link">
+          <Avatar nome={usuario.nome} avatarUrl={usuario.avatarUrl} />
+          <div>
+            <h1 className="dashboard__titulo">Olá, {usuario.nome}</h1>
+            {trimestre && <span className="dashboard__trimestre-badge">Trimestre {trimestre.numero}</span>}
+          </div>
+        </Link>
         <div className="dashboard__acoes">
           <Link to="/treinos">
             <Button variante="secundario">Treinos</Button>
@@ -43,16 +46,6 @@ export function Dashboard({ usuario }: DashboardProps) {
           <Link to="/medidas/nova">
             <Button>Nova medição</Button>
           </Link>
-          <button
-            type="button"
-            className="dashboard__sair"
-            onClick={() => {
-              limparToken()
-              window.location.reload()
-            }}
-          >
-            Sair
-          </button>
         </div>
       </header>
 
