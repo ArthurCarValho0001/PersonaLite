@@ -5,9 +5,12 @@ namespace PersonaLite.Application.DTOs;
 public record UsuarioDto(
     Guid Id,
     string Nome,
+    string NomeUsuario,
     Sexo Sexo,
     DateOnly DataNascimento,
     double AlturaCm,
     int TempoDescansoSegundos,
     string? Email,
-    string? Telefone);
+    bool EmailVerificado,
+    string? AvatarUrl,
+    string? Metas);

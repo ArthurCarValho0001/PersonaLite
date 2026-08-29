@@ -20,6 +20,9 @@ public class UsuarioRepository : IUsuarioRepository
     public Task<Usuario?> ObterPorNomeUsuarioAsync(string nomeUsuario) =>
         _context.Usuarios.FirstOrDefaultAsync(u => u.NomeUsuario == nomeUsuario.Trim().ToLowerInvariant());
 
+    public Task<Usuario?> ObterPorEmailAsync(string email) =>
+        _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
+
     public Task<Usuario?> ObterUnicoAsync() =>
         _context.Usuarios.FirstOrDefaultAsync();
 

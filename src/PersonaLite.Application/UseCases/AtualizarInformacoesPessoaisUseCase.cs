@@ -3,21 +3,21 @@ using PersonaLite.Application.Interfaces;
 
 namespace PersonaLite.Application.UseCases;
 
-public class AtualizarTelefoneUseCase
+public class AtualizarInformacoesPessoaisUseCase
 {
     private readonly IUsuarioRepository _usuarioRepo;
 
-    public AtualizarTelefoneUseCase(IUsuarioRepository usuarioRepo)
+    public AtualizarInformacoesPessoaisUseCase(IUsuarioRepository usuarioRepo)
     {
         _usuarioRepo = usuarioRepo;
     }
 
-    public async Task ExecutarAsync(Guid usuarioId, AtualizarTelefoneDto dto)
+    public async Task ExecutarAsync(Guid usuarioId, AtualizarInformacoesPessoaisDto dto)
     {
         var usuario = await _usuarioRepo.ObterAsync(usuarioId)
             ?? throw new InvalidOperationException("Usuário não encontrado.");
 
-        usuario.DefinirTelefone(dto.Telefone);
+        usuario.AtualizarInformacoesPessoais(dto.Nome, dto.DataNascimento, dto.Sexo, dto.Metas);
         await _usuarioRepo.AtualizarAsync(usuario);
     }
 }

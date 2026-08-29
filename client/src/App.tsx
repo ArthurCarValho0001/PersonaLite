@@ -1,5 +1,9 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { IndicadorSincronizacao } from './components/IndicadorSincronizacao'
+import { DadosPrivacidade } from './pages/DadosPrivacidade'
+import { EsqueciSenha } from './pages/EsqueciSenha'
+import { InformacoesPessoais } from './pages/InformacoesPessoais'
+import { Perfil } from './pages/Perfil'
 import { useUsuario } from './hooks/useUsuario'
 import { ConfigurarTreino } from './pages/ConfigurarTreino'
 import { Dashboard } from './pages/Dashboard'
@@ -17,6 +21,7 @@ function App() {
     return (
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/esqueci-senha" element={<EsqueciSenha />} />
         <Route path="*" element={<Registrar />} />
       </Routes>
     )
@@ -58,6 +63,9 @@ function App() {
         <Route path="/treinos" element={<Treinos />} />
         <Route path="/treinos/configurar" element={<ConfigurarTreino />} />
         <Route path="/retrospectiva" element={<Retrospectiva />} />
+        <Route path="/perfil" element={<Perfil />} />
+        <Route path="/perfil/informacoes-pessoais" element={<InformacoesPessoais />} />
+        <Route path="/perfil/dados-privacidade" element={<DadosPrivacidade />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <IndicadorSincronizacao />

@@ -13,6 +13,7 @@ public class PersonaLiteDbContext : DbContext
     public DbSet<SessaoExercicio> SessoesExercicio => Set<SessaoExercicio>();
     public DbSet<FotoProgresso> FotosProgresso => Set<FotoProgresso>();
     public DbSet<Trimestre> Trimestres => Set<Trimestre>();
+    public DbSet<CodigoVerificacao> CodigosVerificacao => Set<CodigoVerificacao>();
 
     public PersonaLiteDbContext(DbContextOptions<PersonaLiteDbContext> options) : base(options) { }
 
