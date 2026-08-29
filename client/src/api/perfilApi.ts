@@ -2,7 +2,6 @@ import { httpClient } from './httpClient'
 import type {
   AlterarEmailDto,
   AlterarNomeUsuarioDto,
-  AlterarSenhaDto,
   AtualizarInformacoesPessoaisDto,
   ConfirmarVerificacaoEmailDto,
 } from '../types'
@@ -22,10 +21,6 @@ export async function atualizarAvatar(arquivo: File): Promise<{ avatarUrl: strin
 
 export async function alterarNomeUsuario(dto: AlterarNomeUsuarioDto): Promise<void> {
   await httpClient.put('/api/usuario/nome-usuario', dto)
-}
-
-export async function alterarSenha(dto: AlterarSenhaDto): Promise<void> {
-  await httpClient.put('/api/usuario/senha', dto)
 }
 
 export async function alterarEmail(dto: AlterarEmailDto): Promise<void> {

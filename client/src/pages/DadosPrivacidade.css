@@ -116,3 +116,7 @@
   font-size: 0.8rem;
   margin: 0.3rem 0;
 }
+
+.dados-priv__item-cabecalho--link {
+  text-decoration: none;
+}

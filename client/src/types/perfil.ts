@@ -12,11 +12,6 @@ export interface AlterarNomeUsuarioDto {
   senhaAtual: string
 }
 
-export interface AlterarSenhaDto {
-  senhaAtual: string
-  novaSenha: string
-}
-
 export interface AlterarEmailDto {
   novoEmail: string
   senhaAtual: string

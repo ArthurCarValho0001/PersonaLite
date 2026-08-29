@@ -82,9 +82,9 @@ export function Login() {
             <p className="registrar__login-link">
               Ainda não tem conta? <Link to="/registrar">Criar conta</Link>
             </p>
-            <p className="registrar__login-link">
-              <Link to="/esqueci-senha">Esqueci minha senha</Link>
-            </p>
+            <Link to="/esqueci-senha" className="registrar__trocar-senha">
+              Trocar senha
+            </Link>
           </form>
         </Card>
       </div>

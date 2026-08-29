@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import {
   alterarEmail,
   alterarNomeUsuario,
-  alterarSenha,
   confirmarVerificacaoEmail,
   solicitarVerificacaoEmail,
 } from '../api/perfilApi'
@@ -29,7 +28,7 @@ export function DadosPrivacidade() {
 
       <SecaoEmail emailAtual={usuario.email} verificado={usuario.emailVerificado} onSalvo={recarregar} />
       <SecaoNomeUsuario nomeUsuarioAtual={usuario.nomeUsuario} onSalvo={recarregar} />
-      <SecaoSenha />
+      <SecaoRedefinirSenha />
     </div>
   )
 }
@@ -215,89 +214,13 @@ function SecaoNomeUsuario({ nomeUsuarioAtual, onSalvo }: { nomeUsuarioAtual: str
   )
 }
 
-function SecaoSenha() {
-  const [aberto, setAberto] = useState(false)
-  const [senhaAtual, setSenhaAtual] = useState('')
-  const [novaSenha, setNovaSenha] = useState('')
-  const [confirmarNovaSenha, setConfirmarNovaSenha] = useState('')
-  const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false)
-  const [salvando, setSalvando] = useState(false)
-  const [erro, setErro] = useState<string | null>(null)
-  const [sucesso, setSucesso] = useState(false)
-
-  const senhasConferem = novaSenha.length > 0 && novaSenha === confirmarNovaSenha
-
-  async function salvar(evento: FormEvent) {
-    evento.preventDefault()
-    if (!senhaAtual || !senhasConferem || novaSenha.length < 6) return
-
-    setSalvando(true)
-    setErro(null)
-    try {
-      await alterarSenha({ senhaAtual, novaSenha })
-      setSenhaAtual('')
-      setNovaSenha('')
-      setConfirmarNovaSenha('')
-      setSucesso(true)
-      setTimeout(() => setSucesso(false), 2500)
-    } catch (e: any) {
-      setErro(e?.response?.data?.mensagem ?? 'Não foi possível alterar a senha.')
-    } finally {
-      setSalvando(false)
-    }
-  }
-
+function SecaoRedefinirSenha() {
   return (
     <Card>
-      <div className="dados-priv__item-cabecalho" onClick={() => setAberto((v) => !v)}>
+      <Link to="/esqueci-senha" className="dados-priv__item-cabecalho dados-priv__item-cabecalho--link">
         <span className="dados-priv__item-label">Senha</span>
-        <span className="dados-priv__seta">{aberto ? '▲' : '▼'}</span>
-      </div>
-
-      {aberto && (
-        <form onSubmit={salvar} className="dados-priv__form">
-          <FormField
-            id="senhaAtualSenha"
-            label="Senha atual"
-            type="password"
-            value={senhaAtual}
-            onChange={(e) => setSenhaAtual(e.target.value)}
-          />
-          <FormField
-            id="novaSenha"
-            label="Nova senha"
-            type="password"
-            value={novaSenha}
-            onChange={(e) => setNovaSenha(e.target.value)}
-            placeholder="mínimo 6 caracteres"
-          />
-          <div className="registrar__campo-com-olho">
-            <FormField
-              id="confirmarNovaSenha"
-              label="Confirmar nova senha"
-              type={mostrarConfirmacao ? 'text' : 'password'}
-              value={confirmarNovaSenha}
-              onChange={(e) => setConfirmarNovaSenha(e.target.value)}
-            />
-            <button
-              type="button"
-              className="registrar__olho"
-              onClick={() => setMostrarConfirmacao((v) => !v)}
-              aria-label={mostrarConfirmacao ? 'Ocultar senha' : 'Mostrar senha'}
-            >
-              {mostrarConfirmacao ? '🙈' : '👁'}
-            </button>
-          </div>
-          {confirmarNovaSenha.length > 0 && !senhasConferem && (
-            <p className="dados-priv__erro">As senhas não conferem.</p>
-          )}
-          {erro && <p className="dados-priv__erro">{erro}</p>}
-          {sucesso && <p className="dados-priv__sucesso">✓ Senha alterada com sucesso.</p>}
-          <Button type="submit" disabled={!senhaAtual || !senhasConferem || novaSenha.length < 6 || salvando}>
-            {salvando ? 'Salvando...' : 'Alterar senha'}
-          </Button>
-        </form>
-      )}
+        <span className="dados-priv__seta">›</span>
+      </Link>
     </Card>
   )
 }

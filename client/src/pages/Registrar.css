@@ -41,6 +41,16 @@
   color: #22c55e;
   font-weight: 600;
 }
+
+.registrar__trocar-senha {
+  display: block;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin-top: 0.75rem;
+  padding: 0.5rem;
+}
+
 .registrar__campo-com-olho {
   position: relative;
 }

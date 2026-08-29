@@ -103,6 +103,7 @@ export interface ExercicioComRegistrosDto {
   repeticoesAlvo: number
   sessaoExercicioId: string | null
   concluida: boolean
+  evoluiuCarga: boolean
   seriesRegistradas: SerieRegistradaDto[]
   ultimoTreino: UltimoTreinoExercicioDto | null
 }
@@ -135,16 +136,4 @@ export interface UltimoTreinoExercicioDto {
   melhorSerie: ResumoSerieDto
   ultimaSerie: ResumoSerieDto
   sugestao: SugestaoProgressaoDto
-}
-
-export interface ExercicioComRegistrosDto {
-  exercicioPlanejadoId: string
-  nome: string
-  grupoMuscular: string
-  seriesAlvo: number
-  repeticoesAlvo: number
-  sessaoExercicioId: string | null
-  concluida: boolean
-  seriesRegistradas: SerieRegistradaDto[]
-  ultimoTreino: UltimoTreinoExercicioDto | null
 }

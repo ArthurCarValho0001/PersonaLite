@@ -90,6 +90,16 @@ export function Treinos() {
             </Card>
           )}
 
+          {treino.exercicios.some((e) => e.evoluiuCarga) && (
+            <div className="treinos__evolucao-banner">
+              📈 Você evoluiu hoje em:{' '}
+              {treino.exercicios
+                .filter((e) => e.evoluiuCarga)
+                .map((e) => e.nome)
+                .join(', ')}
+            </div>
+          )}
+
           <div className="treinos__lista">
             {treino.exercicios.map((exercicio) => (
               <CardExercicio

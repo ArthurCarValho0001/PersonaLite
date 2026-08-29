@@ -54,6 +54,10 @@
   color: #4ade80;
 }
 
+.card-exercicio__badge-evoluiu {
+  font-size: 1rem;
+}
+
 .card-exercicio__seta {
   color: #64748b;
   font-size: 0.7rem;

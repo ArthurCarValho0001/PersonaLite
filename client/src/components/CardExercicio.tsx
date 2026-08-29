@@ -52,17 +52,20 @@ export function CardExercicio({
           </div>
         </div>
 
-        {exercicio.concluida ? (
-          <span>✓ Concluído</span>
-        ) : (
-          <span
-            className={`card-exercicio__badge ${
-              completo ? 'card-exercicio__badge--completo' : ''
-            }`}
-          >
-            {seriesFeitas}/{exercicio.seriesAlvo}
-          </span>
-        )}
+        <div className="card-exercicio__status">
+          {exercicio.evoluiuCarga && <span className="card-exercicio__badge-evoluiu">📈</span>}
+          {exercicio.concluida ? (
+            <span>✓ Concluído</span>
+          ) : (
+            <span
+              className={`card-exercicio__badge ${
+                completo ? 'card-exercicio__badge--completo' : ''
+              }`}
+            >
+              {seriesFeitas}/{exercicio.seriesAlvo}
+            </span>
+          )}
+        </div>
 
         <span>{expandido ? '▲' : '▼'}</span>
       </button>

@@ -10,8 +10,6 @@ public record AtualizarInformacoesPessoaisDto(
 
 public record AlterarNomeUsuarioDto(string NovoNomeUsuario, string SenhaAtual);
 
-public record AlterarSenhaDto(string SenhaAtual, string NovaSenha);
-
 public record AlterarEmailDto(string NovoEmail, string SenhaAtual);
 
 public record SolicitarVerificacaoEmailDto();
