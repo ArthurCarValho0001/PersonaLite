@@ -65,20 +65,6 @@ public static class UsuarioEndpoints
             }
         });
 
-        grupo.MapPut("/senha", async (HttpContext http, AlterarSenhaDto dto, AlterarSenhaUseCase useCase) =>
-        {
-            var usuarioId = http.User.ObterUsuarioId();
-            try
-            {
-                await useCase.ExecutarAsync(usuarioId, dto);
-                return Results.NoContent();
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Results.BadRequest(new { mensagem = ex.Message });
-            }
-        });
-
         grupo.MapPut("/email", async (HttpContext http, AlterarEmailDto dto, AlterarEmailUseCase useCase) =>
         {
             var usuarioId = http.User.ObterUsuarioId();

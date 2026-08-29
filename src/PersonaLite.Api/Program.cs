@@ -83,7 +83,6 @@ builder.Services.AddScoped<ObterResumoProgressoUseCase>();
 builder.Services.AddScoped<AtualizarInformacoesPessoaisUseCase>();
 builder.Services.AddScoped<AtualizarAvatarUseCase>();
 builder.Services.AddScoped<AlterarNomeUsuarioUseCase>();
-builder.Services.AddScoped<AlterarSenhaUseCase>();
 builder.Services.AddScoped<AlterarEmailUseCase>();
 builder.Services.AddScoped<SolicitarVerificacaoEmailUseCase>();
 builder.Services.AddScoped<ConfirmarVerificacaoEmailUseCase>();
