@@ -29,8 +29,7 @@ export function Login() {
     try {
       const resultado = await login({ nomeUsuario: nomeUsuario.trim(), senha })
       salvarToken(resultado.token)
-      navigate('/')
-      window.location.reload()
+      navigate('/', { replace: true })
     } catch {
       setErro('Usuário ou senha inválidos.')
     } finally {

@@ -13,8 +13,10 @@ import { Registrar } from './pages/Registrar'
 import { Retrospectiva } from './pages/Retrospectiva'
 import { Treinos } from './pages/Treinos'
 import './App.css'
+import { UsuarioProvider } from './components/UsuarioProvider'
+import { limparToken } from './api/authToken'
 
-function App() {
+function ConteudoApp() {
   const { usuario, carregando, erro, autenticado, recarregar } = useUsuario()
 
   if (!autenticado) {
@@ -22,26 +24,30 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/esqueci-senha" element={<EsqueciSenha />} />
-        <Route path="*" element={<Registrar />} />
+        <Route path="/" element={<Registrar />} />
+        <Route path="/registrar" element={<Registrar />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     )
   }
 
-  if (carregando) {
+  if (carregando && !usuario) {
     return (
       <div className="app-carregando">
-        <p>Carregando...</p>
+        <p role="status">Carregando seu usuário...</p>
+        <button type="button" onClick={limparToken}>Sair da conta</button>
       </div>
     )
   }
 
-  if (erro) {
+  if (erro && !usuario) {
     return (
       <div className="app-erro">
-        <p>{erro}</p>
+        <p role="alert">{erro}</p>
         <button type="button" onClick={recarregar}>
           Tentar novamente
         </button>
+        <button type="button" onClick={limparToken}>Sair da conta</button>
       </div>
     )
   }
@@ -56,6 +62,13 @@ function App() {
 
   return (
     <>
+      {carregando && <p role="status">Atualizando seu usuário...</p>}
+      {erro && (
+        <div role="alert">
+          <p>{erro}</p>
+          <button type="button" onClick={recarregar}>Tentar novamente</button>
+        </div>
+      )}
       <Routes>
         <Route path="/" element={<Dashboard usuario={usuario} />} />
         <Route path="/medidas/nova" element={<NovaMedicao />} />
@@ -73,4 +86,6 @@ function App() {
   )
 }
 
-export default App
+export default function App() {
+  return <UsuarioProvider><ConteudoApp /></UsuarioProvider>
+}

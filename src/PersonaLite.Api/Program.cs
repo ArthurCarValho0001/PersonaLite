@@ -10,6 +10,16 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Opt-in local profile: validate before registering the database or running migrations.
+if (builder.Configuration.GetValue<bool>("LocalDevelopment:Enabled"))
+{
+    var connection = new Npgsql.NpgsqlConnectionStringBuilder(
+        builder.Configuration.GetConnectionString("DefaultConnection"));
+    if (!builder.Environment.IsDevelopment() || connection.Host != "127.0.0.1"
+        || connection.Port != 55432 || connection.Database != "personalite_v2_local")
+        throw new InvalidOperationException("Perfil local exige Development e banco 127.0.0.1:55432/personalite_v2_local.");
+}
+
 const string PoliticaCorsClient = "ClientPwa";
 
 builder.Services.ConfigureHttpJsonOptions(options =>
@@ -46,6 +56,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 builder.Services.AddInfrastructure(builder.Configuration);
+
+if (builder.Configuration.GetValue<bool>("LocalDevelopment:Enabled"))
+    builder.Services.AddSingleton<PersonaLite.Application.Interfaces.IEmailService, PersonaLite.Api.LocalEmailService>();
 
 builder.Services.AddScoped<RegistrarUsuarioUseCase>();
 builder.Services.AddScoped<LoginUseCase>();

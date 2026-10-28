@@ -32,7 +32,7 @@ export function Perfil() {
   function sair() {
     if (!confirm('Sair da conta?')) return
     limparToken()
-    window.location.href = '/'
+    navigate('/login', { replace: true })
   }
 
   return (

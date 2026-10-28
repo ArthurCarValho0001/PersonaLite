@@ -1,4 +1,5 @@
 .env
+.local/
 
 *.rsuser
 *.suo
@@ -351,3 +352,4 @@ $RECYCLE.BIN/
 *.swp
 
 src/PersonaLite.Api/personalite.db*
+.local-tools/

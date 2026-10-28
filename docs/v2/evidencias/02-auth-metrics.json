@@ -1,0 +1,34 @@
+[
+  {
+    "variant": "before",
+    "flow": "/api/auth/login",
+    "authToUsableMs": 163,
+    "documentReloads": 1,
+    "userGetsAfterAuth": 1,
+    "userGetsAfterTreinos": 2
+  },
+  {
+    "variant": "before",
+    "flow": "/api/auth/registrar",
+    "authToUsableMs": 172.3,
+    "documentReloads": 1,
+    "userGetsAfterAuth": 1,
+    "userGetsAfterTreinos": 2
+  },
+  {
+    "variant": "after",
+    "flow": "/api/auth/login",
+    "authToUsableMs": 70.1,
+    "documentReloads": 0,
+    "userGetsAfterAuth": 1,
+    "userGetsAfterTreinos": 1
+  },
+  {
+    "variant": "after",
+    "flow": "/api/auth/registrar",
+    "authToUsableMs": 74.2,
+    "documentReloads": 0,
+    "userGetsAfterAuth": 1,
+    "userGetsAfterTreinos": 1
+  }
+]

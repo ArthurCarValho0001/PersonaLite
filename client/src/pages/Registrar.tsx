@@ -52,8 +52,7 @@ export function Registrar() {
         email: email.trim() || null,
       })
       salvarToken(resultado.token)
-      navigate('/')
-      window.location.reload()
+      navigate('/', { replace: true })
     } catch (erro: any) {
       if (erro?.response?.status === 409) {
         setErro('Esse nome de usuário já está em uso.')
