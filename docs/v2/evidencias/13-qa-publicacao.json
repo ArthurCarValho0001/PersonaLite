@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-29T21:53:55.637Z",
+  "environment": "local fictitious",
+  "results": [
+    {
+      "name": "rota privada sem token retorna 401",
+      "passed": true
+    },
+    {
+      "name": "cadastro concorrente com usuário normalizado cria somente uma conta",
+      "passed": true
+    },
+    {
+      "name": "credencial incorreta não autentica",
+      "passed": true
+    },
+    {
+      "name": "cadastro de menor de idade é permitido sem calcular medida",
+      "passed": true
+    },
+    {
+      "name": "outra conta não lê medição alheia",
+      "passed": true
+    },
+    {
+      "name": "outra conta não edita medição alheia",
+      "passed": true
+    },
+    {
+      "name": "editar para data já ocupada retorna conflito",
+      "passed": true
+    },
+    {
+      "name": "conflito de edição preserva as duas datas originais",
+      "passed": true
+    }
+  ]
+}
