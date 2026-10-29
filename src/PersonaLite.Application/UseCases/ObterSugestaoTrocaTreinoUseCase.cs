@@ -8,8 +8,10 @@ public class ObterSugestaoTrocaTreinoUseCase
     private readonly ITrimestreRepository _trimestreRepo;
     private readonly ISessaoExercicioRepository _sessaoRepo;
 
-    public ObterSugestaoTrocaTreinoUseCase(ITrimestreRepository trimestreRepo, ISessaoExercicioRepository sessaoRepo)
+    private readonly ICalendario _calendario;
+    public ObterSugestaoTrocaTreinoUseCase(ITrimestreRepository trimestreRepo, ISessaoExercicioRepository sessaoRepo, ICalendario calendario)
     {
+        _calendario = calendario;
         _trimestreRepo = trimestreRepo;
         _sessaoRepo = sessaoRepo;
     }
@@ -20,7 +22,7 @@ public class ObterSugestaoTrocaTreinoUseCase
         if (trimestre is null)
             return new SugestaoTrocaTreinoDto(false, new List<SugestaoExercicioDto>());
 
-        var hoje = DateOnly.FromDateTime(DateTime.Today);
+        var hoje = _calendario.Hoje;
         var trocaPendente = hoje >= trimestre.DataFimPrevista;
         if (!trocaPendente)
             return new SugestaoTrocaTreinoDto(false, new List<SugestaoExercicioDto>());

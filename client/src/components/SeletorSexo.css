@@ -4,14 +4,14 @@
 
 .seletor-sexo__label {
   font-size: 0.875rem;
-  color: #94a3b8;
+  color: #526862;
   font-weight: 500;
 }
 
 .seletor-sexo__ajuda {
   margin: 0.2rem 0 0.6rem 0;
   font-size: 0.75rem;
-  color: #64748b;
+  color: #526862;
 }
 
 .seletor-sexo__opcoes {
@@ -23,20 +23,20 @@
   flex: 1;
   padding: 0.75rem;
   border-radius: 8px;
-  border: 1px solid #334155;
-  background: #0f172a;
-  color: #cbd5e1;
+  border: 1px solid #dce5df;
+  background: #edf2ee;
+  color: #415a50;
   font-size: 1rem;
   cursor: pointer;
   transition: border-color 0.15s, color 0.15s;
 }
 
 .seletor-sexo__botao:hover {
-  border-color: #475569;
+  border-color: #6c8178;
 }
 
 .seletor-sexo__botao.ativo {
-  border-color: #22c55e;
-  color: #22c55e;
-  background: #052e16;
+  border-color: #166b50;
+  color: #166b50;
+  background: #ffffff;
 }

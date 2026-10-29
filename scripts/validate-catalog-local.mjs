@@ -1,0 +1,22 @@
+import assert from 'node:assert/strict';
+import {randomUUID} from 'node:crypto';
+import {readFile,writeFile} from 'node:fs/promises';
+import {execFileSync} from 'node:child_process';
+const origem='http://localhost:5000';
+const fixture=JSON.parse(await readFile('.local/catalogo-teste.json','utf8'));
+let token;
+async function req(path,body,status=200){const r=await fetch(origem+path,{method:body===undefined?'GET':'POST',headers:{'Content-Type':'application/json',...(token?{Authorization:`Bearer ${token}`} : {}),'Idempotency-Key':randomUUID()},body:body===undefined?undefined:JSON.stringify(body)});assert.equal(r.status,status,path);return r.status===204?null:r.json();}
+const conta=await req('/api/auth/registrar',{nome:'Teste de retirada local',nomeUsuario:'retirada_'+randomUUID().slice(0,8),senha:randomUUID(),sexo:'Masculino',dataNascimento:'1995-01-01',alturaCm:175});token=conta.token;
+const m=await req(`/api/aprender/modulos/${fixture.Id}`);
+for(const a of m.aulas)await req(`/api/aprender/modulos/${fixture.Id}/aulas/${a.id}/estudar`,{},204);
+const q=await req(`/api/aprender/modulos/${fixture.Id}/questionario`);
+const tentativa=await req(`/api/aprender/modulos/${fixture.Id}/tentativas`,{respostas:Object.fromEntries(q.questoes.map(q=>[q.id,'a']))});
+execFileSync('pwsh.exe',['-NoProfile','-File','scripts/start-local-api.ps1','-WithdrawVersion',fixture.Id],{stdio:'ignore'});
+assert.ok(!(await req('/api/aprender/modulos')).some(m=>m.id===fixture.Id));
+await req(`/api/aprender/modulos/${fixture.Id}`,undefined,404);
+await req(`/api/aprender/modulos/${fixture.Id}/questionario`,undefined,404);
+await req(`/api/aprender/modulos/${fixture.Id}/tentativas`,{respostas:{}},404);
+const h=await req('/api/aprender/historico');assert.equal(h[0].concluido,true);assert.equal(h[0].retirada,true);assert.equal(h[0].tentativas.length,1);
+const r=await req(`/api/aprender/tentativas/${tentativa.id}`);assert.equal(r.nota,100);assert.ok(!r.explicacoes || r.explicacoes.length===0);
+await writeFile('.local/catalogo-results.json',JSON.stringify({retiradaBloqueiaConteudo:true,retiradaBloqueiaTentativa:true,historicoPreservado:true,resultadoSemConteudo:true},null,2));
+console.log('OK: versão retirada bloqueia conteúdo e novas tentativas, preservando histórico e nota sem explicações.');

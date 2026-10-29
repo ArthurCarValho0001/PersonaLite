@@ -13,25 +13,25 @@
 
 .info-pessoais__titulo {
   font-size: 1.2rem;
-  color: #f1f5f9;
+  color: #142d2a;
   margin: 0;
 }
 
 .info-pessoais__label {
   display: block;
   font-size: 0.875rem;
-  color: #94a3b8;
+  color: #526862;
   font-weight: 500;
   margin-bottom: 0.35rem;
 }
 
 .info-pessoais__textarea {
   width: 100%;
-  background: #0f172a;
-  border: 1px solid #334155;
+  background: #edf2ee;
+  border: 1px solid #dce5df;
   border-radius: 8px;
   padding: 0.6rem 0.75rem;
-  color: #e2e8f0;
+  color: #142d2a;
   font-size: 1rem;
   font-family: inherit;
   resize: vertical;

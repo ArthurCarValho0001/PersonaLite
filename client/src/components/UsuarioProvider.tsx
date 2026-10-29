@@ -17,7 +17,7 @@ export function UsuarioProvider({ children }: { children: ReactNode }) {
     token: null, usuario: null, carregando: false, erro: null,
   })
   const sequencia = useRef(0)
-  const pendente = useRef<{ token: string; promessa: Promise<UsuarioDto | null> } | null>(null)
+  const pendente = useRef<{ token: string; promessa: Promise<UsuarioDto | null>; controller: AbortController } | null>(null)
 
   const recarregar = useCallback(() => {
     if (!token) return
@@ -28,7 +28,9 @@ export function UsuarioProvider({ children }: { children: ReactNode }) {
     }))
     // Reuse bootstrap in flight, including React StrictMode's effect replay.
     if (pendente.current?.token !== token) {
-      const pedido = { token, promessa: obterUsuario() }
+      pendente.current?.controller.abort()
+      const controller = new AbortController()
+      const pedido = { token, promessa: obterUsuario(controller.signal), controller }
       pendente.current = pedido
       void pedido.promessa.finally(() => {
         if (pendente.current === pedido) pendente.current = null
@@ -52,6 +54,7 @@ export function UsuarioProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!token) {
+      pendente.current?.controller.abort()
       pendente.current = null
       setEstado({ token: null, usuario: null, carregando: false, erro: null })
     } else recarregar()

@@ -26,7 +26,7 @@ public class SolicitarRedefinicaoSenhaUseCase
         // Não revela se o e-mail existe ou não — evita enumeração de contas.
         if (usuario is null || !usuario.EmailVerificado) return;
 
-        var codigoGerado = Random.Shared.Next(100000, 999999).ToString();
+        var codigoGerado = System.Security.Cryptography.RandomNumberGenerator.GetInt32(100000, 1000000).ToString();
         var codigo = new CodigoVerificacao(usuario.Id, codigoGerado, PropositoCodigo.RedefinirSenha);
         await _codigoRepo.SalvarAsync(codigo);
 

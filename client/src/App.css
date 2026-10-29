@@ -6,12 +6,12 @@
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  color: #94a3b8;
+  color: #526862;
 }
 
 .app-erro button {
-  background: #22c55e;
-  color: #052e16;
+  background: #166b50;
+  color: #ffffff;
   border: none;
   border-radius: 8px;
   padding: 0.6rem 1.2rem;

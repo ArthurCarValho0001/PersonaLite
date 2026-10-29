@@ -8,8 +8,10 @@ public class VerificarReavaliacaoPendenteUseCase
 
     private readonly IRegistroMedidasRepository _medidasRepo;
 
-    public VerificarReavaliacaoPendenteUseCase(IRegistroMedidasRepository medidasRepo)
+    private readonly ICalendario _calendario;
+    public VerificarReavaliacaoPendenteUseCase(IRegistroMedidasRepository medidasRepo, ICalendario calendario)
     {
+        _calendario = calendario;
         _medidasRepo = medidasRepo;
     }
 
@@ -21,7 +23,7 @@ public class VerificarReavaliacaoPendenteUseCase
             return new ReavaliacaoStatusDto(Pendente: false, ProximaData: null, UltimaMedicao: null);
 
         var proximaData = ultimoRegistro.Data.AddMonths(MesesParaReavaliacao);
-        var hoje = DateOnly.FromDateTime(DateTime.Today);
+        var hoje = _calendario.Hoje;
 
         return new ReavaliacaoStatusDto(
             Pendente: hoje >= proximaData,

@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { HistoricoTreinos } from '../components/HistoricoTreinos'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '../components/Button'
 import { Card } from '../components/Card'
@@ -11,10 +12,18 @@ import './Treinos.css'
 import { concluirTreinoDoDia } from '../api/treinoApi'
 import { useUsuario } from '../hooks/useUsuario'
 
-const hojeIso = new Date().toISOString().slice(0, 10)
+import { dataLocal } from '../api/calendario'
 
 export function Treinos() {
-  const { treino, carregando, erro, diaSelecionadoId, selecionarDia, recarregar } = useTreinoSelecionavel()
+  const [data, setData] = useState(dataLocal)
+  const [hoje, setHoje] = useState(dataLocal)
+  useEffect(() => {
+    const verificar = () => { const nova = dataLocal(); setHoje(anterior => { if (nova !== anterior) setData(atual => atual === anterior ? nova : atual); return nova }) }
+    const intervalo = window.setInterval(verificar, 30000)
+    window.addEventListener('focus', verificar)
+    return () => { window.clearInterval(intervalo); window.removeEventListener('focus', verificar) }
+  }, [])
+  const { treino, carregando, erro, diaSelecionadoId, selecionarDia, recarregar, atualizarExercicio } = useTreinoSelecionavel(data)
   const { plano } = usePlanoAtual()
   const [contadorSeries, setContadorSeries] = useState(0)
   const { usuario } = useUsuario()
@@ -22,11 +31,11 @@ export function Treinos() {
 
   async function concluirTreinoInteiro() {
     if (!treino?.diaDeTreinoId) return
-    if (!confirm('Concluir o treino de hoje? Todas as séries já registradas serão consideradas válidas.')) return
+    if (!confirm('Concluir o treino da data selecionada? Todas as séries já registradas serão consideradas válidas.')) return
 
     setConcluindoTreino(true)
     try {
-      await concluirTreinoDoDia(treino.diaDeTreinoId)
+      await concluirTreinoDoDia(treino.diaDeTreinoId, data)
       recarregar()
     } finally {
       setConcluindoTreino(false)
@@ -45,6 +54,8 @@ export function Treinos() {
         </Link>
       </header>
 
+      <label htmlFor="dataTreino">Data do treino</label>
+      <input id="dataTreino" type="date" value={data} max={hoje} onChange={e => { if (e.target.value && e.target.value <= hoje) setData(e.target.value) }} />
       {plano && plano.dias.length > 0 && (
         <div className="treinos__seletor">
           <label htmlFor="seletorDia" className="treinos__seletor-label">
@@ -103,10 +114,10 @@ export function Treinos() {
           <div className="treinos__lista">
             {treino.exercicios.map((exercicio) => (
               <CardExercicio
-                key={exercicio.exercicioPlanejadoId}
+                key={`${data}:${exercicio.exercicioPlanejadoId}`}
                 exercicio={exercicio}
-                data={hojeIso}
-                onAtualizar={recarregar}
+                data={data}
+                onAtualizar={atualizarExercicio}
                 onNovaSerie={() => setContadorSeries((c) => c + 1)}
               />
             ))}
@@ -117,11 +128,12 @@ export function Treinos() {
             onClick={concluirTreinoInteiro}
             disabled={concluindoTreino}
           >
-            {concluindoTreino ? 'Concluindo...' : '✓ Concluir treino de hoje'}
+            {concluindoTreino ? 'Concluindo...' : '✓ Concluir treino da data selecionada'}
           </button>
         </>
       )}
 
+      <HistoricoTreinos selecionarDia={selecionarDia} />
       <Link to="/treinos/configurar" className="treinos__link-config">
         Configurar treinos da semana
       </Link>

@@ -1,3 +1,4 @@
+import { dataLocal } from '../api/calendario'
 import { useEffect, useState, type FormEvent } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { atualizarMedidas, obterMedida, registrarMedidas } from '../api/medidasApi'
@@ -48,7 +49,7 @@ type CamposNumericos = CampoCircunferencia | CampoDobra | 'pesoKg'
 type EstadoFormulario = Record<CamposNumericos, string> & { data: string }
 
 const estadoInicial: EstadoFormulario = {
-  data: new Date().toISOString().slice(0, 10),
+  data: '',
   pesoKg: '',
   pescoco: '',
   toraxMesoesternal: '',
@@ -78,7 +79,7 @@ export function NovaMedicao() {
   const { id } = useParams<{ id: string }>()
   const modoEdicao = Boolean(id)
 
-  const [form, setForm] = useState<EstadoFormulario>(estadoInicial)
+  const [form, setForm] = useState<EstadoFormulario>(() => ({ ...estadoInicial, data: dataLocal() }))
   const [carregandoRegistro, setCarregandoRegistro] = useState(modoEdicao)
   const [enviando, setEnviando] = useState(false)
   const [erro, setErro] = useState<string | null>(null)
@@ -193,7 +194,7 @@ export function NovaMedicao() {
             <FormField
               id="data"
               label="Data"
-              type="date"
+              type="date" max={dataLocal()}
               value={form.data}
               onChange={(e) => atualizarCampo('data', e.target.value)}
             />

@@ -13,7 +13,7 @@
 
 .dados-priv__titulo {
   font-size: 1.2rem;
-  color: #f1f5f9;
+  color: #142d2a;
   margin: 0;
 }
 
@@ -32,14 +32,14 @@
 .dados-priv__item-label {
   display: block;
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: #526862;
 }
 
 .dados-priv__item-valor {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #e2e8f0;
+  color: #142d2a;
   font-weight: 600;
   font-size: 0.9rem;
 }
@@ -52,8 +52,8 @@
 }
 
 .dados-priv__badge--ok {
-  background: #052e16;
-  color: #4ade80;
+  background: #ffffff;
+  color: #176846;
 }
 
 .dados-priv__badge--pendente {
@@ -62,14 +62,14 @@
 }
 
 .dados-priv__seta {
-  color: #64748b;
+  color: #526862;
   font-size: 0.7rem;
 }
 
 .dados-priv__corpo {
   margin-top: 0.75rem;
   padding-top: 0.75rem;
-  border-top: 1px solid #334155;
+  border-top: 1px solid #dce5df;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -78,25 +78,25 @@
 .dados-priv__form {
   margin-top: 0.75rem;
   padding-top: 0.75rem;
-  border-top: 1px solid #334155;
+  border-top: 1px solid #dce5df;
 }
 
 .dados-priv__texto {
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: #526862;
   margin: 0 0 0.5rem 0;
 }
 
 .dados-priv__verificacao {
-  background: #0f172a;
-  border: 1px solid #334155;
+  background: #edf2ee;
+  border: 1px solid #dce5df;
   border-radius: 10px;
   padding: 0.75rem;
 }
 
 .dados-priv__link {
   background: none;
-  border: 1px solid #334155;
+  border: 1px solid #dce5df;
   color: #38bdf8;
   border-radius: 8px;
   padding: 0.5rem 0.9rem;
@@ -106,13 +106,13 @@
 }
 
 .dados-priv__erro {
-  color: #f87171;
+  color: #a82535;
   font-size: 0.8rem;
   margin: 0.3rem 0;
 }
 
 .dados-priv__sucesso {
-  color: #4ade80;
+  color: #176846;
   font-size: 0.8rem;
   margin: 0.3rem 0;
 }

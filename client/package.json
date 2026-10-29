@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "test": "tsx --tsconfig tsconfig.app.json --import ./tests/setup.mjs --test --test-concurrency=1 tests/auth.test.tsx",
+    "test": "tsx --tsconfig tsconfig.app.json --import ./tests/setup.mjs --test --test-concurrency=1 tests/auth.test.tsx tests/v2.test.tsx",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview"

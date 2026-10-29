@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { criarTrimestre, obterTrimestreAtual } from '../api/trimestreApi'
+import { obterTrimestreAtual } from '../api/trimestreApi'
 import type { TrimestreAtualDto } from '../types'
 
 export function useTrimestre() {
@@ -10,12 +10,8 @@ export function useTrimestre() {
     setCarregando(true)
     try {
       let atual = await obterTrimestreAtual()
-      if (!atual) {
-        await criarTrimestre()
-        atual = await obterTrimestreAtual()
-      }
       setTrimestre(atual)
-    } finally {
+    } catch { setTrimestre(null) } finally {
       setCarregando(false)
     }
   }, [])

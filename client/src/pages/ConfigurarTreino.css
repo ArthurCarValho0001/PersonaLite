@@ -15,12 +15,12 @@
 
 .config-treino__titulo {
   font-size: 1.35rem;
-  color: #f1f5f9;
+  color: #142d2a;
   margin: 0;
 }
 
 .config-treino__mensagem {
-  color: #94a3b8;
+  color: #526862;
 }
 
 .config-treino__acao-inicial {
@@ -40,13 +40,13 @@
 
 .config-treino__dia-nome {
   margin: 0;
-  color: #e2e8f0;
+  color: #142d2a;
   font-size: 1.05rem;
 }
 
 .config-treino__dia-semana {
   font-size: 0.75rem;
-  color: #64748b;
+  color: #526862;
 }
 
 .config-treino__exercicios {
@@ -62,13 +62,13 @@
   display: flex;
   justify-content: space-between;
   font-size: 0.9rem;
-  color: #cbd5e1;
+  color: #415a50;
   padding: 0.4rem 0;
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid #ffffff;
 }
 
 .config-treino__exercicio-meta {
-  color: #64748b;
+  color: #526862;
   font-size: 0.8rem;
 }
 
@@ -85,7 +85,7 @@
 .config-treino__form-exercicio {
   margin-top: 0.5rem;
   padding-top: 0.75rem;
-  border-top: 1px solid #1e293b;
+  border-top: 1px solid #ffffff;
 }
 
 .config-treino__grade-numeros {
@@ -121,18 +121,18 @@
 .config-treino__label-select {
   display: block;
   font-size: 0.875rem;
-  color: #94a3b8;
+  color: #526862;
   font-weight: 500;
   margin-bottom: 0.35rem;
 }
 
 .config-treino__select {
   width: 100%;
-  background: #0f172a;
-  border: 1px solid #334155;
+  background: #edf2ee;
+  border: 1px solid #dce5df;
   border-radius: 8px;
   padding: 0.7rem 0.75rem;
-  color: #e2e8f0;
+  color: #142d2a;
   font-size: 1rem;
   margin-bottom: 1rem;
   min-height: 48px;
@@ -141,13 +141,13 @@
 .config-treino__dia-edicao {
   margin-bottom: 0.75rem;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid #ffffff;
 }
 
 .config-treino__icone-botao {
-  background: #1e293b;
-  border: 1px solid #334155;
-  color: #94a3b8;
+  background: #ffffff;
+  border: 1px solid #dce5df;
+  color: #526862;
   border-radius: 8px;
   width: 32px;
   height: 32px;
@@ -158,7 +158,7 @@
 }
 
 .config-treino__icone-botao--excluir {
-  color: #f87171;
+  color: #a82535;
 }
 
 .config-treino__exercicios li {
@@ -179,9 +179,9 @@
 }
 
 .config-treino__seta-botao {
-  background: #1e293b;
-  border: 1px solid #334155;
-  color: #94a3b8;
+  background: #ffffff;
+  border: 1px solid #dce5df;
+  color: #526862;
   border-radius: 8px;
   width: 32px;
   height: 32px;

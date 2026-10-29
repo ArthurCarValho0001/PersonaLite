@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-29T02:05:06.892Z",
+  "environment": "loopback, API aquecida, PostgreSQL local, sem latência móvel",
+  "dataset": "3 módulos; 2 aulas estudadas e 1 tentativa por conta; 10 contas fictícias",
+  "results": [
+    {
+      "path": "/api/aprender/modulos",
+      "requests": 100,
+      "concurrency": 10,
+      "p50Ms": 390.52,
+      "p95Ms": 414.37,
+      "maxMs": 456.3,
+      "targetMet": true
+    },
+    {
+      "path": "/api/aprender/historico",
+      "requests": 100,
+      "concurrency": 10,
+      "p50Ms": 388.08,
+      "p95Ms": 419.55,
+      "maxMs": 463.69,
+      "targetMet": true
+    }
+  ]
+}

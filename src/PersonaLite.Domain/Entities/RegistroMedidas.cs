@@ -17,6 +17,17 @@ public class RegistroMedidas
     // Resultados calculados (guardados pra histórico e auditoria)
     public double PercentualGorduraJP7 { get; private set; }
     public double Imc { get; private set; }
+    public string? EntradasCalculoJson { get; private set; }
+    public string? VersaoFormula { get; private set; }
+
+    public void Recalcular(Usuario usuario)
+    {
+        var idade = usuario.IdadeEm(Data);
+        Imc = CalculoImc.Calcular(PesoKg, usuario.AlturaCm);
+        PercentualGorduraJP7 = CalculoComposicaoCorporal.JacksonPollock7Dobras(Dobras, idade, usuario.Sexo);
+        VersaoFormula = "JP7-Siri/IMC-v1";
+        EntradasCalculoJson = System.Text.Json.JsonSerializer.Serialize(new { usuario.DataNascimento, usuario.Sexo, usuario.AlturaCm, IdadeNaMedicao = idade });
+    }
 
     private RegistroMedidas() { }
 

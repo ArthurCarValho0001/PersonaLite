@@ -36,5 +36,5 @@ public class SolicitarVerificacaoEmailUseCase
             $"<p>Olá, {usuario.Nome}!</p><p>Seu código de verificação é: <strong>{codigoGerado}</strong></p><p>Ele expira em 15 minutos.</p>");
     }
 
-    private static string GerarCodigo() => Random.Shared.Next(100000, 999999).ToString();
+    private static string GerarCodigo() => System.Security.Cryptography.RandomNumberGenerator.GetInt32(100000, 1000000).ToString();
 }

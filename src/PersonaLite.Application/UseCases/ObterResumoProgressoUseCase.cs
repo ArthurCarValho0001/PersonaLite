@@ -9,14 +9,16 @@ public class ObterResumoProgressoUseCase
 
     private readonly ISessaoExercicioRepository _sessaoRepo;
 
-    public ObterResumoProgressoUseCase(ISessaoExercicioRepository sessaoRepo)
+    private readonly ICalendario _calendario;
+    public ObterResumoProgressoUseCase(ISessaoExercicioRepository sessaoRepo, ICalendario calendario)
     {
+        _calendario = calendario;
         _sessaoRepo = sessaoRepo;
     }
 
     public async Task<ResumoProgressoDto> ExecutarAsync(Guid usuarioId)
     {
-        var hoje = DateOnly.FromDateTime(DateTime.Today);
+        var hoje = _calendario.Hoje;
         var inicioMesAtual = new DateOnly(hoje.Year, hoje.Month, 1);
         var inicioMesAnterior = inicioMesAtual.AddMonths(-1);
         var fimMesAnterior = inicioMesAtual.AddDays(-1);
@@ -54,7 +56,8 @@ public class ObterResumoProgressoUseCase
         }
 
         // 1. Novo recorde pessoal — melhor série do mês (por volume) supera o recorde de todos os tempos
-        foreach (var grupo in sessoesMes.GroupBy(s => s.NomeExercicio))
+        var recordes = await _sessaoRepo.ObterVolumesRecordesAsync(usuarioId, inicioMesAtual);
+        foreach (var grupo in sessoesMes.GroupBy(s => s.ExercicioPlanejadoId))
         {
             var gruposDeSerie = grupo
                 .SelectMany(s => s.Series.GroupBy(x => x.GrupoSerie))
@@ -69,17 +72,12 @@ public class ObterResumoProgressoUseCase
             if (gruposDeSerie.Count == 0) continue;
 
             var melhorDoMes = gruposDeSerie.OrderByDescending(g => g.volume).First();
-            var nomeNormalizado = grupo.Key.Trim().ToLowerInvariant();
-            var recordeAnterior = await _sessaoRepo.ObterRecordeAnteriorAsync(usuarioId, nomeNormalizado, inicioMesAtual);
-
-            if (recordeAnterior is not null)
-            {
-                var volumeRecordeAnterior = recordeAnterior.Value.CargaKg * recordeAnterior.Value.Repeticoes;
-                if (melhorDoMes.volume > volumeRecordeAnterior)
+            if (recordes.TryGetValue(grupo.Key, out var volumeRecordeAnterior))
+            {                if (melhorDoMes.volume > volumeRecordeAnterior)
                 {
                     return new DestaqueProgressoDto(
                         "NOVO_RECORDE", "Novo recorde!",
-                        $"{grupo.Key} • {FormatarPeso(melhorDoMes.CargaKg)}kg × {melhorDoMes.Repeticoes}");
+                        $"{grupo.First().NomeExercicio} • {FormatarPeso(melhorDoMes.CargaKg)}kg × {melhorDoMes.Repeticoes}");
                 }
             }
         }

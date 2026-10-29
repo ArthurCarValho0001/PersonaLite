@@ -1,3 +1,4 @@
+import { dataLocal } from '../api/calendario'
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { registrar } from '../api/authApi'
@@ -139,7 +140,7 @@ export function Registrar() {
             <FormField
               id="dataNascimento"
               label="Data de nascimento"
-              type="date"
+              type="date" max={dataLocal()}
               value={dataNascimento}
               onChange={(e) => setDataNascimento(e.target.value)}
             />

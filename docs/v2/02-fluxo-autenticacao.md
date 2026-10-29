@@ -1,5 +1,47 @@
 # Tarefa 01 — Remover recarga completa após autenticação
 
+## Revalidação com o pacote técnico fornecido
+
+Esta seção registra a nova solicitação após a integração anterior. A implementação já estava na `main`: `f47657a74658b8b505044b6ba3fbd221b3efef0c`, um commit após a referência `23ab62d46a77683f38df72c38d8b2785ea19bce8`. `git fetch origin` confirmou as referências; `main`, `origin/main` e `perf/v2-auth-bootstrap` apontavam para f47657a. Não foi recriada uma branch a partir da revisão antiga.
+
+A cópia principal continua em `chore/v2-base-local`, com modificações em `.gitignore` e `src/PersonaLite.Api/Program.cs` e arquivos não rastreados em `docs/`, `scripts/`, `client/.env.development.local.example` e `src/PersonaLite.Api/LocalEmailService.cs`. Tudo foi preservado. O worktree `.local-tools/auth-bootstrap` estava limpo em main e foi selecionada nele a branch existente `perf/v2-auth-bootstrap`, no mesmo commit.
+
+Fontes desta revisão: código e documentação do repositório e os arquivos `00_LEIA_PRIMEIRO.md`, `00_COMECE_AQUI.md`, `11_Inicio_da_Nova_Versao.md` e `12_Especificacao_Tecnica_V2.md` do ZIP fornecido. SHA-256 do ZIP: `47CD866B48F5887475DAC7DBD8F002E1B4BE903290E92B4A5003A6621C2DBB20`. O ZIP menciona arquivos 10/13 que não estão presentes; não se presumiu seu conteúdo. As propostas amplas do pacote não ampliam a autorização explícita de executar somente T01.
+
+Foram inspecionados Login, Registrar, App, Treinos, useUsuario, UsuarioProvider, clientes HTTP, armazenamento de token e testes. A implementação existente atende à meta central de T01 descrita nas seções 4.1, 6, 7 e 10 da especificação: navegação sem reload, um bootstrap compartilhado e estados recuperáveis. Não se justificou reescrever código funcional. Expiração continua dependendo do 401 do servidor; não existe refresh token no fluxo frontend. Revogação global após recuperação de senha pertence à T07. Respostas obsoletas são ignoradas; cancelamento físico de GET e timeout ainda não estão implementados, permanecendo como limitação para o lote de chamadas frontend descrito no plano. A tela inicial permite sair durante uma operação demorada.
+
+Alterações desta revalidação, relativas a f47657a:
+
+- `client/tests/auth.test.tsx`: cadastro agora também verifica navegação para Treinos sem segundo GET; novo teste verifica que erro de revalidação mantém usuário/conteúdo, não encerra sessão e permite retry.
+- Este documento: estado real do Git, rastreabilidade ao pacote e resultados atuais, corrigindo afirmações históricas sobre a consolidação.
+
+Comandos executados novamente no worktree (Node portátil no PATH, npm invocado pelo caminho indicado adiante):
+
+| Comando | Resultado nesta revalidação |
+| --- | --- |
+| `npm test`, antes dos ajustes de cobertura | 13 aprovados, zero falhas |
+| `npm test`, após os ajustes | 14 aprovados, zero falhas/ignorados; duração total 3716 ms |
+| `npm run build` | Exit 0; TypeScript, Vite e PWA concluídos; 2543 módulos, Vite 6,63 s; aviso de chunk acima de 500 kB |
+| `dotnet test PersonaLite.sln --no-restore` | Exit 0; 11 aprovados, zero falhas/ignorados |
+
+Dependências já instaladas foram reutilizadas; não houve nova instalação nem alteração de lockfile. O build foi executado antes de ampliar os testes; nenhum código empacotado foi alterado depois dele.
+
+**Baseline e medições:** os ensaios reais locais de login/cadastro e os tempos abaixo foram realizados anteriormente neste mesmo chat, antes da consolidação f47657a, e correspondem ao mesmo código frontend de execução. Não são medições novas desta revalidação. Os testes atuais confirmam um GET após autenticar e nenhum adicional ao navegar para Treinos em ambos os fluxos. Não houve nova inicialização de API, migration ou escrita em banco nesta revalidação. A comprovação de banco isolado, serviço de e-mail simulado e execução dos formulários é a registrada na etapa anterior; não se afirma uma nova verificação operacional desses serviços. Não houve novo push, merge, deploy ou início da Tarefa 02.
+
+Mensagem sugerida para este diff: `test: reforça regressões do bootstrap e registra revisão da especificação`.
+
+## Registro da implementação e medição anteriores
+
+### Execução adicional solicitada: testar, reconstruir e abrir localmente
+
+Após a revalidação documental, o responsável solicitou nova execução local. `npm test` passou com 14 testes (3209,7 ms); `npm run build` concluiu com Vite em 6,52 s e o aviso já conhecido de chunk acima de 500 kB. `dotnet test PersonaLite.sln --no-restore` passou com 11 testes; `dotnet build PersonaLite.sln --no-restore` concluiu com zero avisos e zero erros.
+
+Uma consulta PostgreSQL confirmou `current_database() = personalite_v2_local`, `current_user = personalite_local`, endereço `127.0.0.1`, porta `55432`. Os serviços anteriores ainda estavam ativos: tentativas de iniciar novas instâncias encontraram as portas 5000/5173 ocupadas. Os executáveis foram identificados antes de qualquer interrupção. Foi encerrada somente a API local anterior e iniciado `scripts/start-local-api.ps1` neste worktree, com Development, modo local e e-mail simulado. O startup confirmou banco atualizado, sem aplicar migrations, e escuta em `http://localhost:5000`. O servidor frontend existente já aponta para o `client/dist` recém-reconstruído e foi reutilizado em `http://localhost:5173`.
+
+A chave JWT descartável muda ao reiniciar a API: a sessão anterior recebeu 401 e foi removida. Novo login pelo formulário com a conta fictícia local retornou sucesso. Foram abertos Dashboard e Treinos e depois retornado ao Dashboard. Nesta amostra real adicional: GET `/api/usuario` HTTP 200 uma vez; zero GETs adicionais ao abrir Treinos; zero documentos novos após autenticar; resposta do login até Dashboard navegável em 122,7 ms. GET `/api/treino-do-dia` retornou 200 e `/api/planos-treino/atual` retornou 404 para a conta sem plano. Não foi repetido cadastro nesta rodada; sua cobertura automatizada passou e o ensaio real anterior continua registrado abaixo. Esta amostra não substitui a comparação controlada anterior nem mede produção.
+
+O navegador foi deixado visível e autenticado com dados fictícios. Evidência: [03-rebuild-local.png](evidencias/03-rebuild-local.png). API e frontend foram deixados ativos para avaliação do responsável.
+
 Nota de consolidação: após concluir as validações abaixo, o usuário solicitou commit e push de todas as alterações do chat. Os arquivos da preparação local e do diagnóstico foram reunidos nesta branch, preservando a documentação e as evidências de cada etapa. As referências abaixo à ausência de alterações de backend descrevem o escopo da implementação de autenticação; o commit consolidado também contém a configuração local e o simulador de e-mail da etapa anterior.
 
 Validação em 27/10/2026 (America/Sao_Paulo). Branch: `perf/v2-auth-bootstrap`, criada de `origin/main` atualizado no commit `23ab62d46a77683f38df72c38d8b2785ea19bce8`.
@@ -10,7 +52,7 @@ README.md e instruções de setup/testes em TECHNICAL.md foram consultados. Nenh
 
 `C:/Users/Arthur/Documents/PersonaLite/.local-tools/auth-bootstrap`
 
-Comandos: `git status --short --branch`, `git diff --stat`, `git fetch origin` e `git worktree add -b perf/v2-auth-bootstrap .local-tools/auth-bootstrap origin/main`. Os arquivos anteriores continuam na pasta original. As alterações desta tarefa estão somente no worktree indicado, ainda sem commit. Não houve push, merge, publicação ou alteração de produção.
+Comandos da etapa original: `git status --short --branch`, `git diff --stat`, `git fetch origin` e `git worktree add -b perf/v2-auth-bootstrap .local-tools/auth-bootstrap origin/main`. Os arquivos anteriores continuam na pasta original. Na conclusão inicial, o trabalho ainda não tinha commit/push/merge; posteriormente, por solicitações explícitas do usuário, foi consolidado em f47657a e integrado à main. Esse histórico não autoriza nova publicação nesta revalidação.
 
 ## Comportamento anterior
 
@@ -34,7 +76,7 @@ Enquanto esse primeiro GET está pendente, é exibido carregamento e uma ação 
 
 Logout limpa o token e volta ao login por navegação do React. Um 401 de chamada autenticada atual encerra a sessão sem reload e remove as telas protegidas. Respostas atrasadas de outro token não encerram a sessão nova nem repõem usuário antigo. Login inválido não é tratado como expiração de outra sessão. Rotas protegidas sem sessão direcionam ao login. Recuperação de senha não foi alterada.
 
-Não houve alteração de backend, migrations, histórico, hospedagem ou regras de negócio. A API local da preparação anterior foi reutilizada como serviço de teste; suas alterações anteriores não fazem parte desta branch.
+O fluxo de autenticação não exigiu alteração de backend, migrations, histórico, hospedagem ou regras de negócio. A API local da preparação anterior foi reutilizada como serviço de teste; suas alterações de configuração foram posteriormente incluídas no commit consolidado, conforme a nota inicial.
 
 ## Testes e comandos
 
@@ -130,7 +172,7 @@ node client/tests/auth-measure-server.mjs client/dist after .local/medicoes-auth
 
 Abra http://localhost:5173/login, autentique uma conta fictícia e navegue para Treinos. Para cadastro, saia da conta e use o formulário. O rodapé de medição mostra o tempo e a quantidade inicial de GETs; o JSONL registra os contadores subsequentes ao navegar. `documents` conta documentos novos depois da resposta de autenticação, não a abertura inicial da página.
 
-Para comparar a main, gere seu build em outro checkout sem alterar este trabalho, sirva esse dist com o mesmo harness e rótulo `before`, usando a mesma API/origem. Pare um servidor antes de iniciar o outro na porta 5173. Não use os dados persistidos de um service worker anterior para essa comparação; use uma origem/perfil limpo de testes. Encerre com Ctrl+C. O harness serve somente loopback, remove o script de registro PWA no HTML servido e não modifica o dist.
+Para comparar a base anterior, gere o build do commit `23ab62d46a77683f38df72c38d8b2785ea19bce8` em outro checkout sem alterar este trabalho (a main atual já contém a correção), sirva esse dist com o mesmo harness e rótulo `before`, usando a mesma API/origem. Pare um servidor antes de iniciar o outro na porta 5173. Não use os dados persistidos de um service worker anterior para essa comparação; use uma origem/perfil limpo de testes. Encerre com Ctrl+C. O harness serve somente loopback, remove o script de registro PWA no HTML servido e não modifica o dist.
 
 ## Arquivos alterados e motivos
 

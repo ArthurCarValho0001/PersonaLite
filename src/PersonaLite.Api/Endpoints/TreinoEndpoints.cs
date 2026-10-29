@@ -16,6 +16,18 @@ public static class TreinoEndpoints
             return Results.Created($"/api/planos-treino/{id}", new { id });
         });
 
+        planos.MapGet("/historico", async (HttpContext http, PersonaLite.Application.Interfaces.IPlanoTreinoRepository repo) =>
+        {
+            var historico = await repo.ListarAsync(http.User.ObterUsuarioId());
+            return Results.Ok(historico.Select(p => new {
+                p.Id, p.InicioVigencia, p.FimVigencia,
+                Dias = p.Dias.OrderBy(d => d.DiaSemana).Select(d => new {
+                    d.Id, d.Nome, d.DiaSemana,
+                    Exercicios = d.Exercicios.OrderBy(e => e.Ordem).Select(e => new { e.Id, e.Nome, e.Arquivado })
+                })
+            }));
+        });
+
         planos.MapGet("/atual", async (HttpContext http, ObterPlanoVigenteUseCase useCase) =>
         {
             var usuarioId = http.User.ObterUsuarioId();

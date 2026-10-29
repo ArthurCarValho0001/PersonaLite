@@ -75,3 +75,10 @@ export async function concluirTreinoDoDia(diaId: string, data?: string): Promise
     params: data ? { data } : undefined,
   })
 }
+export interface PlanoHistorico {
+  id: string; inicioVigencia: string; fimVigencia: string | null
+  dias: {id: string; nome: string; diaSemana: import('../types').DiaSemana; exercicios: {id:string; nome:string; arquivado:boolean}[]}[]
+}
+export async function obterPlanosHistoricos(): Promise<PlanoHistorico[]> {
+  return (await httpClient.get('/api/planos-treino/historico')).data
+}

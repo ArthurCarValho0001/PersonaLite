@@ -3,8 +3,8 @@
   bottom: 1rem;
   left: 50%;
   transform: translateX(-50%);
-  background: #1e293b;
-  border: 1px solid #334155;
+  background: #ffffff;
+  border: 1px solid #dce5df;
   border-radius: 999px;
   padding: 0.6rem 1.1rem;
   display: flex;
@@ -13,20 +13,20 @@
   z-index: 60;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   font-size: 0.85rem;
-  color: #e2e8f0;
+  color: #142d2a;
   min-height: 44px;
 }
 
 .cronometro--config {
   border: none;
   cursor: pointer;
-  color: #94a3b8;
+  color: #526862;
 }
 
 .cronometro--fim {
-  background: #052e16;
+  background: #ffffff;
   border-color: #166534;
-  color: #4ade80;
+  color: #176846;
 }
 
 .cronometro__tempo {
@@ -36,12 +36,12 @@
 }
 
 .cronometro__label {
-  color: #94a3b8;
+  color: #526862;
   font-size: 0.75rem;
 }
 
 .cronometro--fim .cronometro__label {
-  color: #4ade80;
+  color: #176846;
 }
 
 .cronometro__pular {
