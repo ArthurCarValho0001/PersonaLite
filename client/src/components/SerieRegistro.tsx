@@ -158,10 +158,11 @@ export function SerieRegistro({
         <button
           type="button"
           className="serie-registro__ultimo-treino-cabecalho"
+          aria-expanded={painelAberto}
           onClick={() => setPainelAberto((v) => !v)}
         >
-          <span>📈 Último treino</span>
-          <span className="serie-registro__ultimo-treino-seta">{painelAberto ? '▲' : '▼'}</span>
+          <span>Último treino</span>
+          <span className="serie-registro__ultimo-treino-seta" aria-hidden="true">{painelAberto ? '−' : '+'}</span>
         </button>
 
         {painelAberto && (
@@ -174,19 +175,19 @@ export function SerieRegistro({
             ) : (
               <>
                 <div className="serie-registro__destaque">
-                  <span className="serie-registro__destaque-label">🏆 Melhor série</span>
+                  <span className="serie-registro__destaque-label">Melhor série</span>
                   <span className="serie-registro__destaque-valor">
                     {ultimoTreino.melhorSerie.cargaKg}kg × {ultimoTreino.melhorSerie.repeticoes} reps
                   </span>
                 </div>
                 <div className="serie-registro__destaque">
-                  <span className="serie-registro__destaque-label">↺ Última série</span>
+                  <span className="serie-registro__destaque-label">Última série</span>
                   <span className="serie-registro__destaque-valor">
                     {ultimoTreino.ultimaSerie.cargaKg}kg × {ultimoTreino.ultimaSerie.repeticoes} reps
                   </span>
                 </div>
                 <div className="serie-registro__sugestao">
-                  <span className="serie-registro__sugestao-label">🎯 Sugestão</span>
+                  <span className="serie-registro__sugestao-label">Para o próximo treino</span>
                   <p>• {ultimoTreino.sugestao.aumentar}</p>
                   <p>• {ultimoTreino.sugestao.manter}</p>
                 </div>
