@@ -19,6 +19,12 @@ function Estado({ erro, tentar }: { erro: string; tentar: () => void }) {
   return erro ? <div className="v2-panel" role="alert"><p>{erro}</p><button onClick={tentar}>Tentar novamente</button></div> : <p role="status">Carregando...</p>
 }
 
+const previaAulas = [
+  { modulo: 'Movimento e bem-estar', titulo: 'Conhecer antes de escolher', texto: 'Ana registra uma atividade fictícia e observa sua rotina. O registro, por si só, não comprova resultado de saúde.' },
+  { modulo: 'Autocuidado e informação', titulo: 'Do registro à reflexão', texto: 'No cenário de teste, Ana procura fontes identificadas e distingue informação geral de orientação profissional.' },
+  { modulo: 'Hábitos e sustentabilidade', titulo: 'Pequenos hábitos, novas perguntas', texto: 'Uma situação inventada apresenta escolhas cotidianas para reflexão, sem recomendações ou resultados comprovados.' },
+]
+
 export function Aprender() {
   const { dados, erro, tentar } = useConsulta(api.catalogo, 'catalogo')
   const icons = [Activity, Heart, Leaf]
@@ -30,6 +36,10 @@ export function Aprender() {
       const Icon = icons[i % icons.length]
       return <article className="v2-module" key={m.id}><div className={`v2-module-art art-${i % 3}`}><Icon size={60} strokeWidth={1.25}/><span>0{i + 1}</span></div><div className="v2-module-body"><span className="v2-eyebrow">2 AULAS · VERSÃO {m.versao}</span><h2>{m.titulo}</h2><p>{m.objetivo}</p><progress value={m.aulasEstudadas} max={2} aria-label={`Aulas estudadas de ${m.titulo}`}/><small>{m.aulasEstudadas} de 2 aulas estudadas {m.versaoConcluida && '· Módulo concluído'}</small>{m.versaoConcluida && m.versaoConcluida !== m.versao && <p className="v2-notice">Você concluiu a versão {m.versaoConcluida}. O novo conteúdo é opcional.</p>}<Link className="v2-link-button" to={`/aprender/${m.id}`}>{m.aulasEstudadas ? 'Continuar módulo' : 'Conhecer módulo'}<ArrowRight size={18}/></Link></div></article>
     })}</div>}
+    <section className="v2-learning-preview" aria-labelledby="previa-aprender">
+      <div className="v2-learning-preview-heading"><div><span className="v2-eyebrow">AMOSTRAS FICTÍCIAS</span><h2 id="previa-aprender">Um pouco do que você vai encontrar</h2></div><p>Estes exemplos mostram o formato das aulas. Seu progresso e as aulas completas dependem do catálogo.</p></div>
+      <div className="v2-learning-preview-grid">{previaAulas.map((aula, i) => <article className="v2-learning-preview-card" key={aula.modulo}><span className="v2-learning-preview-index">0{i + 1}</span><span className="v2-eyebrow">{aula.modulo}</span><h3>{aula.titulo}</h3><p>{aula.texto}</p><small>Conteúdo fictício de demonstração</small></article>)}</div>
+    </section>
     <p className="v2-muted">Aulas e acertos indicam atividade no aplicativo. Não comprovam impacto clínico ou resultados de aprendizagem fora dele.</p>
   </section>
 }

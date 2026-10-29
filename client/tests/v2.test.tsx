@@ -96,3 +96,27 @@ test('avaliação mantém respostas só em memória, bloqueia saída e repete a 
   assert.equal(chaves.length,2); assert.equal(chaves[0],chaves[1])
   assert.equal(sessionStorage.length,0); assert.equal(localStorage.length,0)
 })
+
+test('prévia fictícia de Aprender continua visível quando o catálogo falha', async () => {
+  const { render, screen } = await import('@testing-library/react')
+  const { MemoryRouter } = await import('react-router-dom')
+  const { Aprender } = await import('../src/pages/Aprender')
+  const { AxiosError } = await import('axios')
+  httpClient.defaults.adapter = async config => { throw new AxiosError('Catálogo indisponível', 'ERR_BAD_RESPONSE', config) }
+  render(<MemoryRouter><Aprender /></MemoryRouter>)
+  await screen.findByRole('alert')
+  assert.ok(screen.getByRole('heading', { name: 'Um pouco do que você vai encontrar' }))
+  assert.equal(screen.getAllByText('Conteúdo fictício de demonstração').length, 3)
+})
+
+test('bloco Último treino alterna conteúdo pelo botão', async () => {
+  const { render, screen, fireEvent } = await import('@testing-library/react')
+  const { SerieRegistro } = await import('../src/components/SerieRegistro')
+  render(<SerieRegistro exercicioPlanejadoId="ficticio" sessaoExercicioId={null} data="2026-10-29" seriesRegistradas={[]} seriesAlvo={3} repeticoesAlvo={10} ultimoTreino={null} onSerieRegistrada={() => {}} onNovaSerie={() => {}} />)
+  const cabecalho = screen.getByRole('button', { name: 'Último treino' })
+  assert.equal(cabecalho.getAttribute('aria-expanded'), 'true')
+  assert.ok(screen.getByText(/primeiro registro neste exercício/))
+  fireEvent.click(cabecalho)
+  assert.equal(cabecalho.getAttribute('aria-expanded'), 'false')
+  assert.equal(screen.queryByText(/primeiro registro neste exercício/), null)
+})
