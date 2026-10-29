@@ -10,8 +10,7 @@ public static class SessaoEndpoints
         app.MapPost("/api/series", async (HttpContext http, RegistrarSerieDto dto, RegistrarSerieUseCase useCase) =>
         {
             var usuarioId = http.User.ObterUsuarioId();
-            await useCase.ExecutarAsync(usuarioId, dto);
-            return Results.NoContent();
+            return Results.Ok(await useCase.ExecutarAsync(usuarioId, dto));
         }).WithTags("Sessoes").RequireAuthorization();
 
         app.MapPut("/api/sessoes/{sessaoId:guid}/series/{grupoSerie:int}", async (

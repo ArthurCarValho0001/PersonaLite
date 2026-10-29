@@ -1,0 +1,8 @@
+{
+  "semCredenciaisOuAvatar": true,
+  "formulaProtegida": true,
+  "circunferencias": 14,
+  "dobras": 7,
+  "somenteContaDaFixture": true,
+  "csvsPorTipo": true
+}

@@ -9,8 +9,10 @@ public class AtualizarMedidasUseCase
     private readonly IUsuarioRepository _usuarioRepo;
     private readonly IRegistroMedidasRepository _medidasRepo;
 
-    public AtualizarMedidasUseCase(IUsuarioRepository usuarioRepo, IRegistroMedidasRepository medidasRepo)
+    private readonly ICalendario _calendario;
+    public AtualizarMedidasUseCase(IUsuarioRepository usuarioRepo, IRegistroMedidasRepository medidasRepo, ICalendario calendario)
     {
+        _calendario = calendario;
         _usuarioRepo = usuarioRepo;
         _medidasRepo = medidasRepo;
     }
@@ -24,6 +26,8 @@ public class AtualizarMedidasUseCase
         if (existente is null || existente.UsuarioId != usuarioId)
             throw new InvalidOperationException("Registro não encontrado.");
 
+        ValidacaoV2.Medidas(dto, _calendario.Hoje);
+        if ((await _medidasRepo.ListarPorUsuarioAsync(usuarioId)).Any(m => m.Data == dto.Data && m.Id != id)) throw new ConflitoException("Já existe uma medição nesta data. Edite o registro existente.");
         var idade = usuario.IdadeEm(dto.Data);
 
         var circunferencias = new Circunferencias(
@@ -37,6 +41,7 @@ public class AtualizarMedidasUseCase
 
         existente.Atualizar(dto.Data, dto.PesoKg, usuario.AlturaCm, idade, usuario.Sexo, circunferencias, dobras);
 
+        existente.Recalcular(usuario);
         await _medidasRepo.AtualizarAsync(existente);
     }
 }

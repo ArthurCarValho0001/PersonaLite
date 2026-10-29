@@ -6,6 +6,13 @@ namespace PersonaLite.Application.UseCases;
 
 internal static class MapeadorTreinoDoDia
 {
+    public static ExercicioComRegistrosDto Mapear(ExercicioPlanejado exercicio, SessaoExercicio? sessao, SessaoExercicio? anterior)
+    {
+        var series = MapearSeries(sessao);
+        var ultimo = MontarUltimoTreino(anterior);
+        return new(exercicio.Id, exercicio.Nome, exercicio.GrupoMuscular, exercicio.SeriesAlvo, exercicio.RepeticoesAlvo,
+            sessao?.Id, sessao?.Concluida ?? false, CalcularSeEvoluiu(series, ultimo), series, ultimo);
+    }
     public static async Task<ExercicioComRegistrosDto> MapearExercicioAsync(
         Guid usuarioId, ExercicioPlanejado exercicio, SessaoExercicio? sessao, DateOnly dataAlvo,
         ISessaoExercicioRepository sessaoRepo)

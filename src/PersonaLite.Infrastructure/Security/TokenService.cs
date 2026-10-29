@@ -16,7 +16,7 @@ public class TokenService : ITokenService
         _configuration = configuration;
     }
 
-    public string GerarToken(Guid usuarioId, string nomeUsuario)
+    public string GerarToken(Guid usuarioId, string nomeUsuario, int versaoSessao = 0)
     {
         var chaveSecreta = _configuration["Jwt:SecretKey"]
             ?? throw new InvalidOperationException("Jwt:SecretKey não configurada.");
@@ -28,6 +28,7 @@ public class TokenService : ITokenService
         {
             new Claim(ClaimTypes.NameIdentifier, usuarioId.ToString()),
             new Claim(ClaimTypes.Name, nomeUsuario),
+            new Claim("session_version", versaoSessao.ToString()),
         };
 
         var token = new JwtSecurityToken(

@@ -8,6 +8,7 @@ public class Usuario
     public string Nome { get; private set; } = string.Empty;
     public string NomeUsuario { get; private set; } = string.Empty;
     public string SenhaHash { get; private set; } = string.Empty;
+    public int VersaoSessao { get; private set; }
     public string? Email { get; private set; }
     public bool EmailVerificado { get; private set; }
     public string? AvatarUrl { get; private set; }
@@ -47,8 +48,12 @@ public class Usuario
         TempoDescansoSegundos = segundos;
     }
 
-    public void AtualizarInformacoesPessoais(string nome, DateOnly dataNascimento, Sexo sexo, string? metas)
+    public void AtualizarInformacoesPessoais(string nome, DateOnly dataNascimento, Sexo sexo, string? metas, double? alturaCm = null)
     {
+        if (alturaCm.HasValue) {
+            if (!double.IsFinite(alturaCm.Value) || alturaCm.Value <= 0) throw new InvalidOperationException("Informe uma altura válida em centímetros.");
+            AlturaCm = alturaCm.Value;
+        }
         Nome = nome;
         DataNascimento = dataNascimento;
         Sexo = sexo;
@@ -68,6 +73,7 @@ public class Usuario
     public void AlterarSenha(string novoHash)
     {
         SenhaHash = novoHash;
+        VersaoSessao++;
     }
 
     /// <summary>

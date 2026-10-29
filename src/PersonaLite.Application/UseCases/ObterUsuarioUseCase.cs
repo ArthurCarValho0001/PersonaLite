@@ -19,6 +19,6 @@ public class ObterUsuarioUseCase
 
                 return new UsuarioDto(
             usuario.Id, usuario.Nome, usuario.NomeUsuario, usuario.Sexo, usuario.DataNascimento, usuario.AlturaCm,
-            usuario.TempoDescansoSegundos, usuario.Email, usuario.EmailVerificado, usuario.AvatarUrl, usuario.Metas);
+            usuario.TempoDescansoSegundos, usuario.Email, usuario.EmailVerificado, usuario.AvatarUrl is null ? null : "/api/usuario/avatar/arquivo?v=" + Uri.EscapeDataString(Path.GetFileName(usuario.AvatarUrl)), usuario.Metas);
     }
 }

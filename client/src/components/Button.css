@@ -18,12 +18,12 @@
 }
 
 .botao--primario {
-  background: #22c55e;
-  color: #052e16;
+  background: #166b50;
+  color: #ffffff;
 }
 
 .botao--secundario {
   background: transparent;
-  border: 1px solid #334155;
-  color: #e2e8f0;
+  border: 1px solid #dce5df;
+  color: #142d2a;
 }

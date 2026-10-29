@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { atualizarAvatar } from '../api/perfilApi'
 import { limparToken } from '../api/authToken'
+import { contarPendentes } from '../api/offlineQueue'
 import { Avatar } from '../components/Avatar'
 import { Button } from '../components/Button'
 import { useUsuario } from '../hooks/useUsuario'
@@ -29,8 +30,9 @@ export function Perfil() {
     }
   }
 
-  function sair() {
-    if (!confirm('Sair da conta?')) return
+  async function sair() {
+    const pendentes = await contarPendentes()
+    if (!confirm(pendentes ? `Há ${pendentes} registro(s) não sincronizado(s). Eles serão preservados para esta conta. Sair?` : 'Sair da conta?')) return
     limparToken()
     navigate('/login', { replace: true })
   }

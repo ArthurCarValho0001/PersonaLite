@@ -45,24 +45,6 @@ public static class MedidasEndpoints
             return Results.Ok(status);
         });
 
-        grupo.MapPost("/{id:guid}/fotos", async (
-            Guid id, HttpRequest request, AdicionarFotoProgressoUseCase useCase) =>
-        {
-            if (!request.HasFormContentType)
-                return Results.BadRequest("Envie a foto como multipart/form-data.");
-
-            var form = await request.ReadFormAsync();
-            var arquivo = form.Files["arquivo"];
-            var anguloTexto = form["angulo"].ToString();
-
-            if (arquivo is null || !Enum.TryParse<AnguloFoto>(anguloTexto, ignoreCase: true, out var angulo))
-                return Results.BadRequest("Arquivo e ângulo (Frente/Lado/Costas) são obrigatórios.");
-
-            await using var stream = arquivo.OpenReadStream();
-            var dto = new AdicionarFotoProgressoDto(id, angulo, stream, Path.GetExtension(arquivo.FileName));
-            var fotoId = await useCase.ExecutarAsync(dto);
-
-            return Results.Created($"/api/fotos/{fotoId}", new { id = fotoId });
-        });
+        grupo.MapPost("/{id:guid}/fotos", () => Results.Json(new { mensagem = "Novos envios de fotos corporais estão desabilitados. Use apenas avatar." }, statusCode: 410));
     }
 }

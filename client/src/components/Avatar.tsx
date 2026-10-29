@@ -1,4 +1,5 @@
-import { API_BASE_URL } from '../api/httpClient'
+import { useEffect, useState } from 'react'
+import { httpClient } from '../api/httpClient'
 import './Avatar.css'
 
 interface AvatarProps {
@@ -8,6 +9,15 @@ interface AvatarProps {
 }
 
 export function Avatar({ nome, avatarUrl, tamanho = 'pequeno' }: AvatarProps) {
+  const [urlCompleta, setUrlCompleta] = useState<string | null>(null)
+  useEffect(() => {
+    let ativo = true, blob: string | null = null
+    setUrlCompleta(null)
+    if (avatarUrl) httpClient.get('/api/usuario/avatar/arquivo', { responseType: 'blob' }).then(r => {
+      if (ativo) { blob = URL.createObjectURL(r.data); setUrlCompleta(blob) }
+    }).catch(() => {})
+    return () => { ativo = false; if (blob) URL.revokeObjectURL(blob) }
+  }, [avatarUrl])
   const iniciais = nome
     .trim()
     .split(' ')
@@ -15,7 +25,6 @@ export function Avatar({ nome, avatarUrl, tamanho = 'pequeno' }: AvatarProps) {
     .map((p) => p[0]?.toUpperCase())
     .join('')
 
-  const urlCompleta = avatarUrl?.startsWith('http') ? avatarUrl : avatarUrl ? `${API_BASE_URL}/${avatarUrl}` : null
 
   return (
     <div className={`avatar avatar--${tamanho}`}>

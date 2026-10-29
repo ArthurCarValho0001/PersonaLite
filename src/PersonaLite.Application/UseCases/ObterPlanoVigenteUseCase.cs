@@ -25,7 +25,7 @@ public class ObterPlanoVigenteUseCase
                 .OrderBy(d => (int)d.DiaSemana)
                 .Select(d => new DiaDeTreinoDto(
                     d.Id, d.Nome, d.DiaSemana,
-                    d.Exercicios
+                    d.Exercicios.Where(e => !e.Arquivado)
                         .OrderBy(e => e.Ordem)
                         .Select(e => new ExercicioPlanejadoDto(e.Id, e.Nome, e.GrupoMuscular, e.SeriesAlvo, e.RepeticoesAlvo, e.Ordem))
                         .ToList()))

@@ -6,7 +6,7 @@ public record AtualizarInformacoesPessoaisDto(
     string Nome,
     DateOnly DataNascimento,
     PersonaLite.Domain.Enums.Sexo Sexo,
-    string? Metas);
+    string? Metas, double? AlturaCm = null);
 
 public record AlterarNomeUsuarioDto(string NovoNomeUsuario, string SenhaAtual);
 

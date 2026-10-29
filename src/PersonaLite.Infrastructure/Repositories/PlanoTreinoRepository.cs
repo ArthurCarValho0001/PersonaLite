@@ -14,6 +14,10 @@ public class PlanoTreinoRepository : IPlanoTreinoRepository
         _context = context;
     }
 
+    public Task<List<PlanoTreino>> ListarAsync(Guid usuarioId) =>
+        _context.PlanosTreino.AsNoTracking().Include(p => p.Dias).ThenInclude(d => d.Exercicios)
+            .Where(p => p.UsuarioId == usuarioId).OrderByDescending(p => p.InicioVigencia).ThenBy(p => p.Id).ToListAsync();
+
     public Task<PlanoTreino?> ObterAsync(Guid id) =>
         _context.PlanosTreino
             .Include(p => p.Dias).ThenInclude(d => d.Exercicios)

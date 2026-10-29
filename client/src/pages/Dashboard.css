@@ -14,12 +14,12 @@
 
 .dashboard__titulo {
   font-size: 1.35rem;
-  color: #f1f5f9;
+  color: #142d2a;
   margin: 0 0 0.2rem 0;
 }
 
 .dashboard__subtitulo {
-  color: #94a3b8;
+  color: #526862;
   font-size: 0.85rem;
   margin: 0;
 }
@@ -49,12 +49,12 @@
 }
 
 .dashboard__mensagem {
-  color: #94a3b8;
+  color: #526862;
   padding: 1rem 0;
 }
 
 .dashboard__mensagem--erro {
-  color: #f87171;
+  color: #a82535;
 }
 
 .dashboard__resumo {
@@ -76,7 +76,7 @@
 .dashboard__valor {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #22c55e;
+  color: #166b50;
   margin: 0;
 }
 
@@ -94,9 +94,9 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.6rem 0;
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid #ffffff;
   font-size: 0.875rem;
-  color: #cbd5e1;
+  color: #415a50;
   min-height: 44px;
 }
 
@@ -105,15 +105,15 @@
 }
 
 .dashboard__historico-item a {
-  color: #22c55e;
+  color: #166b50;
   font-weight: 600;
   padding: 0.4rem;
 }
 
 .dashboard__sair {
   background: none;
-  border: 1px solid #334155;
-  color: #94a3b8;
+  border: 1px solid #dce5df;
+  color: #526862;
   border-radius: 8px;
   padding: 0.5rem 0.9rem;
   font-size: 0.8rem;
@@ -128,16 +128,16 @@
 
 .dashboard__versao {
   font-size: 0.7rem;
-  color: #64748b;
+  color: #526862;
   opacity: 0.5;
   letter-spacing: 0.05em;
 }
 
 .dashboard__trimestre-badge {
   display: inline-block;
-  background: #1e293b;
-  border: 1px solid #334155;
-  color: #94a3b8;
+  background: #ffffff;
+  border: 1px solid #dce5df;
+  color: #526862;
   font-size: 0.7rem;
   font-weight: 700;
   padding: 0.2rem 0.55rem;

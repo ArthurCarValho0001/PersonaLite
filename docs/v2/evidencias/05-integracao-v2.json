@@ -1,0 +1,105 @@
+{
+  "date": "2026-10-29T09:39:23.617Z",
+  "results": [
+    {
+      "name": "catálogo com três módulos de demonstração",
+      "passed": true
+    },
+    {
+      "name": "avaliação bloqueada sem duas aulas",
+      "passed": true
+    },
+    {
+      "name": "marcação repetida não aumenta contagem",
+      "passed": true
+    },
+    {
+      "name": "questionário sem gabarito ou explicações",
+      "passed": true
+    },
+    {
+      "name": "avaliação concorrente idempotente e aprovação com 80%",
+      "passed": true
+    },
+    {
+      "name": "mesma chave com conteúdo diferente retorna conflito",
+      "passed": true
+    },
+    {
+      "name": "outra conta não lê tentativa",
+      "passed": true
+    },
+    {
+      "name": "nota inferior preserva conclusão e histórico",
+      "passed": true
+    },
+    {
+      "name": "série idempotente concorrente e conclusão automática",
+      "passed": true
+    },
+    {
+      "name": "cinco reenvios simultâneos não duplicam a série",
+      "passed": true
+    },
+    {
+      "name": "treino com histórico em lote responde",
+      "passed": true
+    },
+    {
+      "name": "arquivamento preserva histórico próprio",
+      "passed": true
+    },
+    {
+      "name": "histórico lista plano e exercício arquivado",
+      "passed": true
+    },
+    {
+      "name": "resumo agregado contabiliza treino concluído",
+      "passed": true
+    },
+    {
+      "name": "retrospectiva mantém exercício arquivado",
+      "passed": true
+    },
+    {
+      "name": "upload corporal bloqueado",
+      "passed": true
+    },
+    {
+      "name": "medição concorrente idempotente cria um registro",
+      "passed": true
+    },
+    {
+      "name": "nova chave na mesma data retorna conflito",
+      "passed": true
+    },
+    {
+      "name": "alterar perfil recalcula IMC histórico",
+      "passed": true
+    },
+    {
+      "name": "medidas de outra conta não aparecem",
+      "passed": true
+    },
+    {
+      "name": "exportação privada ZIP",
+      "passed": true
+    },
+    {
+      "name": "exportação exige autenticação",
+      "passed": true
+    },
+    {
+      "name": "avatar privado válido e troca inválida preserva arquivo",
+      "passed": true
+    },
+    {
+      "name": "sessão absoluta de trinta dias",
+      "passed": true
+    },
+    {
+      "name": "redefinição consome código e revoga sessão antiga",
+      "passed": true
+    }
+  ]
+}

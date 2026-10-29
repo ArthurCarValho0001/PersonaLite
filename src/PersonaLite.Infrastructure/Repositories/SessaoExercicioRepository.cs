@@ -14,6 +14,18 @@ public class SessaoExercicioRepository : ISessaoExercicioRepository
         _context = context;
     }
 
+    public async Task<Dictionary<Guid, SessaoExercicio>> ObterUltimasSessoesAsync(Guid usuarioId, IEnumerable<Guid> exercicios, DateOnly antesDe)
+    {
+        var ids = exercicios.ToArray();
+        var ultimas = await (from e in _context.ExerciciosPlanejados
+            join d in _context.DiasDeTreino on e.DiaDeTreinoId equals d.Id
+            join p in _context.PlanosTreino on d.PlanoTreinoId equals p.Id
+            where p.UsuarioId == usuarioId && ids.Contains(e.Id)
+            select _context.SessoesExercicio.Where(s => s.ExercicioPlanejadoId == e.Id && s.Concluida && s.Data < antesDe)
+                .OrderByDescending(s => s.Data).ThenByDescending(s => s.Id).Select(s => s.Id).FirstOrDefault()).ToListAsync();
+        return await _context.SessoesExercicio.AsNoTracking().Include(s => s.Series).Where(s => ultimas.Contains(s.Id)).ToDictionaryAsync(s => s.ExercicioPlanejadoId);
+    }
+
     public Task<List<SessaoExercicio>> ListarPorExercicioAsync(Guid exercicioPlanejadoId) =>
         _context.SessoesExercicio
             .Include(s => s.Series)
@@ -114,7 +126,7 @@ public class SessaoExercicioRepository : ISessaoExercicioRepository
 
         return sessoes
             .Select(s => new SessaoConcluidaComDiaProjecao(
-                s.Data, infoPorId[s.ExercicioPlanejadoId].DiaDeTreinoId, infoPorId[s.ExercicioPlanejadoId].Nome, s.Series.ToList()))
+                s.Data, infoPorId[s.ExercicioPlanejadoId].DiaDeTreinoId, s.ExercicioPlanejadoId, infoPorId[s.ExercicioPlanejadoId].Nome, s.Series.ToList()))
             .ToList();
     }
 
@@ -151,28 +163,27 @@ public class SessaoExercicioRepository : ISessaoExercicioRepository
         return (melhor.CargaKg, melhor.Repeticoes);
     }
 
-    public async Task<int> ContarTreinosConcluidosTotalAsync(Guid usuarioId)
+    public async Task<Dictionary<Guid, double>> ObterVolumesRecordesAsync(Guid usuarioId, DateOnly antesDe)
     {
-        var exercicios = await (
-            from ex in _context.ExerciciosPlanejados
-            join d in _context.DiasDeTreino on ex.DiaDeTreinoId equals d.Id
-            join p in _context.PlanosTreino on d.PlanoTreinoId equals p.Id
-            where p.UsuarioId == usuarioId
-            select new { ex.Id, DiaDeTreinoId = d.Id }
-        ).ToListAsync();
-
-        var idParaDia = exercicios.ToDictionary(x => x.Id, x => x.DiaDeTreinoId);
-        var ids = exercicios.Select(x => x.Id).ToList();
-        if (ids.Count == 0) return 0;
-
-        var sessoes = await _context.SessoesExercicio
-            .Where(s => s.Concluida && ids.Contains(s.ExercicioPlanejadoId))
-            .Select(s => new { s.Data, s.ExercicioPlanejadoId })
-            .ToListAsync();
-
-        return sessoes.Select(s => (s.Data, idParaDia[s.ExercicioPlanejadoId])).Distinct().Count();
+        var volumes = from sessao in _context.SessoesExercicio
+            from serie in sessao.Series
+            join ex in _context.ExerciciosPlanejados on sessao.ExercicioPlanejadoId equals ex.Id
+            join dia in _context.DiasDeTreino on ex.DiaDeTreinoId equals dia.Id
+            join plano in _context.PlanosTreino on dia.PlanoTreinoId equals plano.Id
+            where plano.UsuarioId == usuarioId && sessao.Concluida && sessao.Data < antesDe
+            group serie by new { ExercicioId = ex.Id, SessaoId = sessao.Id, serie.GrupoSerie } into g
+            select new { g.Key.ExercicioId, Volume = g.Sum(s => s.CargaKg * s.Repeticoes) };
+        return await volumes.GroupBy(v => v.ExercicioId)
+            .Select(g => new { Id = g.Key, Volume = g.Max(v => v.Volume) }).ToDictionaryAsync(v => v.Id, v => v.Volume);
     }
 
+    public Task<int> ContarTreinosConcluidosTotalAsync(Guid usuarioId) =>
+        (from sessao in _context.SessoesExercicio
+         join ex in _context.ExerciciosPlanejados on sessao.ExercicioPlanejadoId equals ex.Id
+         join dia in _context.DiasDeTreino on ex.DiaDeTreinoId equals dia.Id
+         join plano in _context.PlanosTreino on dia.PlanoTreinoId equals plano.Id
+         where plano.UsuarioId == usuarioId && sessao.Concluida
+         select new { sessao.Data, DiaId = dia.Id }).Distinct().CountAsync();
     public async Task SalvarAsync(SessaoExercicio sessao)
     {
         _context.SessoesExercicio.Add(sessao);

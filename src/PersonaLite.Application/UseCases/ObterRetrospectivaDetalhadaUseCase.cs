@@ -9,42 +9,43 @@ public class ObterRetrospectivaDetalhadaUseCase
     private readonly IPlanoTreinoRepository _planoRepo;
     private readonly ISessaoExercicioRepository _sessaoRepo;
 
-    public ObterRetrospectivaDetalhadaUseCase(IPlanoTreinoRepository planoRepo, ISessaoExercicioRepository sessaoRepo)
+    private readonly ICalendario _calendario;
+    public ObterRetrospectivaDetalhadaUseCase(IPlanoTreinoRepository planoRepo, ISessaoExercicioRepository sessaoRepo, ICalendario calendario)
     {
+        _calendario = calendario;
         _planoRepo = planoRepo;
         _sessaoRepo = sessaoRepo;
     }
 
     public async Task<RetrospectivaDetalhadaDto?> ExecutarAsync(Guid usuarioId)
     {
-        var plano = await _planoRepo.ObterVigenteAsync(usuarioId);
-        if (plano is null) return null;
+        var planos = await _planoRepo.ListarAsync(usuarioId);
+        if (planos.Count == 0) return null;
 
-        var hoje = DateOnly.FromDateTime(DateTime.Today);
+        var hoje = _calendario.Hoje;
         var inicioMesAtual = new DateOnly(hoje.Year, hoje.Month, 1);
         var inicioMesAnterior = inicioMesAtual.AddMonths(-1);
         var fimMesAnterior = inicioMesAtual.AddDays(-1);
 
         var treinos = new List<TreinoRetrospectivaDto>();
 
-        foreach (var dia in plano.Dias.OrderBy(d => (int)d.DiaSemana))
+        var sessoes = await _sessaoRepo.ListarConcluidasComDiaNoPeriodoAsync(usuarioId, inicioMesAnterior, hoje);
+        foreach (var dia in planos.SelectMany(p => p.Dias).OrderBy(d => (int)d.DiaSemana))
         {
             var exerciciosRetro = new List<ExercicioRetrospectivaDto>();
 
             foreach (var exercicio in dia.Exercicios.OrderBy(e => e.Ordem))
             {
-                var nomeNormalizado = exercicio.Nome.Trim().ToLowerInvariant();
 
-                var sessoesMesAtual = await _sessaoRepo.ListarConcluidasPorNomeNoPeriodoAsync(
-                    usuarioId, nomeNormalizado, inicioMesAtual, hoje);
+
+                var sessoesMesAtual = sessoes.Where(s => s.ExercicioPlanejadoId == exercicio.Id && s.Data >= inicioMesAtual).ToList();
 
                 if (sessoesMesAtual.Sum(s => s.Series.Select(x => x.GrupoSerie).Distinct().Count()) == 0)
                     continue; // sem nenhuma série concluída nesse exercício esse mês — não polui a tela
 
                 var atual = Calcular(sessoesMesAtual);
 
-                var sessoesMesAnterior = await _sessaoRepo.ListarConcluidasPorNomeNoPeriodoAsync(
-                    usuarioId, nomeNormalizado, inicioMesAnterior, fimMesAnterior);
+                var sessoesMesAnterior = sessoes.Where(s => s.ExercicioPlanejadoId == exercicio.Id && s.Data <= fimMesAnterior).ToList();
                 var anterior = sessoesMesAnterior.Count > 0 ? Calcular(sessoesMesAnterior) : null;
 
                 ComparativoMesDto? comparativo = anterior is null ? null : new ComparativoMesDto(
@@ -74,7 +75,7 @@ public class ObterRetrospectivaDetalhadaUseCase
 
     private record Estatisticas(int SeriesRealizadas, double VolumeTotal, double MaiorCarga, ResumoSerieDto? MelhorSerie, double MediaCarga, double MediaRepeticoes);
 
-    private static Estatisticas Calcular(List<SessaoExercicio> sessoes)
+    private static Estatisticas Calcular(List<SessaoConcluidaComDiaProjecao> sessoes)
     {
         var grupos = sessoes
             .SelectMany(s => s.Series.GroupBy(x => x.GrupoSerie))

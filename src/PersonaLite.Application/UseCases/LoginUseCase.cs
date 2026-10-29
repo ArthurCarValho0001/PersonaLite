@@ -26,7 +26,7 @@ public class LoginUseCase
         if (!_hasher.Verificar(dto.Senha, usuario.SenhaHash))
             throw new InvalidOperationException("Usuário ou senha inválidos.");
 
-        var token = _tokenService.GerarToken(usuario.Id, usuario.NomeUsuario);
+        var token = _tokenService.GerarToken(usuario.Id, usuario.NomeUsuario, usuario.VersaoSessao);
         return new TokenDto(token, usuario.Id, usuario.Nome);
     }
 }

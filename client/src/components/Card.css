@@ -1,6 +1,6 @@
 .card {
-  background: #1e293b;
-  border: 1px solid #334155;
+  background: #ffffff;
+  border: 1px solid #dce5df;
   border-radius: 12px;
   padding: 1.5rem;
 }
@@ -9,9 +9,9 @@
   margin: 0 0 1rem 0;
   font-size: 1.1rem;
   font-weight: 600;
-  color: #e2e8f0;
+  color: #142d2a;
 }
 
 .card__conteudo {
-  color: #cbd5e1;
+  color: #415a50;
 }

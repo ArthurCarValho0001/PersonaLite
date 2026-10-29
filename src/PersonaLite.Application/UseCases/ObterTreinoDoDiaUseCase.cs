@@ -8,17 +8,21 @@ public class ObterTreinoDoDiaUseCase
     private readonly IPlanoTreinoRepository _planoRepo;
     private readonly ISessaoExercicioRepository _sessaoRepo;
 
-    public ObterTreinoDoDiaUseCase(IPlanoTreinoRepository planoRepo, ISessaoExercicioRepository sessaoRepo)
+    private readonly ICalendario _calendario;
+    public ObterTreinoDoDiaUseCase(IPlanoTreinoRepository planoRepo, ISessaoExercicioRepository sessaoRepo, ICalendario calendario)
     {
+        _calendario = calendario;
         _planoRepo = planoRepo;
         _sessaoRepo = sessaoRepo;
     }
 
     public async Task<TreinoDoDiaDto> ExecutarAsync(Guid usuarioId, DateOnly? data = null)
     {
-        var dataAlvo = data ?? DateOnly.FromDateTime(DateTime.Today);
+        var dataAlvo = data ?? _calendario.Hoje;
 
-        var plano = await _planoRepo.ObterVigenteAsync(usuarioId);
+        if (dataAlvo > _calendario.Hoje) throw new InvalidOperationException("A data do treino não pode estar no futuro.");
+        var plano = dataAlvo == _calendario.Hoje ? await _planoRepo.ObterVigenteAsync(usuarioId)
+            : (await _planoRepo.ListarAsync(usuarioId)).FirstOrDefault(p => p.InicioVigencia <= dataAlvo && (p.FimVigencia == null || p.FimVigencia >= dataAlvo));
         var diaDeHoje = plano?.Dias.FirstOrDefault(d => d.DiaSemana == dataAlvo.DayOfWeek);
 
         if (diaDeHoje is null)
@@ -30,11 +34,11 @@ public class ObterTreinoDoDiaUseCase
         var sessoesDeHoje = await _sessaoRepo.ListarPorExerciciosEDataAsync(idsExercicios, dataAlvo);
         var sessoesPorExercicio = sessoesDeHoje.ToDictionary(s => s.ExercicioPlanejadoId);
 
+        var anteriores = await _sessaoRepo.ObterUltimasSessoesAsync(usuarioId, idsExercicios, dataAlvo);
         var exercicios = new List<ExercicioComRegistrosDto>();
-        foreach (var e in diaDeHoje.Exercicios.OrderBy(e => e.Ordem))
+        foreach (var e in diaDeHoje.Exercicios.Where(e => !e.Arquivado || dataAlvo < _calendario.Hoje || sessoesPorExercicio.ContainsKey(e.Id)).OrderBy(e => e.Ordem))
         {
-            var dto = await MapeadorTreinoDoDia.MapearExercicioAsync(
-                usuarioId, e, sessoesPorExercicio.GetValueOrDefault(e.Id), dataAlvo, _sessaoRepo);
+            var dto = MapeadorTreinoDoDia.Mapear(e, sessoesPorExercicio.GetValueOrDefault(e.Id), anteriores.GetValueOrDefault(e.Id));
             exercicios.Add(dto);
         }
 

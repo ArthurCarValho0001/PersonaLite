@@ -23,6 +23,8 @@ public static class DependencyInjection
             options.UseNpgsql(connectionString));
 
         services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+        services.AddScoped<IAprendizagemRepository, AprendizagemRepository>();
+        services.AddScoped<IExportacaoService, ExportacaoService>();
         services.AddScoped<IRegistroMedidasRepository, RegistroMedidasRepository>();
         services.AddScoped<IPlanoTreinoRepository, PlanoTreinoRepository>();
         services.AddScoped<ISessaoExercicioRepository, SessaoExercicioRepository>();

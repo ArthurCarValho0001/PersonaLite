@@ -1,9 +1,9 @@
 import { postComFallbackOffline } from './postComFallbackOffline'
 import { httpClient } from './httpClient'
-import type { AtualizarSerieDto, PontoProgressaoCargaDto, RegistrarSerieDto } from '../types'
+import type { ExercicioComRegistrosDto, AtualizarSerieDto, PontoProgressaoCargaDto, RegistrarSerieDto } from '../types'
 
 export async function registrarSerie(dto: RegistrarSerieDto) {
-  return postComFallbackOffline<null>('/api/series', dto, 'Série de exercício')
+  return postComFallbackOffline<ExercicioComRegistrosDto>('/api/series', dto, 'Série de exercício')
 }
 
 export async function atualizarSerie(sessaoId: string, grupoSerie: number, dto: AtualizarSerieDto): Promise<void> {

@@ -1,6 +1,6 @@
 .exercicio-retro {
   padding: 0.75rem 0;
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid #ffffff;
 }
 
 .exercicio-retro:last-child {
@@ -10,7 +10,7 @@
 .exercicio-retro__nome {
   margin: 0 0 0.5rem 0;
   font-size: 0.95rem;
-  color: #e2e8f0;
+  color: #142d2a;
 }
 
 .exercicio-retro__linha {
@@ -22,11 +22,11 @@
 }
 
 .exercicio-retro__label {
-  color: #94a3b8;
+  color: #526862;
 }
 
 .exercicio-retro__valor {
-  color: #e2e8f0;
+  color: #142d2a;
   font-weight: 600;
   text-align: right;
 }
@@ -37,9 +37,9 @@
 }
 
 .exercicio-retro__comparativo--positivo {
-  color: #4ade80;
+  color: #176846;
 }
 
 .exercicio-retro__comparativo--negativo {
-  color: #f87171;
+  color: #a82535;
 }

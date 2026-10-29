@@ -1,3 +1,4 @@
+import { dataLocal } from '../api/calendario'
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { atualizarInformacoesPessoais } from '../api/perfilApi'
@@ -24,6 +25,7 @@ export function InformacoesPessoais() {
       </header>
 
       <Formulario
+        alturaAtual={usuario.alturaCm}
         nomeAtual={usuario.nome}
         dataNascimentoAtual={usuario.dataNascimento}
         sexoAtual={usuario.sexo}
@@ -35,6 +37,7 @@ export function InformacoesPessoais() {
 }
 
 interface FormularioProps {
+  alturaAtual: number
   nomeAtual: string
   dataNascimentoAtual: string
   sexoAtual: Sexo
@@ -42,7 +45,9 @@ interface FormularioProps {
   onSalvo: () => void
 }
 
-function Formulario({ nomeAtual, dataNascimentoAtual, sexoAtual, metasAtuais, onSalvo }: FormularioProps) {
+function Formulario({ alturaAtual, nomeAtual, dataNascimentoAtual, sexoAtual, metasAtuais, onSalvo }: FormularioProps) {
+  const [altura, setAltura] = useState(String(alturaAtual))
+  const [erro, setErro] = useState('')
   const [nome, setNome] = useState(nomeAtual)
   const [dataNascimento, setDataNascimento] = useState(dataNascimentoAtual)
   const [sexo, setSexo] = useState<Sexo | null>(sexoAtual)
@@ -54,9 +59,11 @@ function Formulario({ nomeAtual, dataNascimentoAtual, sexoAtual, metasAtuais, on
     evento.preventDefault()
     if (!sexo || !nome.trim() || !dataNascimento) return
 
+    setErro('')
     setSalvando(true)
     try {
       await atualizarInformacoesPessoais({
+        alturaCm: Number(altura),
         nome: nome.trim(),
         dataNascimento,
         sexo,
@@ -65,7 +72,7 @@ function Formulario({ nomeAtual, dataNascimentoAtual, sexoAtual, metasAtuais, on
       onSalvo()
       setSalvo(true)
       setTimeout(() => setSalvo(false), 2000)
-    } finally {
+    } catch { setErro('Não foi possível salvar. Confira os dados e tente novamente.') } finally {
       setSalvando(false)
     }
   }
@@ -78,11 +85,14 @@ function Formulario({ nomeAtual, dataNascimentoAtual, sexoAtual, metasAtuais, on
         <FormField
           id="dataNascimento"
           label="Data de nascimento"
-          type="date"
+          type="date" max={dataLocal()}
           value={dataNascimento}
           onChange={(e) => setDataNascimento(e.target.value)}
         />
 
+        <FormField id="altura" label="Altura (cm)" type="number" min="1" step="0.1" required value={altura} onChange={e => setAltura(e.target.value)} />
+        <p>Alterar nascimento, sexo ou altura recalcula os indicadores das medições anteriores.</p>
+        {erro && <p role="alert">{erro}</p>}
         <SeletorSexo valor={sexo} onChange={setSexo} />
 
         <label className="info-pessoais__label" htmlFor="metas">

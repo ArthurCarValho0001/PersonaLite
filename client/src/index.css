@@ -1,5 +1,5 @@
 :root {
-  color-scheme: dark;
+  color-scheme: light;
   font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -24,8 +24,8 @@ html {
 
 body {
   margin: 0;
-  background: #0b1120;
-  color: #e2e8f0;
+  background: #f4f7f5;
+  color: #142d2a;
   /* respeita a área segura em celulares com notch/home indicator */
   padding-bottom: env(safe-area-inset-bottom);
 }
@@ -57,3 +57,15 @@ a {
 body {
   overflow-x: hidden;
 }
+
+:focus-visible { outline: 3px solid #247db0; outline-offset: 4px; }
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+.v2-page button:not(.v2-lesson-heading), .v2-panel button { background: #166b50; color: white; border: 0; border-radius: 10px; padding: 12px 18px; font-weight: 600; }
+.v2-page button:disabled { opacity: .55; }
+.v2-page button.v2-secondary { background: #edf2ee; color: #164c3a; margin-left: 12px; }
+.registrar { background: radial-gradient(ellipse at top left, #d7e9df, transparent 65%), #f4f7f5; }
+.registrar__conteudo { max-width: 460px; }
+.registrar__conteudo::before { content: ''; display: block; width: 58px; height: 58px; background: url('/icon-192.png') center/contain; border-radius: 16px; margin: 0 auto 24px; }
+.registrar__titulo { text-align: center; font-size: 28px; letter-spacing: -.8px; }
+.registrar .card { border-radius: 22px; box-shadow: 0 16px 60px #153b2a0a; }

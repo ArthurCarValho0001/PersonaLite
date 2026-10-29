@@ -15,23 +15,23 @@
 
 .treinos__titulo {
   font-size: 1.35rem;
-  color: #f1f5f9;
+  color: #142d2a;
   margin: 0 0 0.15rem 0;
 }
 
 .treinos__subtitulo {
-  color: #94a3b8;
+  color: #526862;
   font-size: 0.85rem;
   margin: 0;
 }
 
 .treinos__mensagem {
-  color: #94a3b8;
+  color: #526862;
   padding: 1rem 0;
 }
 
 .treinos__mensagem--erro {
-  color: #f87171;
+  color: #a82535;
 }
 
 .treinos__descanso {
@@ -40,7 +40,7 @@
 }
 
 .treinos__descanso-sub {
-  color: #94a3b8;
+  color: #526862;
   font-size: 0.85rem;
   margin: 0;
 }
@@ -51,9 +51,9 @@
 
 .treinos__dia-badge-texto {
   display: inline-block;
-  background: #052e16;
+  background: #ffffff;
   border: 1px solid #166534;
-  color: #4ade80;
+  color: #176846;
   font-size: 0.85rem;
   font-weight: 700;
   padding: 0.4rem 0.85rem;
@@ -67,9 +67,9 @@
 }
 
 .treinos__evolucao-banner {
-  background: #052e16;
+  background: #ffffff;
   border: 1px solid #166534;
-  color: #4ade80;
+  color: #176846;
   border-radius: 10px;
   padding: 0.7rem 0.9rem;
   font-size: 0.85rem;
@@ -80,7 +80,7 @@
 .treinos__link-config {
   display: block;
   text-align: center;
-  color: #64748b;
+  color: #526862;
   font-size: 0.8rem;
   margin-top: 2rem;
   padding: 0.75rem;
@@ -93,24 +93,24 @@
 .treinos__seletor-label {
   display: block;
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: #526862;
   margin-bottom: 0.35rem;
 }
 
 .treinos__seletor-select {
   width: 100%;
-  background: #0f172a;
-  border: 1px solid #334155;
+  background: #edf2ee;
+  border: 1px solid #dce5df;
   border-radius: 8px;
   padding: 0.7rem 0.75rem;
-  color: #e2e8f0;
+  color: #142d2a;
   font-size: 1rem;
   min-height: 48px;
 }
 .treinos__concluir-treino {
   width: 100%;
   background: #166534;
-  border: 1px solid #22c55e;
+  border: 1px solid #166b50;
   color: #dcfce7;
   border-radius: 10px;
   padding: 0.75rem;
@@ -134,17 +134,17 @@
 
 .config-treino__descanso-input {
   width: 80px;
-  background: #0f172a;
-  border: 1px solid #334155;
+  background: #edf2ee;
+  border: 1px solid #dce5df;
   border-radius: 8px;
   padding: 0.6rem;
-  color: #e2e8f0;
+  color: #142d2a;
   font-size: 1rem;
   text-align: center;
   min-height: 44px;
 }
 
 .config-treino__descanso-label {
-  color: #94a3b8;
+  color: #526862;
   font-size: 0.85rem;
 }

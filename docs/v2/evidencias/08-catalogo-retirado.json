@@ -1,0 +1,6 @@
+{
+  "retiradaBloqueiaConteudo": true,
+  "retiradaBloqueiaTentativa": true,
+  "historicoPreservado": true,
+  "resultadoSemConteudo": true
+}

@@ -8,7 +8,7 @@ import './CardExercicio.css'
 interface CardExercicioProps {
   exercicio: ExercicioComRegistrosDto
   data: string
-  onAtualizar: () => void
+  onAtualizar: (exercicio?: ExercicioComRegistrosDto) => void
   onNovaSerie: () => void
 }
 

@@ -11,6 +11,7 @@ import { Card } from '../components/Card'
 import { FormField } from '../components/FormField'
 import { useUsuario } from '../hooks/useUsuario'
 import './DadosPrivacidade.css'
+import { ExportarDados } from '../components/ExportarDados'
 
 export function DadosPrivacidade() {
   const { usuario, recarregar } = useUsuario()
@@ -29,6 +30,7 @@ export function DadosPrivacidade() {
       <SecaoEmail emailAtual={usuario.email} verificado={usuario.emailVerificado} onSalvo={recarregar} />
       <SecaoNomeUsuario nomeUsuarioAtual={usuario.nomeUsuario} onSalvo={recarregar} />
       <SecaoRedefinirSenha />
+      <ExportarDados />
     </div>
   )
 }

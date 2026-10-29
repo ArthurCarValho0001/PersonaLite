@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import { criarTrimestre } from '../api/trimestreApi'
 import { Link } from 'react-router-dom'
 import { AlertaReavaliacao } from '../components/AlertaReavaliacao'
 import { Avatar } from '../components/Avatar'
@@ -21,7 +23,9 @@ export function Dashboard({ usuario }: DashboardProps) {
   const { evolucao, carregando, erro } = useEvolucao()
   const ultimoRegistro = evolucao.at(-1)
 
-  const { trimestre, recarregar: recarregarTrimestre } = useTrimestre()
+  const [iniciando, setIniciando] = useState(false)
+  const [erroCiclo, setErroCiclo] = useState('')
+  const { trimestre, carregando: carregandoCiclo, recarregar: recarregarTrimestre } = useTrimestre()
   const { resumo } = useResumoProgresso()
   const sugestao = useSugestaoTroca()
 
@@ -49,7 +53,13 @@ export function Dashboard({ usuario }: DashboardProps) {
         </div>
       </header>
 
+      {!carregandoCiclo && !trimestre && <section className="v2-panel"><h2>Organize seu acompanhamento</h2><p>Você pode iniciar um ciclo trimestral quando desejar. Seus treinos e medidas continuam disponíveis.</p><button disabled={iniciando} onClick={async () => {
+        if (!confirm('Iniciar seu primeiro ciclo de acompanhamento hoje?')) return
+        setIniciando(true); setErroCiclo('')
+        try { await criarTrimestre(); await recarregarTrimestre() } catch { setErroCiclo('Não foi possível iniciar o ciclo. Tente novamente.') } finally { setIniciando(false) }
+      }}>{iniciando ? 'Iniciando...' : 'Iniciar ciclo de acompanhamento'}</button>{erroCiclo && <p role="alert">{erroCiclo}</p>}</section>}
       <AlertaReavaliacao />
+      <section className="v2-dashboard-welcome"><div><h2>Seu cuidado vai além do treino.</h2><p>Conheça a área Aprender: aulas curtas, novas perspectivas e um espaço para acompanhar seu aprendizado.</p></div><Link className="v2-link-button" to="/aprender">Explorar Aprender →</Link></section>
 
       {sugestao && <SugestaoTrocaBanner sugestao={sugestao} onNovoTrimestreIniciado={lidarComNovoTrimestre} />}
 
