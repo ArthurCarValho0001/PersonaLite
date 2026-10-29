@@ -22,6 +22,9 @@ public class AlterarEmailUseCase
         if (!_hasher.Verificar(dto.SenhaAtual, usuario.SenhaHash))
             throw new InvalidOperationException("Senha atual incorreta.");
 
+        ValidacaoV2.Email(dto.NovoEmail);
+        var outro = await _usuarioRepo.ObterPorEmailAsync(dto.NovoEmail.Trim().ToLowerInvariant());
+        if (outro is not null && outro.Id != usuarioId) throw new ConflitoException("E-mail já utilizado por outra conta.");
         usuario.AlterarEmail(dto.NovoEmail);
         await _usuarioRepo.AtualizarAsync(usuario);
     }

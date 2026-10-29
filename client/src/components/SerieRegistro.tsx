@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { atualizarSerie, registrarSerie, removerSerie } from '../api/sessaoApi'
-import type { EstagioSerieDto, SerieRegistradaDto, UltimoTreinoExercicioDto } from '../types'
+import type { ExercicioComRegistrosDto, EstagioSerieDto, SerieRegistradaDto, UltimoTreinoExercicioDto } from '../types'
 import { Button } from './Button'
 import './SerieRegistro.css'
 
@@ -17,7 +17,7 @@ interface SerieRegistroProps {
   seriesAlvo: number
   repeticoesAlvo: number
   ultimoTreino: UltimoTreinoExercicioDto | null
-  onSerieRegistrada: () => void
+  onSerieRegistrada: (exercicio?: ExercicioComRegistrosDto) => void
   onNovaSerie: () => void
 }
 
@@ -90,10 +90,12 @@ export function SerieRegistro({
       } else {
         setFeedback(calcularFeedback(estagiosValidos[0].cargaKg, estagiosValidos.reduce((s, e) => s + e.repeticoes, 0)))
         setTimeout(() => setFeedback(null), 4000)
+        onSerieRegistrada(resultado.dados)
       }
       setEstagios([{ ...estagioVazio }])
-      onSerieRegistrada()
       onNovaSerie()
+    } catch {
+      setFeedback('Não foi possível registrar. Confira a fila e os dados antes de tentar novamente.')
     } finally {
       setSalvando(false)
     }

@@ -1,3 +1,4 @@
+import { AtualizacaoPwa } from './components/AtualizacaoPwa'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { IndicadorSincronizacao } from './components/IndicadorSincronizacao'
 import { DadosPrivacidade } from './pages/DadosPrivacidade'
@@ -15,6 +16,8 @@ import { Treinos } from './pages/Treinos'
 import './App.css'
 import { UsuarioProvider } from './components/UsuarioProvider'
 import { limparToken } from './api/authToken'
+import { AppLayout } from './components/AppLayout'
+import { Aprender, ModuloAprender, AvaliacaoAprender, ProgressoAprender } from './pages/Aprender'
 
 function ConteudoApp() {
   const { usuario, carregando, erro, autenticado, recarregar } = useUsuario()
@@ -61,7 +64,7 @@ function ConteudoApp() {
   }
 
   return (
-    <>
+    <AppLayout>
       {carregando && <p role="status">Atualizando seu usuário...</p>}
       {erro && (
         <div role="alert">
@@ -71,6 +74,10 @@ function ConteudoApp() {
       )}
       <Routes>
         <Route path="/" element={<Dashboard usuario={usuario} />} />
+        <Route path="/aprender" element={<Aprender />} />
+        <Route path="/aprender/progresso" element={<ProgressoAprender />} />
+        <Route path="/aprender/:id" element={<ModuloAprender />} />
+        <Route path="/aprender/:id/avaliacao" element={<AvaliacaoAprender />} />
         <Route path="/medidas/nova" element={<NovaMedicao />} />
         <Route path="/medidas/:id/editar" element={<NovaMedicao />} />
         <Route path="/treinos" element={<Treinos />} />
@@ -82,10 +89,10 @@ function ConteudoApp() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <IndicadorSincronizacao />
-    </>
+    </AppLayout>
   )
 }
 
 export default function App() {
-  return <UsuarioProvider><ConteudoApp /></UsuarioProvider>
+  return <UsuarioProvider><AtualizacaoPwa /><ConteudoApp /></UsuarioProvider>
 }

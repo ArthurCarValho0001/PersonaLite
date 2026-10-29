@@ -1,3 +1,4 @@
+import { dataLocal } from '../api/calendario'
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import {
@@ -32,7 +33,7 @@ export function ConfigurarTreino() {
     setCriando(true)
     try {
       await criarPlanoTreino({
-        inicioVigencia: new Date().toISOString().slice(0, 10),
+        inicioVigencia: dataLocal(),
       })
       recarregar()
     } finally {
@@ -823,4 +824,3 @@ function ConfiguracaoDescanso({
     </Card>
   )
 }
-

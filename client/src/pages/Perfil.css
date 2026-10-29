@@ -20,12 +20,12 @@
 .perfil__nome {
   margin: 0.75rem 0 0.1rem 0;
   font-size: 1.2rem;
-  color: #f1f5f9;
+  color: #142d2a;
 }
 
 .perfil__usuario {
   font-size: 0.8rem;
-  color: #64748b;
+  color: #526862;
   margin-bottom: 0.9rem;
 }
 
@@ -35,7 +35,7 @@
 
 .perfil__trocar-foto {
   background: none;
-  border: 1px solid #334155;
+  border: 1px solid #dce5df;
   color: #38bdf8;
   border-radius: 999px;
   padding: 0.4rem 1rem;
@@ -51,8 +51,8 @@
 .perfil__menu {
   display: flex;
   flex-direction: column;
-  background: #1e293b;
-  border: 1px solid #334155;
+  background: #ffffff;
+  border: 1px solid #dce5df;
   border-radius: 12px;
   overflow: hidden;
 }
@@ -63,9 +63,9 @@
   align-items: center;
   background: none;
   border: none;
-  border-bottom: 1px solid #334155;
+  border-bottom: 1px solid #dce5df;
   padding: 1rem;
-  color: #e2e8f0;
+  color: #142d2a;
   font-size: 0.9rem;
   text-align: left;
   cursor: pointer;
@@ -77,10 +77,10 @@
 }
 
 .perfil__menu-seta {
-  color: #64748b;
+  color: #526862;
 }
 
 .perfil__menu-item--sair {
-  color: #f87171;
+  color: #a82535;
   justify-content: flex-start;
 }

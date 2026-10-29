@@ -1,0 +1,9 @@
+{
+  "hostLocal": "127.0.0.1",
+  "usuariosOriginais": 3,
+  "porta": 55432,
+  "restoreConcluido": true,
+  "backup": "pre-v2.dump",
+  "usuariosOriginaisAusentes": 0,
+  "destino": "personalite_v2_restorecheck"
+}

@@ -21,6 +21,6 @@ public class AtualizarAvatarUseCase
         var caminho = await _armazenamento.SalvarAsync(conteudo, extensao);
         usuario.DefinirAvatar(caminho);
         await _usuarioRepo.AtualizarAsync(usuario);
-        return caminho;
+        return "/api/usuario/avatar/arquivo";
     }
 }

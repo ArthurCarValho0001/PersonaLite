@@ -9,6 +9,8 @@ public static class UsuarioEndpoints
     public static void MapUsuarioEndpoints(this WebApplication app)
     {
         var grupo = app.MapGroup("/api/usuario").WithTags("Usuario").RequireAuthorization();
+        grupo.MapGet("/exportar", async (HttpContext http, PersonaLite.Application.Interfaces.IExportacaoService service) =>
+            Results.File(await service.ExportarAsync(http.User.ObterUsuarioId()), "application/zip", "personalite-dados.zip"));
 
         grupo.MapGet("/", async (HttpContext http, ObterUsuarioUseCase useCase) =>
         {
@@ -33,7 +35,17 @@ public static class UsuarioEndpoints
             return Results.NoContent();
         });
 
-        grupo.MapPost("/avatar", async (HttpContext http, HttpRequest request, AtualizarAvatarUseCase useCase) =>
+        grupo.MapGet("/avatar/arquivo", async (HttpContext http, PersonaLite.Application.Interfaces.IUsuarioRepository repo, IConfiguration config) => {
+            var usuario = await repo.ObterAsync(http.User.ObterUsuarioId());
+            if (usuario?.AvatarUrl is null) return Results.NotFound();
+            var baseDir = Path.GetFullPath(config["Armazenamento:PastaFotos"] ?? "fotos-progresso");
+            var file = Path.GetFullPath(usuario.AvatarUrl);
+            if (!file.StartsWith(baseDir + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) || !File.Exists(file)) return Results.NotFound();
+            http.Response.Headers.XContentTypeOptions = "nosniff";
+            return Results.File(await File.ReadAllBytesAsync(file), Path.GetExtension(file) == ".png" ? "image/png" : "image/jpeg");
+        });
+
+        grupo.MapPost("/avatar", async (HttpContext http, HttpRequest request, AtualizarAvatarUseCase useCase, IConfiguration config) =>
         {
             if (!request.HasFormContentType)
                 return Results.BadRequest("Envie a imagem como multipart/form-data.");
@@ -43,9 +55,15 @@ public static class UsuarioEndpoints
             if (arquivo is null)
                 return Results.BadRequest("Arquivo obrigatório.");
 
+            var maxBytes = config.GetValue<int?>("Avatar:MaxBytes") ?? 5 * 1024 * 1024;
+            if (arquivo.Length > maxBytes) return Results.BadRequest(new { mensagem = "Avatar acima do limite de tamanho." });
+            using var buffer = new MemoryStream();
+            await arquivo.CopyToAsync(buffer);
+            var extensao = PersonaLite.Infrastructure.Imaging.ValidadorAvatar.Validar(buffer.ToArray(), maxBytes, config.GetValue<int?>("Avatar:MaxDimension") ?? 4096);
+
             var usuarioId = http.User.ObterUsuarioId();
             await using var stream = arquivo.OpenReadStream();
-            var caminho = await useCase.ExecutarAsync(usuarioId, stream, Path.GetExtension(arquivo.FileName));
+            var caminho = await useCase.ExecutarAsync(usuarioId, stream, extensao);
 
             return Results.Ok(new { avatarUrl = caminho });
         });

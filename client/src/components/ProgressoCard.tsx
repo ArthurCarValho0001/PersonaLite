@@ -17,7 +17,7 @@ export function ProgressoCard({ resumo }: ProgressoCardProps) {
       <div className="progresso-card__indicadores">
         <div>
           <span className="progresso-card__valor">{resumo.treinos}</span>
-          <span className="progresso-card__label">treinos</span>
+          <span className="progresso-card__label">dias de treino com sessão concluída</span>
         </div>
         <div>
           <span className="progresso-card__valor">{resumo.volumeTotal.toLocaleString('pt-BR')} kg</span>
@@ -25,6 +25,7 @@ export function ProgressoCard({ resumo }: ProgressoCardProps) {
         </div>
       </div>
 
+      <small>A contagem não exige concluir todos os exercícios do dia.</small>
       {resumo.destaque && (
         <div className="progresso-card__destaque">
           <span className="progresso-card__destaque-titulo">

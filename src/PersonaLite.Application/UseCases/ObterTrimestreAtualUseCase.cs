@@ -7,8 +7,10 @@ public class ObterTrimestreAtualUseCase
 {
     private readonly ITrimestreRepository _trimestreRepo;
 
-    public ObterTrimestreAtualUseCase(ITrimestreRepository trimestreRepo)
+    private readonly ICalendario _calendario;
+    public ObterTrimestreAtualUseCase(ITrimestreRepository trimestreRepo, ICalendario calendario)
     {
+        _calendario = calendario;
         _trimestreRepo = trimestreRepo;
     }
 
@@ -17,7 +19,7 @@ public class ObterTrimestreAtualUseCase
         var trimestre = await _trimestreRepo.ObterVigenteAsync(usuarioId);
         if (trimestre is null) return null;
 
-        var hoje = DateOnly.FromDateTime(DateTime.Today);
+        var hoje = _calendario.Hoje;
         var trocaPendente = hoje >= trimestre.DataFimPrevista;
 
         return new TrimestreAtualDto(trimestre.Numero, trimestre.DataInicio, trimestre.DataFimPrevista, trocaPendente);

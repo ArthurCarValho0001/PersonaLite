@@ -9,15 +9,17 @@ public class RegistrarSerieUseCase
     private readonly IPlanoTreinoRepository _planoRepo;
     private readonly ISessaoExercicioRepository _sessaoRepo;
 
-    public RegistrarSerieUseCase(IPlanoTreinoRepository planoRepo, ISessaoExercicioRepository sessaoRepo)
+    private readonly ICalendario _calendario;
+    public RegistrarSerieUseCase(IPlanoTreinoRepository planoRepo, ISessaoExercicioRepository sessaoRepo, ICalendario calendario)
     {
+        _calendario = calendario;
         _planoRepo = planoRepo;
         _sessaoRepo = sessaoRepo;
     }
 
-    public async Task ExecutarAsync(Guid usuarioId, RegistrarSerieDto dto)
+    public async Task<ExercicioComRegistrosDto> ExecutarAsync(Guid usuarioId, RegistrarSerieDto dto)
     {
-        if (dto.Estagios.Count == 0)
+        if (dto.Data == default || dto.Data > _calendario.Hoje || dto.Estagios is null || dto.Estagios.Count == 0 || dto.Estagios.Any(e => !double.IsFinite(e.CargaKg) || e.CargaKg < 0 || e.Repeticoes <= 0))
             throw new InvalidOperationException("A série precisa ter pelo menos um estágio (carga + repetições).");
 
         var exercicio = await _planoRepo.ObterExercicioAsync(dto.ExercicioPlanejadoId)
@@ -49,5 +51,7 @@ public class RegistrarSerieUseCase
             await _sessaoRepo.SalvarAsync(sessao);
         else
             await _sessaoRepo.AtualizarAsync(sessao);
+        var anteriores = await _sessaoRepo.ObterUltimasSessoesAsync(usuarioId, new[] { exercicio.Id }, dto.Data);
+        return MapeadorTreinoDoDia.Mapear(exercicio, sessao, anteriores.GetValueOrDefault(exercicio.Id));
     }
 }

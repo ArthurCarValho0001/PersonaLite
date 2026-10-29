@@ -21,7 +21,7 @@
 
 .card-exercicio__nome {
   margin: 0;
-  color: #e2e8f0;
+  color: #142d2a;
   font-size: 1rem;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -30,7 +30,7 @@
 
 .card-exercicio__meta {
   font-size: 0.75rem;
-  color: #64748b;
+  color: #526862;
 }
 
 .card-exercicio__status {
@@ -41,8 +41,8 @@
 }
 
 .card-exercicio__badge {
-  background: #1e293b;
-  color: #94a3b8;
+  background: #ffffff;
+  color: #526862;
   font-size: 0.75rem;
   font-weight: 700;
   padding: 0.25rem 0.55rem;
@@ -50,8 +50,8 @@
 }
 
 .card-exercicio__badge--completo {
-  background: #052e16;
-  color: #4ade80;
+  background: #ffffff;
+  color: #176846;
 }
 
 .card-exercicio__badge-evoluiu {
@@ -59,25 +59,25 @@
 }
 
 .card-exercicio__seta {
-  color: #64748b;
+  color: #526862;
   font-size: 0.7rem;
 }
 
 .card-exercicio__corpo {
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid #1e293b;
+  border-top: 1px solid #ffffff;
 }
 .card-exercicio__badge--concluido {
-  background: #052e16;
-  color: #4ade80;
+  background: #ffffff;
+  color: #176846;
 }
 
 .card-exercicio__concluir {
   width: 100%;
   margin-top: 0.75rem;
   background: #166534;
-  border: 1px solid #22c55e;
+  border: 1px solid #166b50;
   color: #dcfce7;
   border-radius: 10px;
   padding: 0.65rem;

@@ -7,15 +7,18 @@ public class ConcluirTreinoDoDiaUseCase
     private readonly IPlanoTreinoRepository _planoRepo;
     private readonly ISessaoExercicioRepository _sessaoRepo;
 
-    public ConcluirTreinoDoDiaUseCase(IPlanoTreinoRepository planoRepo, ISessaoExercicioRepository sessaoRepo)
+    private readonly ICalendario _calendario;
+    public ConcluirTreinoDoDiaUseCase(IPlanoTreinoRepository planoRepo, ISessaoExercicioRepository sessaoRepo, ICalendario calendario)
     {
+        _calendario = calendario;
         _planoRepo = planoRepo;
         _sessaoRepo = sessaoRepo;
     }
 
     public async Task ExecutarAsync(Guid usuarioId, Guid diaDeTreinoId, DateOnly? data = null)
     {
-        var dataAlvo = data ?? DateOnly.FromDateTime(DateTime.Today);
+        var dataAlvo = data ?? _calendario.Hoje;
+        if (dataAlvo > _calendario.Hoje) throw new InvalidOperationException("A data do treino não pode estar no futuro.");
 
         var dia = await _planoRepo.ObterDiaDeTreinoAsync(diaDeTreinoId)
             ?? throw new InvalidOperationException("Dia de treino não encontrado.");

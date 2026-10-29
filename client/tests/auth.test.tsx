@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, test } from 'node:test'
 import assert from 'node:assert/strict'
 import { StrictMode } from 'react'
-import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { AxiosError, type InternalAxiosRequestConfig } from 'axios'
 import App from '../src/App'
@@ -58,7 +58,7 @@ beforeEach(() => {
       if (authError) throw unauthorized(config)
       return resposta(config, { token: 'token-local', usuarioId: usuario.id, nome: usuario.nome })
     }
-    if (config.url === '/api/medidas') return resposta(config, [])
+    if (config.url === '/api/medidas' || config.url === '/api/planos-treino/historico') return resposta(config, [])
     if (config.url === '/api/treino-do-dia')
       return resposta(config, { temTreinoHoje: false, diaSemana: 'Monday', exercicios: [] })
     return resposta(config, null)
@@ -79,7 +79,7 @@ test('login navega sem documento novo e carrega usuário uma vez, inclusive em S
   assert.deepEqual(Object.keys(localStorage), ['personalite_token'])
   assert.equal(sessionStorage.length, 0)
   assert.equal(userGets(), 1)
-  fireEvent.click(screen.getByRole('link', { name: 'Treinos', exact: true }))
+  fireEvent.click(within(screen.getByRole('main')).getByRole('link', { name: 'Treinos', exact: true }))
   await screen.findByRole('heading', { name: 'Treino', exact: true })
   assert.equal(userGets(), 1)
 })
@@ -95,6 +95,9 @@ test('cadastro mantém sessão e navega para o Dashboard com um GET de usuário'
   fireEvent.click(screen.getByRole('button', { name: 'Criar conta', exact: true }))
   await dashboard()
   assert.equal(calls.filter(c => c.url === '/api/auth/registrar').length, 1)
+  assert.equal(userGets(), 1)
+  fireEvent.click(within(screen.getByRole('main')).getByRole('link', { name: 'Treinos', exact: true }))
+  await screen.findByRole('heading', { name: 'Treino', exact: true })
   assert.equal(userGets(), 1)
 })
 
@@ -179,6 +182,29 @@ test('revalidação compartilha usuário novo sem desmontar tela já utilizável
   await act(async () => pedido.resolve({ ...usuario, nome: 'Nome atualizado' }))
   await screen.findAllByText('Nome atualizado')
   assert.equal(userGets(), 2)
+})
+
+test('falha na revalidação preserva usuário e conteúdo utilizável, permitindo retry', async () => {
+  function Consumidor() {
+    const { usuario: atual, recarregar, carregando, erro } = useUsuario()
+    return <><p>{atual?.nome}</p><button onClick={recarregar}>Atualizar</button>
+      {carregando && <span role="status">Atualizando</span>}
+      {erro && <span role="alert">{erro}</span>}</>
+  }
+  salvarToken('token-local')
+  render(<UsuarioProvider><Consumidor /></UsuarioProvider>)
+  const conteudo = await screen.findByText('Pessoa Teste')
+  loadUser = async () => { throw new Error('offline') }
+  fireEvent.click(screen.getByRole('button', { name: 'Atualizar' }))
+  await screen.findByRole('alert')
+  assert.equal(screen.getByText('Pessoa Teste'), conteudo)
+  assert.equal(screen.queryByRole('status'), null)
+  assert.equal(obterToken(), 'token-local')
+  loadUser = async () => ({ ...usuario, nome: 'Nome atualizado' })
+  fireEvent.click(screen.getByRole('button', { name: 'Atualizar' }))
+  await screen.findByText('Nome atualizado')
+  assert.equal(screen.queryByRole('alert'), null)
+  assert.equal(userGets(), 3)
 })
 
 test('401 atrasado de token antigo não derruba a sessão nova', async () => {

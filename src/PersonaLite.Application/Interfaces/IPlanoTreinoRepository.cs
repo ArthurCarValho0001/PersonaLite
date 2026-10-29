@@ -4,6 +4,7 @@ namespace PersonaLite.Application.Interfaces;
 
 public interface IPlanoTreinoRepository
 {
+    Task<List<PlanoTreino>> ListarAsync(Guid usuarioId);
     Task<PlanoTreino?> ObterAsync(Guid id);
     Task<PlanoTreino?> ObterVigenteAsync(Guid usuarioId);
     Task<DiaDeTreino?> ObterDiaDeTreinoAsync(Guid diaDeTreinoId);

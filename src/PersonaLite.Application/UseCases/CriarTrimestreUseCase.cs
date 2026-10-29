@@ -7,14 +7,16 @@ public class CriarTrimestreUseCase
 {
     private readonly ITrimestreRepository _trimestreRepo;
 
-    public CriarTrimestreUseCase(ITrimestreRepository trimestreRepo)
+    private readonly ICalendario _calendario;
+    public CriarTrimestreUseCase(ITrimestreRepository trimestreRepo, ICalendario calendario)
     {
+        _calendario = calendario;
         _trimestreRepo = trimestreRepo;
     }
 
     public async Task<Guid> ExecutarAsync(Guid usuarioId, DateOnly? dataInicio = null)
     {
-        var inicio = dataInicio ?? DateOnly.FromDateTime(DateTime.Today);
+        var inicio = dataInicio ?? _calendario.Hoje;
         var ultimo = await _trimestreRepo.ObterUltimoAsync(usuarioId);
 
         if (ultimo is not null && ultimo.DataFim is null)

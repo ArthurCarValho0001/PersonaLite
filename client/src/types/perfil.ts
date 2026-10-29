@@ -5,6 +5,7 @@ export interface AtualizarInformacoesPessoaisDto {
   dataNascimento: string
   sexo: Sexo
   metas: string | null
+  alturaCm?: number
 }
 
 export interface AlterarNomeUsuarioDto {

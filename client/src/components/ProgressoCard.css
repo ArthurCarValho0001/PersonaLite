@@ -1,6 +1,6 @@
 .progresso-card {
   display: block;
-  background: linear-gradient(135deg, #1e1b4b, #1e293b);
+  background: linear-gradient(135deg, #1e1b4b, #ffffff);
   border: 1px solid #3730a3;
   border-radius: 14px;
   padding: 1rem 1.1rem;
@@ -56,10 +56,10 @@
 .progresso-card__destaque-titulo {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #4ade80;
+  color: #176846;
 }
 
 .progresso-card__destaque-desc {
   font-size: 0.78rem;
-  color: #cbd5e1;
+  color: #415a50;
 }

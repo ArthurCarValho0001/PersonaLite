@@ -10,7 +10,7 @@
   aspect-ratio: 3 / 4;
   border-radius: 12px;
   overflow: hidden;
-  background: #0f172a;
+  background: #edf2ee;
 }
 
 .comparador-fotos__imagem {
@@ -32,7 +32,7 @@
   top: 0;
   bottom: 0;
   width: 2px;
-  background: #22c55e;
+  background: #166b50;
   transform: translateX(-50%);
 }
 
@@ -40,7 +40,7 @@
   position: absolute;
   top: 0.5rem;
   background: rgba(15, 23, 42, 0.75);
-  color: #e2e8f0;
+  color: #142d2a;
   font-size: 0.75rem;
   padding: 0.2rem 0.5rem;
   border-radius: 6px;
@@ -56,5 +56,5 @@
 
 .comparador-fotos__controle {
   width: 100%;
-  accent-color: #22c55e;
+  accent-color: #166b50;
 }

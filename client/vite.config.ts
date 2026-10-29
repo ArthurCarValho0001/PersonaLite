@@ -20,7 +20,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       includeAssets: ['favicon.svg', 'icon-192.png', 'icon-512.png'],
       manifest: {
         name: 'PersonaLite',
@@ -34,13 +34,16 @@ export default defineConfig({
         ]
       },
       workbox: {
-        runtimeCaching: [
-          {
-            urlPattern: /^http:\/\/localhost:5000\/api\/.*/,
-            handler: 'StaleWhileRevalidate',
-            options: { cacheName: 'api-cache' }
-          }
-        ]
+        // Native lifecycle: a waiting worker only activates after every controlled
+        // tab closes. Never skipWaiting or reload a page with forms/queued writes.
+        skipWaiting: false,
+        clientsClaim: false,
+        importScripts: ['sw-cleanup.js'],
+        navigateFallbackDenylist: [/^\/api\//],
+        runtimeCaching: [{
+          urlPattern: ({ url }) => url.pathname.startsWith('/api/'),
+          handler: 'NetworkOnly'
+        }]
       }
     })
   ],

@@ -69,12 +69,14 @@ public class DiaDeTreino
     {
         var exercicio = Exercicios.FirstOrDefault(e => e.Id == exercicioId);
         if (exercicio is not null)
-            Exercicios.Remove(exercicio);
+            exercicio.Arquivar();
     }
 }
 
 public class ExercicioPlanejado
 {
+    public bool Arquivado { get; private set; }
+    public void Arquivar() => Arquivado = true;
     public Guid Id { get; private set; }
     public Guid DiaDeTreinoId { get; private set; }
     public string Nome { get; private set; } = string.Empty;

@@ -10,8 +10,10 @@ public class RegistrarMedidasUseCase
     private readonly IUsuarioRepository _usuarioRepo;
     private readonly IRegistroMedidasRepository _medidasRepo;
 
-    public RegistrarMedidasUseCase(IUsuarioRepository usuarioRepo, IRegistroMedidasRepository medidasRepo)
+    private readonly ICalendario _calendario;
+    public RegistrarMedidasUseCase(IUsuarioRepository usuarioRepo, IRegistroMedidasRepository medidasRepo, ICalendario calendario)
     {
+        _calendario = calendario;
         _usuarioRepo = usuarioRepo;
         _medidasRepo = medidasRepo;
     }
@@ -21,6 +23,8 @@ public class RegistrarMedidasUseCase
         var usuario = await _usuarioRepo.ObterAsync(usuarioId)
             ?? throw new InvalidOperationException("Usuário não encontrado.");
 
+        ValidacaoV2.Medidas(dto, _calendario.Hoje);
+        if ((await _medidasRepo.ListarPorUsuarioAsync(usuarioId)).Any(m => m.Data == dto.Data)) throw new ConflitoException("Já existe uma medição nesta data. Edite o registro existente.");
         var idade = usuario.IdadeEm(dto.Data);
 
         var circunferencias = new Circunferencias(
@@ -35,6 +39,7 @@ public class RegistrarMedidasUseCase
         var registro = new RegistroMedidas(usuario.Id, dto.Data, dto.PesoKg, usuario.AlturaCm,
             idade, usuario.Sexo, circunferencias, dobras);
 
+        registro.Recalcular(usuario);
         await _medidasRepo.SalvarAsync(registro);
         return registro.Id;
     }

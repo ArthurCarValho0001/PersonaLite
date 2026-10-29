@@ -7,25 +7,25 @@
 
 .form-field label {
   font-size: 0.875rem;
-  color: #94a3b8;
+  color: #526862;
   font-weight: 500;
 }
 
 .form-field__unidade {
-  color: #64748b;
+  color: #526862;
   font-weight: 400;
 }
 
 .form-field input {
-  background: #0f172a;
-  border: 1px solid #334155;
+  background: #edf2ee;
+  border: 1px solid #dce5df;
   border-radius: 8px;
   padding: 0.6rem 0.75rem;
-  color: #e2e8f0;
+  color: #142d2a;
   font-size: 1rem;
 }
 
 .form-field input:focus {
   outline: none;
-  border-color: #22c55e;
+  border-color: #166b50;
 }
