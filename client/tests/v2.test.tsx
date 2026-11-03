@@ -120,3 +120,65 @@ test('bloco Último treino alterna conteúdo pelo botão', async () => {
   assert.equal(cabecalho.getAttribute('aria-expanded'), 'false')
   assert.equal(screen.queryByText(/primeiro registro neste exercício/), null)
 })
+
+test('protótipo de Aprender funciona sem chamar a API: aulas, avaliação, idempotência e histórico', async () => {
+  const proto = await import('../src/api/aprenderApi')
+  let chamadas = 0
+  httpClient.defaults.adapter = async config => { chamadas++; throw new Error(`Rede não deveria ser usada: ${config.url}`) }
+  const anterior = (globalThis as { __APRENDER_API__?: boolean }).__APRENDER_API__
+  ;(globalThis as { __APRENDER_API__?: boolean }).__APRENDER_API__ = false
+  salvarToken(token('conta-prototipo'))
+  try {
+    const modulos = await proto.catalogo()
+    assert.equal(modulos.length, 3)
+    assert.ok(modulos.every(m => m.demonstracao && m.aulasEstudadas === 0 && m.melhorNota === null))
+    const id = modulos[0].id
+    await assert.rejects(proto.questionario(id), (e: any) => /Estude as duas aulas/.test(e.response.data.mensagem))
+    assert.equal((await proto.detalheModulo(id)).avaliacaoLiberada, false)
+    for (const aula of (await proto.detalheModulo(id)).aulas) await proto.estudar(id, aula.id)
+    assert.equal((await proto.detalheModulo(id)).avaliacaoLiberada, true)
+    const q = await proto.questionario(id)
+    assert.equal(q.questoes.length, 5)
+    assert.ok(q.questoes.every(x => x.alternativas.length === 4))
+    const erradas = Object.fromEntries(q.questoes.map(x => [x.id, x.alternativas[0].id]))
+    const primeira = await proto.avaliar(id, erradas, crypto.randomUUID())
+    const corretas = Object.fromEntries((primeira.explicacoes ?? []).map(x => [x.id, x.correta]))
+    const chave = crypto.randomUUID()
+    const segunda = await proto.avaliar(id, corretas, chave)
+    assert.equal(segunda.nota, 100); assert.equal(segunda.aprovada, true)
+    assert.equal((await proto.avaliar(id, corretas, chave)).id, segunda.id)
+    assert.equal((await proto.historicoAprender())[0].tentativas.length, 2)
+    assert.equal((await proto.catalogo())[0].versaoConcluida, 1)
+    assert.equal((await proto.resultado(segunda.id)).nota, 100)
+    salvarToken(token('outra-conta'))
+    assert.equal((await proto.historicoAprender()).length, 0)
+    assert.equal(chamadas, 0)
+  } finally {
+    ;(globalThis as { __APRENDER_API__?: boolean }).__APRENDER_API__ = anterior
+    localStorage.clear()
+  }
+})
+
+test('Avatar não chama /api/usuario/avatar/arquivo por padrão e mostra as iniciais', async () => {
+  const { render, screen } = await import('@testing-library/react')
+  const { Avatar } = await import('../src/components/Avatar')
+  let chamadas = 0
+  httpClient.defaults.adapter = async config => { chamadas++; return {data:new Blob(),config,status:404,statusText:'Not Found',headers:{}} }
+  render(<Avatar nome="Arthur Carvalho" avatarUrl="fotos-progresso/x.png" />)
+  await new Promise(r => setTimeout(r, 20))
+  assert.equal(chamadas, 0)
+  assert.ok(screen.getByText('AC'))
+})
+
+test('layout não exibe o rótulo "V2 · LOCAL" nem o cartão da folha', async () => {
+  const { render, screen } = await import('@testing-library/react')
+  const { MemoryRouter } = await import('react-router-dom')
+  const { AppLayout } = await import('../src/components/AppLayout')
+  const { UsuarioContext } = await import('../src/hooks/useUsuario')
+  const valor = { usuario: { nome: 'Arthur' } as never, carregando: false, erro: null, autenticado: true, recarregar: () => {} }
+  const { container } = render(<UsuarioContext.Provider value={valor}><MemoryRouter><AppLayout><p>Conteúdo</p></AppLayout></MemoryRouter></UsuarioContext.Provider>)
+  assert.equal(screen.queryByText(/V2 · LOCAL/i), null)
+  assert.equal(screen.queryByText(/aprender todos os dias/i), null)
+  assert.equal(container.querySelector('.v2-sidebar-note'), null)
+  assert.ok(screen.getByText('Bem-estar em movimento'))
+})

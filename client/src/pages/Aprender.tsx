@@ -4,7 +4,7 @@ import { BookOpen, CheckCircle2, ArrowRight, GraduationCap, Leaf, Heart, Activit
 import * as api from '../api/aprenderApi'
 
 function mensagem(e: unknown) { return (e as { response?: { data?: { mensagem?: string } } })?.response?.data?.mensagem ?? 'Não foi possível concluir. Tente novamente.' }
-function AvisoDemo() { return <p className="v2-notice">Demonstração local · Conteúdo fictício, sem revisão editorial. Não oferece orientação de saúde.</p> }
+function AvisoDemo() { return <p className="v2-notice">{api.aprenderEmPrototipo() ? 'Protótipo · Conteúdo fictício, sem revisão editorial. Seu progresso fica salvo apenas neste aparelho. Não oferece orientação de saúde.' : 'Demonstração · Conteúdo fictício, sem revisão editorial. Não oferece orientação de saúde.'}</p> }
 function useConsulta<T>(buscar: () => Promise<T>, chave: string) {
   const [dados, setDados] = useState<T | null>(null)
   const [erro, setErro] = useState('')
