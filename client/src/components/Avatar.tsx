@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { httpClient } from '../api/httpClient'
+import { avatarBuscaArquivo } from '../config/recursos'
 import './Avatar.css'
 
 interface AvatarProps {
@@ -13,7 +14,7 @@ export function Avatar({ nome, avatarUrl, tamanho = 'pequeno' }: AvatarProps) {
   useEffect(() => {
     let ativo = true, blob: string | null = null
     setUrlCompleta(null)
-    if (avatarUrl) httpClient.get('/api/usuario/avatar/arquivo', { responseType: 'blob' }).then(r => {
+    if (avatarUrl && avatarBuscaArquivo()) httpClient.get('/api/usuario/avatar/arquivo', { responseType: 'blob' }).then(r => {
       if (ativo) { blob = URL.createObjectURL(r.data); setUrlCompleta(blob) }
     }).catch(() => {})
     return () => { ativo = false; if (blob) URL.revokeObjectURL(blob) }
