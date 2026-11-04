@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { atualizarAvatar } from '../api/perfilApi'
+import { salvarAvatarLocal } from '../api/avatarLocal'
 import { limparToken } from '../api/authToken'
 import { contarPendentes } from '../api/offlineQueue'
 import { Avatar } from '../components/Avatar'
@@ -13,6 +14,7 @@ export function Perfil() {
   const navigate = useNavigate()
   const inputArquivoRef = useRef<HTMLInputElement>(null)
   const [enviandoFoto, setEnviandoFoto] = useState(false)
+  const [avisoFoto, setAvisoFoto] = useState('')
 
   if (!usuario) return null
 
@@ -21,9 +23,17 @@ export function Perfil() {
     if (!arquivo) return
 
     setEnviandoFoto(true)
+    setAvisoFoto('')
     try {
-      await atualizarAvatar(arquivo)
-      recarregar()
+      await salvarAvatarLocal(arquivo)
+      try {
+        await atualizarAvatar(arquivo)
+        recarregar()
+      } catch {
+        setAvisoFoto('Foto atualizada neste aparelho. Não foi possível enviá-la ao servidor agora.')
+      }
+    } catch (e) {
+      setAvisoFoto(e instanceof Error ? e.message : 'Não foi possível atualizar a foto.')
     } finally {
       setEnviandoFoto(false)
       if (inputArquivoRef.current) inputArquivoRef.current.value = ''
@@ -65,6 +75,7 @@ export function Perfil() {
         >
           {enviandoFoto ? 'Enviando...' : 'Trocar foto'}
         </button>
+        {avisoFoto && <p role="status" className="perfil__aviso-foto">{avisoFoto}</p>}
       </div>
 
       <nav className="perfil__menu">

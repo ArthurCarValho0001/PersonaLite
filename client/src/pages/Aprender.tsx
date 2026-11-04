@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams, useBlocker } from 'react-router-dom'
-import { BookOpen, CheckCircle2, ArrowRight, GraduationCap, Leaf, Heart, Activity } from 'lucide-react'
+import { BookOpen, CheckCircle2, ArrowRight, GraduationCap, Leaf, Heart, Activity, Play } from 'lucide-react'
 import * as api from '../api/aprenderApi'
 
 function mensagem(e: unknown) { return (e as { response?: { data?: { mensagem?: string } } })?.response?.data?.mensagem ?? 'Não foi possível concluir. Tente novamente.' }
-function AvisoDemo() { return <p className="v2-notice">{api.aprenderEmPrototipo() ? 'Protótipo · Conteúdo fictício, sem revisão editorial. Seu progresso fica salvo apenas neste aparelho. Não oferece orientação de saúde.' : 'Demonstração · Conteúdo fictício, sem revisão editorial. Não oferece orientação de saúde.'}</p> }
 function useConsulta<T>(buscar: () => Promise<T>, chave: string) {
   const [dados, setDados] = useState<T | null>(null)
   const [erro, setErro] = useState('')
@@ -30,11 +29,10 @@ export function Aprender() {
   const icons = [Activity, Heart, Leaf]
   return <section className="v2-page">
     <header className="v2-page-header"><div><span className="v2-eyebrow">CONHECIMENTO PARA O DIA A DIA</span><h1>Aprender</h1><p>Um espaço para estudar, refletir e acompanhar seu aprendizado.</p></div><Link className="v2-link-button" to="/aprender/progresso"><GraduationCap size={18}/> Meu aprendizado</Link></header>
-    <AvisoDemo />
-    <div className="v2-learning-intro"><BookOpen size={34}/><div><h2>Pequenos passos, novas perspectivas.</h2><p>Escolha qualquer módulo. Estude as duas aulas e faça a avaliação quando estiver pronto.</p></div><span>3 módulos<br/><strong>Gratuitos</strong></span></div>
+    <div className="v2-learning-intro"><BookOpen size={34}/><div><h2>Pequenos passos, novas perspectivas.</h2><p>Escolha qualquer módulo. Estude pelo menos duas aulas e faça a avaliação quando estiver pronto.</p></div><span>3 módulos<br/><strong>Gratuitos</strong></span></div>
     {!dados ? <Estado erro={erro} tentar={tentar}/> : <div className="v2-module-grid">{dados.map((m, i) => {
       const Icon = icons[i % icons.length]
-      return <article className="v2-module" key={m.id}><div className={`v2-module-art art-${i % 3}`}><Icon size={60} strokeWidth={1.25}/><span>0{i + 1}</span></div><div className="v2-module-body"><span className="v2-eyebrow">2 AULAS · VERSÃO {m.versao}</span><h2>{m.titulo}</h2><p>{m.objetivo}</p><progress value={m.aulasEstudadas} max={2} aria-label={`Aulas estudadas de ${m.titulo}`}/><small>{m.aulasEstudadas} de 2 aulas estudadas {m.versaoConcluida && '· Módulo concluído'}</small>{m.versaoConcluida && m.versaoConcluida !== m.versao && <p className="v2-notice">Você concluiu a versão {m.versaoConcluida}. O novo conteúdo é opcional.</p>}<Link className="v2-link-button" to={`/aprender/${m.id}`}>{m.aulasEstudadas ? 'Continuar módulo' : 'Conhecer módulo'}<ArrowRight size={18}/></Link></div></article>
+      return <article className="v2-module" key={m.id}><div className={`v2-module-art art-${i % 3}`}><Icon size={60} strokeWidth={1.25}/><span>0{i + 1}</span></div><div className="v2-module-body"><span className="v2-eyebrow">{m.totalAulas ?? 2} AULAS · VERSÃO {m.versao}</span><h2>{m.titulo}</h2><p>{m.objetivo}</p><progress value={m.aulasEstudadas} max={m.totalAulas ?? 2} aria-label={`Aulas estudadas de ${m.titulo}`}/><small>{m.aulasEstudadas} de {m.totalAulas ?? 2} aulas estudadas {m.versaoConcluida && '· Módulo concluído'}</small>{m.versaoConcluida && m.versaoConcluida !== m.versao && <p className="v2-notice">Você concluiu a versão {m.versaoConcluida}. O novo conteúdo é opcional.</p>}<Link className="v2-link-button" to={`/aprender/${m.id}`}>{m.aulasEstudadas ? 'Continuar módulo' : 'Conhecer módulo'}<ArrowRight size={18}/></Link></div></article>
     })}</div>}
     <section className="v2-learning-preview" aria-labelledby="previa-aprender">
       <div className="v2-learning-preview-heading"><div><span className="v2-eyebrow">AMOSTRAS FICTÍCIAS</span><h2 id="previa-aprender">Um pouco do que você vai encontrar</h2></div><p>Estes exemplos mostram o formato das aulas. Seu progresso e as aulas completas dependem do catálogo.</p></div>
@@ -50,13 +48,18 @@ export function ModuloAprender() {
   const [aberta, setAberta] = useState<string | null>(null)
   const [enviando, setEnviando] = useState(false)
   const [falha, setFalha] = useState('')
+  const [dica, setDica] = useState(false)
   async function marcar(aula: string) { setEnviando(true); setFalha(''); try { await api.estudar(id, aula); tentar() } catch(e) { setFalha(mensagem(e)) } finally { setEnviando(false) } }
   if (!m) return <Estado erro={erro} tentar={tentar}/>
-  return <section className="v2-page"><Link className="v2-back" to="/aprender">← Todos os módulos</Link><header className="v2-page-header"><div><span className="v2-eyebrow">VERSÃO {m.versao}</span><h1>{m.titulo}</h1><p>{m.objetivo}</p></div></header>{m.demonstracao && <AvisoDemo/>}
+  return <section className="v2-page"><Link className="v2-back" to="/aprender">← Todos os módulos</Link><header className="v2-page-header"><div><span className="v2-eyebrow">VERSÃO {m.versao}</span><h1>{m.titulo}</h1><p>{m.objetivo}</p></div></header>
     <p className="v2-muted">{m.autoria} · {m.revisao} · {new Date(m.publicadoEm).toLocaleDateString('pt-BR')}</p>
-    {m.aulas.map((a, i) => <article className="v2-panel" key={a.id}><button className="v2-lesson-heading" aria-expanded={aberta === a.id} onClick={() => setAberta(aberta === a.id ? null : a.id)}><span>Aula {i + 1} · {a.titulo}</span>{a.estudada ? <CheckCircle2 aria-label="Estudada"/> : <BookOpen/>}</button>{aberta === a.id && <div className="v2-prose"><p>{a.texto}</p><p><strong>Fonte:</strong> {a.fonte}</p><button disabled={enviando || a.estudada} onClick={() => marcar(a.id)}>{a.estudada ? 'Aula estudada' : enviando ? 'Salvando...' : 'Marcar como estudada'}</button></div>}</article>)}
+    <div className="v2-lessons">{m.aulas.map((a, i) => <article className="v2-panel v2-lesson" key={a.id}>
+      <button type="button" className="v2-video" aria-label={`Vídeo da aula ${i + 1}: ${a.titulo}`} onClick={() => setAberta(aberta === a.id ? null : a.id)}><span className="v2-video-play"><Play size={26} fill="currentColor"/></span><span className="v2-video-label">Aula {i + 1}</span><span className="v2-video-time">{a.duracao ?? 'Vídeo'}</span></button>
+      <button className="v2-lesson-heading" aria-expanded={aberta === a.id} onClick={() => setAberta(aberta === a.id ? null : a.id)}><span>Aula {i + 1} · {a.titulo}</span>{a.estudada ? <CheckCircle2 aria-label="Estudada"/> : <BookOpen/>}</button>
+      {aberta === a.id && <div className="v2-prose"><p>{a.texto}</p><p><strong>Fonte:</strong> {a.fonte}</p><button disabled={enviando || a.estudada} onClick={() => marcar(a.id)}>{a.estudada ? 'Aula estudada' : enviando ? 'Salvando...' : 'Marcar como estudada'}</button></div>}
+    </article>)}</div>
     {falha && <p role="alert">{falha}</p>}
-    <div className="v2-panel"><h2>Pronto para revisar?</h2><p>Cinco questões, quatro alternativas. Quatro acertos concluem o módulo. Você pode tentar novamente quantas vezes quiser.</p>{m.avaliacaoLiberada ? <Link className="v2-link-button" to={`/aprender/${id}/avaliacao`}>Iniciar avaliação <ArrowRight size={18}/></Link> : <p>Marque as duas aulas desta versão como estudadas para liberar a avaliação.</p>}</div>
+    <div className="v2-panel"><h2>Pronto para revisar?</h2><p>Cinco questões, quatro alternativas. Quatro acertos concluem o módulo. Você pode tentar novamente quantas vezes quiser.</p>{m.avaliacaoLiberada ? <Link className="v2-link-button" to={`/aprender/${id}/avaliacao`}>Ir para o questionário <ArrowRight size={18}/></Link> : <button type="button" onClick={() => setDica(true)}>Ir para o questionário <ArrowRight size={18}/></button>}{!m.avaliacaoLiberada && <p role="status" className={dica ? '' : 'v2-muted'}>Marque pelo menos duas aulas como estudadas para liberar a avaliação.</p>}</div>
   </section>
 }
 
@@ -79,7 +82,7 @@ export function AvaliacaoAprender() {
     catch(e) { setFalha(mensagem(e)) } finally { setEnviando(false) }
   }
   if (!q) return <Estado erro={erro} tentar={tentar}/>
-  return <section className="v2-page v2-reading"><Link className="v2-back" to={`/aprender/${id}`}>← Voltar ao módulo</Link><span className="v2-eyebrow">AVALIAÇÃO · VERSÃO {q.versao}</span><h1>{q.titulo}</h1><AvisoDemo/>
+  return <section className="v2-page v2-reading"><Link className="v2-back" to={`/aprender/${id}`}>← Voltar ao módulo</Link><span className="v2-eyebrow">AVALIAÇÃO · VERSÃO {q.versao}</span><h1>{q.titulo}</h1>
     {blocker.state === 'blocked' && <div className="v2-panel" role="alertdialog" aria-modal="true" aria-label="Sair da avaliação?"><h2>Sair da avaliação?</h2><p>Respostas não enviadas serão descartadas. Se você já enviou, consulte o histórico para conferir o resultado.</p><button onClick={() => blocker.reset()}>Continuar respondendo</button> <button onClick={() => blocker.proceed()}>Sair</button></div>}
     {feito ? <div className="v2-panel"><GraduationCap size={40}/><h2>{feito.aprovada ? 'Módulo concluído!' : 'Continue aprendendo'}</h2><p className="v2-score">{feito.nota}%</p><p>{feito.aprovada ? 'Sua conclusão foi registrada.' : 'Você pode revisar as aulas e tentar novamente.'}</p>{feito.explicacoes?.map(e => <p key={e.id}>{e.explicacao}</p>)}<Link className="v2-link-button" to="/aprender/progresso">Ver meu aprendizado</Link><button className="v2-secondary" onClick={() => { setFeito(null); setRespostas({}); setChave(crypto.randomUUID()) }}>Nova tentativa</button></div>
     : <form onSubmit={e => { e.preventDefault(); void enviar() }}>{q.questoes.map((questao, i) => <fieldset className="v2-panel" key={questao.id} disabled={enviando || incerto}><legend>{i + 1}. {questao.enunciado}</legend>{questao.alternativas.map(a => <label className="v2-answer" key={a.id}><input type="radio" name={questao.id} value={a.id} checked={respostas[questao.id] === a.id} onChange={() => setRespostas(r => ({ ...r, [questao.id]: a.id }))}/><span>{a.texto}</span></label>)}</fieldset>)}{falha && <p role="alert">{falha} Use o mesmo envio para recuperar uma confirmação perdida; as respostas ficam em memória enquanto esta tela estiver aberta.</p>}<button disabled={enviando || Object.keys(respostas).length !== 5}>{enviando ? 'Conferindo respostas...' : incerto ? 'Repetir envio com segurança' : 'Enviar avaliação'}</button></form>}
@@ -88,5 +91,5 @@ export function AvaliacaoAprender() {
 
 export function ProgressoAprender() {
   const { dados, erro, tentar } = useConsulta(api.historicoAprender, 'historico')
-  return <section className="v2-page"><Link className="v2-back" to="/aprender">← Aprender</Link><h1>Meu aprendizado</h1><p className="v2-muted">Seu histórico de estudo e avaliações, preservado por versão.</p>{!dados ? <Estado erro={erro} tentar={tentar}/> : dados.length === 0 ? <div className="v2-panel"><BookOpen size={36}/><h2>Seu próximo passo começa com uma aula</h2><p>Escolha um módulo para começar.</p><Link to="/aprender">Explorar módulos →</Link></div> : dados.map(m => <article className="v2-panel" key={m.id}><h2>{m.titulo}</h2><p>Versão {m.versao} · {m.aulasEstudadas.length}/2 aulas · {m.concluido ? 'Concluído' : 'Em estudo'}{m.retirada && ' · Conteúdo retirado — somente histórico'}</p>{m.tentativas.length ? <ul className="v2-history">{m.tentativas.map(t => <li key={t.id}><time>{new Date(t.enviadaEm).toLocaleString('pt-BR')}</time><strong>{t.nota}%</strong><span>{t.nota >= 80 ? 'Aprovada' : 'Em aprendizado'}</span></li>)}</ul> : <p>Nenhuma avaliação enviada.</p>}</article>)}</section>
+  return <section className="v2-page"><Link className="v2-back" to="/aprender">← Aprender</Link><h1>Meu aprendizado</h1><p className="v2-muted">Seu histórico de estudo e avaliações, preservado por versão.</p>{!dados ? <Estado erro={erro} tentar={tentar}/> : dados.length === 0 ? <div className="v2-panel"><BookOpen size={36}/><h2>Seu próximo passo começa com uma aula</h2><p>Escolha um módulo para começar.</p><Link to="/aprender">Explorar módulos →</Link></div> : dados.map(m => <article className="v2-panel" key={m.id}><h2>{m.titulo}</h2><p>Versão {m.versao} · {m.aulasEstudadas.length}/{m.totalAulas ?? 2} aulas · {m.concluido ? 'Concluído' : 'Em estudo'}{m.retirada && ' · Conteúdo retirado — somente histórico'}</p>{m.tentativas.length ? <ul className="v2-history">{m.tentativas.map(t => <li key={t.id}><time>{new Date(t.enviadaEm).toLocaleString('pt-BR')}</time><strong>{t.nota}%</strong><span>{t.nota >= 80 ? 'Aprovada' : 'Em aprendizado'}</span></li>)}</ul> : <p>Nenhuma avaliação enviada.</p>}</article>)}</section>
 }

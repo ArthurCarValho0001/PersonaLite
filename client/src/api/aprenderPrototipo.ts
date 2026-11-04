@@ -5,7 +5,7 @@ import { titularAtual } from './identidade'
 import type { Modulo, DetalheModulo, Questionario, Resultado, Historico } from './aprenderApi'
 
 type Questao = [enunciado: string, correta: string, erradas: [string, string, string], explicacao: string]
-interface ModuloDef { id: string; moduloId: string; titulo: string; objetivo: string; aulas: { id: string; titulo: string; texto: string }[]; questoes: Questao[] }
+interface ModuloDef { id: string; moduloId: string; titulo: string; objetivo: string; aulas: { id: string; titulo: string; texto: string; duracao: string }[]; questoes: Questao[] }
 
 const AUTORIA = 'Equipe PersonaLite — protótipo com conteúdo fictício'
 const REVISAO = 'Sem revisão editorial'
@@ -17,8 +17,11 @@ const MODULOS: ModuloDef[] = [
     id: 'proto-1', moduloId: 'demo-1', titulo: 'Movimento e bem-estar',
     objetivo: 'Entender o que seus registros de treino mostram e o que eles não mostram.',
     aulas: [
-      { id: 'aula-1', titulo: 'Conhecer antes de escolher', texto: 'Registrar séries, cargas e repetições cria um retrato da sua rotina. Esse retrato ajuda a perceber padrões, como os dias em que você treina mais ou menos. Um registro, porém, é apenas um dado sobre o que você fez: ele não prova um resultado de saúde por si só.' },
-      { id: 'aula-2', titulo: 'Regularidade e descanso', texto: 'Em uma rotina de atividade, voltar com frequência costuma contar mais do que um único dia muito intenso. O descanso faz parte dessa rotina, e o intervalo entre as séries também. O aplicativo ajuda a observar, mas não substitui a orientação de um profissional.' },
+      { id: 'aula-1', titulo: 'Conhecer antes de escolher', texto: 'Registrar séries, cargas e repetições cria um retrato da sua rotina. Esse retrato ajuda a perceber padrões, como os dias em que você treina mais ou menos. Um registro, porém, é apenas um dado sobre o que você fez: ele não prova um resultado de saúde por si só.', duracao: '05:40' },
+      { id: 'aula-2', titulo: 'Regularidade e descanso', texto: 'Em uma rotina de atividade, voltar com frequência costuma contar mais do que um único dia muito intenso. O descanso faz parte dessa rotina, e o intervalo entre as séries também. O aplicativo ajuda a observar, mas não substitui a orientação de um profissional.', duracao: '06:15' },
+
+      { id: 'aula-3', titulo: 'Registrando séries e drop sets', texto: 'Cada série tem carga e repetições. No drop set, você reduz a carga e continua logo em seguida, e o aplicativo guarda cada queda como um estágio da mesma série. Registrar na hora evita esquecer valores e deixa o histórico mais fiel ao que aconteceu.', duracao: '07:10' },
+      { id: 'aula-4', titulo: 'Lendo o seu histórico', texto: 'Compare sessões do mesmo exercício e observe a tendência ao longo das semanas, em vez de um único dia. Evite comparar exercícios diferentes entre si. A evolução é pessoal: o seu ponto de partida é a melhor referência.', duracao: '05:55' },
     ],
     questoes: [
       ['O que um registro de treino representa?', 'Um dado sobre o que você fez', ['Um diagnóstico de saúde', 'Uma certificação profissional', 'Uma garantia de resultado'], 'O registro descreve a sua rotina; ele não comprova resultado de saúde.'],
@@ -32,8 +35,11 @@ const MODULOS: ModuloDef[] = [
     id: 'proto-2', moduloId: 'demo-2', titulo: 'Autocuidado e informação',
     objetivo: 'Ler medidas e indicadores com cuidado e escolher boas fontes de informação.',
     aulas: [
-      { id: 'aula-1', titulo: 'Do registro à reflexão', texto: 'Peso, circunferências e dobras cutâneas geram indicadores, como o IMC e o percentual de gordura. Esses números são estimativas com limites. Para comparar sua evolução, use sempre o mesmo método e olhe a tendência ao longo do tempo, não um único valor isolado.' },
-      { id: 'aula-2', titulo: 'Fontes confiáveis', texto: 'Antes de tomar uma decisão com base em uma informação, observe quem escreveu, quando foi publicada e quais referências apresenta. Informação geral ajuda a entender um assunto, mas não é orientação individual: dúvidas sobre a sua saúde devem ir a um profissional.' },
+      { id: 'aula-1', titulo: 'Do registro à reflexão', texto: 'Peso, circunferências e dobras cutâneas geram indicadores, como o IMC e o percentual de gordura. Esses números são estimativas com limites. Para comparar sua evolução, use sempre o mesmo método e olhe a tendência ao longo do tempo, não um único valor isolado.', duracao: '04:50' },
+      { id: 'aula-2', titulo: 'Fontes confiáveis', texto: 'Antes de tomar uma decisão com base em uma informação, observe quem escreveu, quando foi publicada e quais referências apresenta. Informação geral ajuda a entender um assunto, mas não é orientação individual: dúvidas sobre a sua saúde devem ir a um profissional.', duracao: '07:05' },
+
+      { id: 'aula-3', titulo: 'Medindo com método', texto: 'Para que as medidas sejam comparáveis, meça sempre nos mesmos pontos do corpo, de preferência no mesmo horário e com a mesma fita ou adipômetro. Pequenas variações de técnica podem parecer mudanças no corpo.', duracao: '06:45' },
+      { id: 'aula-4', titulo: 'Metas realistas e reavaliação', texto: 'Metas pequenas e específicas são mais fáceis de acompanhar do que metas vagas. Reavaliar em intervalos regulares, como a cada três meses, evita conclusões apressadas e mostra se o caminho está funcionando para você.', duracao: '05:10' },
     ],
     questoes: [
       ['Como tratar o IMC e o percentual de gordura?', 'Como estimativas com limites', ['Como verdades absolutas', 'Como diagnóstico', 'Como metas obrigatórias'], 'São estimativas e têm limites.'],
@@ -47,8 +53,11 @@ const MODULOS: ModuloDef[] = [
     id: 'proto-3', moduloId: 'demo-3', titulo: 'Hábitos e sustentabilidade',
     objetivo: 'Pensar em vida ativa, espaços coletivos e consumo consciente no dia a dia.',
     aulas: [
-      { id: 'aula-1', titulo: 'Vida ativa no dia a dia', texto: 'Movimento também acontece fora da academia: caminhar até o trabalho, usar escadas e frequentar praças e parques são formas de manter uma vida ativa. Espaços coletivos seguros e acessíveis tornam esses hábitos mais fáceis para todas as pessoas.' },
-      { id: 'aula-2', titulo: 'Consumo consciente', texto: 'Escolhas simples reduzem desperdício: reutilizar uma garrafa, cuidar dos equipamentos e comprar apenas o que de fato será usado. Pequenos hábitos repetidos ao longo do tempo importam, e cada pessoa pode começar do ponto em que está.' },
+      { id: 'aula-1', titulo: 'Vida ativa no dia a dia', texto: 'Movimento também acontece fora da academia: caminhar até o trabalho, usar escadas e frequentar praças e parques são formas de manter uma vida ativa. Espaços coletivos seguros e acessíveis tornam esses hábitos mais fáceis para todas as pessoas.', duracao: '06:30' },
+      { id: 'aula-2', titulo: 'Consumo consciente', texto: 'Escolhas simples reduzem desperdício: reutilizar uma garrafa, cuidar dos equipamentos e comprar apenas o que de fato será usado. Pequenos hábitos repetidos ao longo do tempo importam, e cada pessoa pode começar do ponto em que está.', duracao: '05:20' },
+
+      { id: 'aula-3', titulo: 'Mobilidade e espaços coletivos', texto: 'Praças, parques, ciclovias e calçadas bem cuidadas ajudam a manter uma vida ativa. Conhecer os espaços do seu bairro e usá-los com respeito amplia as opções de movimento para todas as pessoas.', duracao: '06:00' },
+      { id: 'aula-4', titulo: 'Escolhas do dia a dia', texto: 'Levar a própria garrafa, dividir carona ou caminhar trajetos curtos são escolhas simples. Elas reduzem desperdício e custo, e podem ser combinadas com a sua rotina de atividade sem exigir mudanças grandes.', duracao: '04:40' },
     ],
     questoes: [
       ['Onde o movimento pode acontecer, segundo a aula?', 'Também fora da academia', ['Só na academia', 'Só em competições', 'Só em casa'], 'Caminhar e usar escadas também contam como movimento.'],
@@ -87,6 +96,7 @@ function salvar(estado: Estado) {
 function erro(mensagem: string, status = 400): never { throw { response: { status, data: { mensagem } } } }
 function modulo(id: string) { return MODULOS.find(m => m.id === id) ?? erro('Esta versão não está disponível. Consulte seu histórico.', 404) }
 const APROVACAO = 80
+const MINIMO_AULAS = 2
 
 export async function catalogo(): Promise<Modulo[]> {
   const e = carregar()
@@ -95,7 +105,7 @@ export async function catalogo(): Promise<Modulo[]> {
     return { id: m.id, moduloId: m.moduloId, versao: 1, titulo: m.titulo, objetivo: m.objetivo, demonstracao: true,
       aulasEstudadas: e.aulas.filter(a => a.moduloId === m.id).length,
       melhorNota: notas.length ? Math.max(...notas) : null,
-      versaoConcluida: notas.some(n => n >= APROVACAO) ? 1 : null }
+      versaoConcluida: notas.some(n => n >= APROVACAO) ? 1 : null, totalAulas: m.aulas.length }
   })
 }
 
@@ -105,9 +115,9 @@ export async function detalheModulo(id: string): Promise<DetalheModulo> {
   const notas = e.tentativas.filter(t => t.moduloId === id).map(t => t.nota)
   return { id: m.id, moduloId: m.moduloId, versao: 1, titulo: m.titulo, objetivo: m.objetivo, demonstracao: true,
     melhorNota: notas.length ? Math.max(...notas) : null, versaoConcluida: notas.some(n => n >= APROVACAO) ? 1 : null,
-    autoria: AUTORIA, revisao: REVISAO, publicadoEm: PUBLICADO,
-    aulas: m.aulas.map(a => ({ id: a.id, titulo: a.titulo, texto: a.texto, fonte: FONTE, estudada: estudada(a.id) })),
-    avaliacaoLiberada: m.aulas.every(a => estudada(a.id)) }
+    autoria: AUTORIA, revisao: REVISAO, publicadoEm: PUBLICADO, totalAulas: m.aulas.length,
+    aulas: m.aulas.map(a => ({ id: a.id, titulo: a.titulo, texto: a.texto, fonte: FONTE, estudada: estudada(a.id), duracao: a.duracao })),
+    avaliacaoLiberada: m.aulas.filter(a => estudada(a.id)).length >= MINIMO_AULAS }
 }
 
 export async function estudar(id: string, aulaId: string): Promise<void> {
@@ -120,7 +130,7 @@ export async function estudar(id: string, aulaId: string): Promise<void> {
 
 function exigirAulas(id: string) {
   const m = modulo(id), e = carregar()
-  if (!m.aulas.every(a => e.aulas.some(x => x.moduloId === id && x.aulaId === a.id))) erro('Estude as duas aulas desta versão antes da avaliação.')
+  if (m.aulas.filter(a => e.aulas.some(x => x.moduloId === id && x.aulaId === a.id)).length < MINIMO_AULAS) erro('Estude pelo menos duas aulas antes da avaliação.')
   return m
 }
 
@@ -156,7 +166,7 @@ export async function historicoAprender(): Promise<Historico[]> {
   const e = carregar()
   return MODULOS.filter(m => e.aulas.some(a => a.moduloId === m.id) || e.tentativas.some(t => t.moduloId === m.id)).map(m => {
     const tentativas = e.tentativas.filter(t => t.moduloId === m.id).sort((a, b) => b.enviadaEm.localeCompare(a.enviadaEm))
-    return { id: m.id, titulo: m.titulo, versao: 1, retirada: false, concluido: tentativas.some(t => t.nota >= APROVACAO),
+    return { id: m.id, titulo: m.titulo, versao: 1, retirada: false, concluido: tentativas.some(t => t.nota >= APROVACAO), totalAulas: m.aulas.length,
       aulasEstudadas: e.aulas.filter(a => a.moduloId === m.id).map(a => ({ aulaId: a.aulaId, estudadaEm: a.estudadaEm })),
       tentativas: tentativas.map(t => ({ id: t.id, nota: t.nota, aprovada: t.nota >= APROVACAO, enviadaEm: t.enviadaEm })) }
   })
