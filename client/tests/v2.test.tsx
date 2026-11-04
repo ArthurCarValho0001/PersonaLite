@@ -133,10 +133,16 @@ test('protótipo de Aprender funciona sem chamar a API: aulas, avaliação, idem
     assert.equal(modulos.length, 3)
     assert.ok(modulos.every(m => m.demonstracao && m.aulasEstudadas === 0 && m.melhorNota === null))
     const id = modulos[0].id
-    await assert.rejects(proto.questionario(id), (e: any) => /Estude as duas aulas/.test(e.response.data.mensagem))
+    await assert.rejects(proto.questionario(id), (e: any) => /Estude pelo menos duas aulas/.test(e.response.data.mensagem))
     assert.equal((await proto.detalheModulo(id)).avaliacaoLiberada, false)
-    for (const aula of (await proto.detalheModulo(id)).aulas) await proto.estudar(id, aula.id)
+    const aulas = (await proto.detalheModulo(id)).aulas
+    assert.equal(aulas.length, 4)
+    assert.ok(aulas.every(a => a.duracao))
+    await proto.estudar(id, aulas[2].id)
+    assert.equal((await proto.detalheModulo(id)).avaliacaoLiberada, false)
+    await proto.estudar(id, aulas[0].id)
     assert.equal((await proto.detalheModulo(id)).avaliacaoLiberada, true)
+    assert.equal((await proto.catalogo())[0].totalAulas, 4)
     const q = await proto.questionario(id)
     assert.equal(q.questoes.length, 5)
     assert.ok(q.questoes.every(x => x.alternativas.length === 4))
@@ -181,4 +187,49 @@ test('layout não exibe o rótulo "V2 · LOCAL" nem o cartão da folha', async (
   assert.equal(screen.queryByText(/aprender todos os dias/i), null)
   assert.equal(container.querySelector('.v2-sidebar-note'), null)
   assert.ok(screen.getByText('Bem-estar em movimento'))
+})
+
+test('módulo mostra blocos de vídeo por aula, botão do questionário e nenhum aviso de protótipo', async () => {
+  const { render, screen, fireEvent } = await import('@testing-library/react')
+  const { createMemoryRouter, RouterProvider } = await import('react-router-dom')
+  const { ModuloAprender } = await import('../src/pages/Aprender')
+  const aprender = await import('../src/api/aprenderApi')
+  const anterior = (globalThis as { __APRENDER_API__?: boolean }).__APRENDER_API__
+  ;(globalThis as { __APRENDER_API__?: boolean }).__APRENDER_API__ = false
+  salvarToken(token('conta-video'))
+  try {
+    const [modulo] = await aprender.catalogo()
+    const router = createMemoryRouter([{ path: '/aprender/:id', element: <ModuloAprender /> }], { initialEntries: [`/aprender/${modulo.id}`] })
+    render(<RouterProvider router={router} />)
+    await screen.findByRole('heading', { name: modulo.titulo })
+    assert.equal(screen.getAllByRole('button', { name: /^Vídeo da aula \d/ }).length, 4)
+    assert.equal(screen.queryByText(/Protótipo ·/), null)
+    assert.equal(screen.queryByText(/Conteúdo fictício, sem revisão editorial/), null)
+    const botao = screen.getByRole('button', { name: /Ir para o questionário/ })
+    fireEvent.click(botao)
+    assert.ok(screen.getByText(/pelo menos duas aulas como estudadas/))
+  } finally {
+    ;(globalThis as { __APRENDER_API__?: boolean }).__APRENDER_API__ = anterior
+    localStorage.clear()
+  }
+})
+
+test('foto de perfil escolhida fica salva por conta e aparece no Avatar sem chamar a API', async () => {
+  const { render, screen, act } = await import('@testing-library/react')
+  const { Avatar } = await import('../src/components/Avatar')
+  const { salvarAvatarLocal, obterAvatarLocal } = await import('../src/api/avatarLocal')
+  let chamadas = 0
+  httpClient.defaults.adapter = async config => { chamadas++; throw new Error(`Rede não deveria ser usada: ${config.url}`) }
+  salvarToken(token('conta-foto'))
+  try {
+    render(<Avatar nome="Arthur Carvalho" avatarUrl={null} />)
+    assert.ok(screen.getByText('AC'))
+    await act(async () => { await salvarAvatarLocal(new File(['x'], 'foto.png', { type: 'image/png' })) })
+    assert.match(obterAvatarLocal() ?? '', /^data:image\/png/)
+    assert.equal((await screen.findByRole('img', { name: 'Arthur Carvalho' })).tagName, 'IMG')
+    await assert.rejects(salvarAvatarLocal(new File(['x'], 'a.txt', { type: 'text/plain' })), /imagem/)
+    salvarToken(token('outra-conta-foto'))
+    assert.equal(obterAvatarLocal(), null)
+    assert.equal(chamadas, 0)
+  } finally { localStorage.clear() }
 })

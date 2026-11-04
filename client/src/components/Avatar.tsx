@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { httpClient } from '../api/httpClient'
 import { avatarBuscaArquivo } from '../config/recursos'
+import { obterAvatarLocal, observarAvatarLocal } from '../api/avatarLocal'
 import './Avatar.css'
 
 interface AvatarProps {
@@ -11,6 +12,8 @@ interface AvatarProps {
 
 export function Avatar({ nome, avatarUrl, tamanho = 'pequeno' }: AvatarProps) {
   const [urlCompleta, setUrlCompleta] = useState<string | null>(null)
+  const [local, setLocal] = useState<string | null>(obterAvatarLocal)
+  useEffect(() => observarAvatarLocal(() => setLocal(obterAvatarLocal())), [])
   useEffect(() => {
     let ativo = true, blob: string | null = null
     setUrlCompleta(null)
@@ -29,7 +32,7 @@ export function Avatar({ nome, avatarUrl, tamanho = 'pequeno' }: AvatarProps) {
 
   return (
     <div className={`avatar avatar--${tamanho}`}>
-      {urlCompleta ? <img src={urlCompleta} alt={nome} /> : <span>{iniciais || '?'}</span>}
+      {local ?? urlCompleta ? <img src={(local ?? urlCompleta) as string} alt={nome} /> : <span>{iniciais || '?'}</span>}
     </div>
   )
 }
